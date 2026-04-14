@@ -50,6 +50,12 @@ class Couples
     #[ORM\OneToMany(targetEntity: Images::class, mappedBy: 'couple', orphanRemoval: true, cascade: ['persist'])] // J'ai ajouté à la maim le cascade persist
     private Collection $images;
 
+    /**
+     * @var Collection<int, Rules>
+     */
+    #[ORM\ManyToMany(targetEntity: Rules::class, inversedBy: 'couples')]
+    private Collection $rules;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -95,6 +101,7 @@ class Couples
     {
         $this->createdAt = new \DateTimeImmutable('now');
         $this->images = new ArrayCollection();
+        $this->rules = new ArrayCollection();
     }
 
     public function getQuestion(): ?string
@@ -195,6 +202,30 @@ class Couples
                 $image->setCouple(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rules>
+     */
+    public function getRules(): Collection
+    {
+        return $this->rules;
+    }
+
+    public function addRule(Rules $rule): static
+    {
+        if (!$this->rules->contains($rule)) {
+            $this->rules->add($rule);
+        }
+
+        return $this;
+    }
+
+    public function removeRule(Rules $rule): static
+    {
+        $this->rules->removeElement($rule);
 
         return $this;
     }

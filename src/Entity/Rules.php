@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RulesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -23,6 +25,17 @@ class Rules
     #[ORM\ManyToOne(inversedBy: 'rules')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Faqs $faq = null;
+
+    /**
+     * @var Collection<int, Couples>
+     */
+    #[ORM\ManyToMany(targetEntity: Couples::class, mappedBy: 'rules')]
+    private Collection $couples;
+
+    public function __construct()
+    {
+        $this->couples = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -61,6 +74,33 @@ class Rules
     public function setFaq(?Faqs $faq): static
     {
         $this->faq = $faq;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Couples>
+     */
+    public function getCouples(): Collection
+    {
+        return $this->couples;
+    }
+
+    public function addCouple(Couples $couple): static
+    {
+        if (!$this->couples->contains($couple)) {
+            $this->couples->add($couple);
+            $couple->addRule($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCouple(Couples $couple): static
+    {
+        if ($this->couples->removeElement($couple)) {
+            $couple->removeRule($this);
+        }
 
         return $this;
     }
