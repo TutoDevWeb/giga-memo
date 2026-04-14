@@ -1,4 +1,15 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+{{ form_label(form.faq, null, { 'label': 'Nom de la Faq','label_attr': {'class': 'mt-4'}}) }}
+{{ form_widget(form.faq, {'attr': {'disabled': 'disabled'}}) }}
+
+{# Champ name #}
+{{ form_label(form.name, null, { 'label': 'Nom de la règle','label_attr': {'class': 'mt-4'}}) }}
+{{ form_widget(form.name) }}
+
+{# Champ content #}
+{{ form_label(form.content, null, { 'label': 'Enoncé de la règle','label_attr': {'class': 'mt-4'}}) }}
+{{ form_widget(form.content) }}
+
+<button class="btn">{{ button_label|default('Sauvegarder') }}</button>
 {{ form_end(form) }}

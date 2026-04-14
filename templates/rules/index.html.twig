@@ -1,37 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Rules index{% endblock %}
+{% block title %}Rules index
+{% endblock %}
 
 {% block body %}
-    <h1>Rules index</h1>
+	<div class="container">
+		<div class="row">
+			<div class="col">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Content</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for rule in rules %}
-            <tr>
-                <td>{{ rule.id }}</td>
-                <td>{{ rule.name }}</td>
-                <td>{{ rule.content }}</td>
-                <td>
-                    <a href="{{ path('app_rules_show', {'id': rule.id}) }}">show</a>
-                    <a href="{{ path('app_rules_edit', {'id': rule.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+				<h1>Rules index</h1>
 
-    <a href="{{ path('app_rules_new') }}">Create new</a>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Name</th>
+							<th>Content</th>
+							<th>actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for rule in faq.rules %}
+							<tr>
+								<td>{{ rule.id }}</td>
+								<td>{{ rule.name }}</td>
+								<td>{{ rule.content }}</td>
+								<td>
+									<a class='btn btn-primary' href="{{ path('app_rules_show', {'id': rule.id}) }}">show</a>
+									<a class='btn btn-primary' href="{{ path('app_rules_edit', {'id': rule.id}) }}">edit</a>
+								</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td colspan="4">Pas d'enregistrement</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+
+				<a class='btn btn-primary' href="{{ path('app_rules_new',{'id': faq.id}) }}">Création nouvelle règle</a>
+
+			</div>
+		</div>
+	</div>
 {% endblock %}

@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Rules;
 
+use App\Entity\Faqs;
 use App\Entity\Rules;
 use App\Form\RulesType;
+use App\Repository\FaqsRepository;
 use App\Repository\RulesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,31 +16,44 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/rules')]
 final class RulesController extends AbstractController
 {
-    #[Route(name: 'app_rules_index', methods: ['GET'])]
-    public function index(RulesRepository $rulesRepository): Response
+    #[Route('/{id}', name: 'app_rules_index', methods: ['GET'])]
+    public function index(Faqs $faq): Response
     {
+
         return $this->render('rules/index.html.twig', [
-            'rules' => $rulesRepository->findAll(),
+            'ariane' => ['index' => true, 'edit' => true],
+            'rules' => $faq->getRules(),
+            'id_faq' => $faq->getId(),
+            'faq' => $faq
         ]);
     }
 
-    #[Route('/new', name: 'app_rules_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{id<\d+>}', name: 'app_rules_new', methods: ['GET', 'POST'])]
+    public function new(Faqs $faq, Request $request, EntityManagerInterface $entityManager): Response
     {
+
+
         $rule = new Rules();
+        $rule->setFaq($faq);
         $form = $this->createForm(RulesType::class, $rule);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+
+            $rule->setFaq($faq);
+            $rule = $form->getData();
             $entityManager->persist($rule);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_rules_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_rules_index', ['id' => $faq->getId()]);
         }
 
         return $this->render('rules/new.html.twig', [
-            'rule' => $rule,
-            'form' => $form,
+            'ariane' => ['index' => true, 'edit' => true],
+            'rule'      => $rule,
+            'form'      => $form,
+            'faq'       => $faq
         ]);
     }
 
@@ -71,7 +86,7 @@ final class RulesController extends AbstractController
     #[Route('/{id}', name: 'app_rules_delete', methods: ['POST'])]
     public function delete(Request $request, Rules $rule, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$rule->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $rule->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($rule);
             $entityManager->flush();
         }

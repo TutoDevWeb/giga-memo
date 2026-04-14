@@ -1,11 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Rules{% endblock %}
+{% block title %}New Rules
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Rules</h1>
 
-    {{ include('rules/_form.html.twig') }}
+	<div class="container">
+		<div class="row">
+			<div class="col">
 
-    <a href="{{ path('app_rules_index') }}">back to list</a>
+				<h1>Create new Rules</h1>
+
+				{{ include('rules/_form.html.twig') }}
+
+				<a href="{{ path('app_rules_index',{ id: faq.id }) }}">back to list</a>
+
+			</div>
+		</div>
+	</div>
+
 {% endblock %}
