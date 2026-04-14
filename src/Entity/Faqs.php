@@ -34,10 +34,17 @@ class Faqs
     #[ORM\Column(nullable: true)]
     private ?\DateInterval $duration = null;
 
+    /**
+     * @var Collection<int, Rules>
+     */
+    #[ORM\OneToMany(targetEntity: Rules::class, mappedBy: 'faq', orphanRemoval: true)]
+    private Collection $rules;
+
     public function __construct()
     {
         $this->couples = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable('now');
+        $this->rules = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -119,6 +126,36 @@ class Faqs
     public function setDuration(?\DateInterval $duration): static
     {
         $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rules>
+     */
+    public function getRules(): Collection
+    {
+        return $this->rules;
+    }
+
+    public function addRule(Rules $rule): static
+    {
+        if (!$this->rules->contains($rule)) {
+            $this->rules->add($rule);
+            $rule->setFaq($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRule(Rules $rule): static
+    {
+        if ($this->rules->removeElement($rule)) {
+            // set the owning side to null (unless already changed)
+            if ($rule->getFaq() === $this) {
+                $rule->setFaq(null);
+            }
+        }
 
         return $this;
     }

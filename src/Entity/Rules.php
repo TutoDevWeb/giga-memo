@@ -20,6 +20,10 @@ class Rules
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
 
+    #[ORM\ManyToOne(inversedBy: 'rules')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Faqs $faq = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +49,18 @@ class Rules
     public function setContent(?string $content): static
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getFaq(): ?Faqs
+    {
+        return $this->faq;
+    }
+
+    public function setFaq(?Faqs $faq): static
+    {
+        $this->faq = $faq;
 
         return $this;
     }
