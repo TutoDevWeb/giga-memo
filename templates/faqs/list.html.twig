@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Memo: Liste des Faqs
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+
+		<h1 class='text-center h3'>Liste des Faqs</h1>
+
+		{% if faqs|length != 0 %}
+
+			{% for faq in faqs %}
+				<p>{{faq.name}}</p>
+			{% endfor %}
+
+		{% else %}
+
+			<p>Il n'y a pas de Faqs</p>
+
+		{% endif %}
+
+		<a class='btn btn-primary my-4' href="{{path('app_faqs_new')}}">Créer une Faq</a>
+
+	</div>
+
+{% endblock %}

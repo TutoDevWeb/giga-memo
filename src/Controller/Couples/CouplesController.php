@@ -1,0 +1,218 @@
+<?php
+
+namespace App\Controller\Couples;
+
+use App\Entity\Couples;
+use App\Entity\Faqs;
+use App\Form\CoupleFormType;
+use App\Repository\CouplesRepository;
+use App\Service\PictureService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+class CouplesController extends AbstractController
+{
+    /**
+     * Ce contrôleur sert à afficher la liste des couples qr d'une faq.
+     */
+    #[Route('/couples/list-by-faq/{id<\d+>}', name: 'app_couples_list_by_faq')]
+    public function list_by_faq(CouplesRepository $repo, Faqs $faq): Response
+    {
+
+        return $this->render('couples/list-by-faq.html.twig', [
+            'ariane' => ['index' => true, 'edit' => true],
+            'faq' => $faq
+        ]);
+    }
+
+    /**
+     * Ce contrôleur sert à créer un nouveau couple qr.
+     */
+    #[Route('/couples/new/{id<\d+>}', name: 'app_couples_new')]
+    public function new(
+        EntityManagerInterface $entityManager,
+        PictureService $pictureService,
+        Request $request,
+        Faqs $faq,
+    ): Response {
+
+        $nbCouple = count($faq->getCouples());
+
+        $couple = new Couples();
+        $couple->setFaq($faq);
+        $couple->setNum($nbCouple + 1);
+
+        $form = $this->createForm(CoupleFormType::class, $couple, ['layerType' => $couple->getFaq()->getLayerType()]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /*
+             * Il faut refaire le set de la Faq car le champ faq est disabled dans le formulaire
+             * Du coup on perd la valeur dans le $form->handleRequest()
+             */
+            $couple->setFaq($faq);
+            $couple = $form->getData();
+            $couple->setTodoRun(true);
+            $couple->setTodoReview(true);
+            $couple->setSelectReview(false);
+
+            $entityManager->persist($couple);
+            $entityManager->flush();
+
+            // On récupère les images
+            $images = $form->get('images')->getData();
+
+            // On les passe au service
+            $pictureService->upload($entityManager, $couple, $images);
+
+            return $this->redirectToRoute('app_couples_list_by_faq', ['id' => $couple->getFaq()->getId()]);
+        }
+
+        return $this->render('couples/new.html.twig', [
+            'ariane' => ['index' => true, 'edit' => true],
+            'form' => $form,
+            'faq' => $couple->getFaq(),
+        ]);
+    }
+
+    /**
+     * Ce contrôleur sert à modifier un couple qr.
+     */
+    #[Route('/couples/update/{from<run|review|list>}/{id<\d+>}', name: 'app_couples_update')]
+    public function update(EntityManagerInterface $entityManager, Request $request, string $from, Couples $couple, PictureService $pictureService): Response
+    {
+
+        $form = $this->createForm(CoupleFormType::class, $couple, [
+            'layerType' => $couple->getFaq()->getLayerType(),
+            'from' => $from
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $couple = $form->getData();
+
+            $entityManager->persist($couple);
+            $entityManager->flush();
+
+            // On récupère les images
+            $images = $form->get('images')->getData();
+
+            // On les passe au service
+            $pictureService->upload($entityManager, $couple, $images);
+
+            $id_faq = $couple->getFaq()->getId();
+
+            if ($from == 'review')
+                return $this->redirectToRoute('app_faqs_review', ['id' => $id_faq]);
+
+            if ($from == 'run')
+                return $this->redirectToRoute('app_faqs_run', ['id' => $id_faq]);
+
+            if ($from == 'list')
+                return $this->redirectToRoute('app_couples_list_by_faq', ['id' => $id_faq]);
+        }
+
+        return $this->render('couples/update.html.twig', [
+            'ariane' => ['index' => true, 'edit' => true],
+            'form' => $form,
+            'couple' => $couple,
+        ]);
+    }
+
+    /**
+     * Ce contrôleur sert à supprimer un couple qr.
+     */
+    #[Route('/couples/delete/{id<\d+>}', name: 'app_couples_delete')]
+    public function delete(EntityManagerInterface $entityManager, Couples $couple, PictureService $picture, $id): Response
+    {
+        foreach ($couple->getImages() as $image) {
+            $picture->delete($image);
+        }
+
+        $entityManager->remove($couple);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_couples_list_by_faq', ['id' => $couple->getFaq()->getId()]);
+    }
+
+    /**
+     * Ce contrôleur sert à enregister un couple qr dans la sélection selectReview
+     * Il est appelé lorsqu'un utilisateur appuie sur le bouton A Revoir en Run-normal.
+     */
+    #[Route('/couples/set-one-review/{id<\d+>}', name: 'app_couples_set_one_review')]
+    public function set_one_review(EntityManagerInterface $entityManager, CouplesRepository $repo, Couples $couple, Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $token = $data['_token'];
+
+        // On teste pour savoir si le token est valide.
+        if ($this->isCsrfTokenValid('set-one-review' . $couple->getId(), $token)) {
+            // On le met dans la sélection
+            $couple->setSelectReview(true);
+            // Du coup il est à faire
+            $couple->setTodoReview(true);
+
+            $entityManager->persist($couple);
+            $entityManager->flush();
+
+            // Faire les comptes et retourner les valeurs des indicateurs pour maj affichage
+            $nbTodoRun = $repo->countTodoRun($couple->getFaq());
+            $nbTodoReview = $repo->countTodoReview($couple->getFaq());
+            $nbSelectRun = $repo->countSelectRun($couple->getFaq());
+            $nbSelectReview = $repo->countSelectReview($couple->getFaq());
+
+            return new JsonResponse([
+                'nbTodoRun' => $nbTodoRun,
+                'nbTodoReview' => $nbTodoReview,
+                'nbSelectRun' => $nbSelectRun,
+                'nbSelectReview' => $nbSelectReview,
+            ]);
+        }
+
+        return new JsonResponse(['message' => 'KO']);
+    }
+
+    /**
+     * Ce contrôleur sert à enlever un couple qr de la sélection selectReview
+     * Il est appelé lorsqu'un utilisateur appuie sur le bouton Ne plus revoir en Run-Review.
+     */
+    #[Route('/couples/cancel-one-review/{id<\d+>}', name: 'app_couples_cancel_one_review')]
+    public function cancel_one_review(EntityManagerInterface $entityManager, CouplesRepository $repo, Couples $couple, Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $token = $data['_token'];
+
+        // On teste pour savoir si le token est valide.
+        if ($this->isCsrfTokenValid('cancel-one-review' . $couple->getId(), $token)) {
+            // On l'enlève de la sélection Review
+            $couple->setSelectReview(false);
+
+            // Du coup il n'est plus à faire
+            $couple->setTodoReview(false);
+            $entityManager->persist($couple);
+            $entityManager->flush();
+
+            // Faire les comptes et retourner les valeurs des indicateurs pour maj affichage
+            $nbTodoRun = $repo->countTodoRun($couple->getFaq());
+            $nbTodoReview = $repo->countTodoReview($couple->getFaq());
+            $nbSelectRun = $repo->countSelectRun($couple->getFaq());
+            $nbSelectReview = $repo->countSelectReview($couple->getFaq());
+
+            return new JsonResponse([
+                'nbTodoRun' => $nbTodoRun,
+                'nbTodoReview' => $nbTodoReview,
+                'nbSelectRun' => $nbSelectRun,
+                'nbSelectReview' => $nbSelectReview,
+            ]);
+        }
+
+        return new JsonResponse(['message' => 'KO']);
+    }
+}

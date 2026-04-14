@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Memo: Liste des questions / Réponses
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1>Liste des Questions / Réponses</h1>
+
+		{% if (couples|length) != 0 %}
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Numéro</th>
+						<th>Question</th>
+						<th>Réponse</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for couple in couples %}
+						<tr>
+							<td>{{ couple.num }}</td>
+							<td>{{ couple.question }}</td>
+							<td>{{ couple.reponse }}</td>
+							<td>
+								<a href="{{ path('app_couples_update', { id: couple.id }) }}" class="btn btn-primary">Modifier</a>
+							</td>
+							<td>
+								<a href="{{ path('app_couples_delete', { id: couple.id }) }}" class="btn btn-primary">Supprimer</a>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			<p>Il n'y a pas de Faqs</p>
+		{% endif %}
+
+		<div class='my-4'>
+			<a href="{{ path('app_couples_new') }}" class="btn btn-primary">Créer</a>
+		</div>
+	</div>
+{% endblock %}

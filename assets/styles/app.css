@@ -1,0 +1,32 @@
+.reponse-hide {
+    display: none;
+}
+
+.reponse-show {
+    display: block;
+}
+
+.btn-large {
+    --bs-btn-padding-x: 3rem;
+}
+
+.form-control-auto {
+    field-sizing: content;
+    resize: none;
+}
+
+/* Conteneur des images en mode run */
+.images {
+    text-align: center;
+}
+
+.images img {
+    max-width: 100%;
+    /* Ne dépasse jamais la largeur du parent */
+    height: auto;
+}
+
+/* Couleur du nom de la Faq */
+.darkred {
+    color: darkred;
+}

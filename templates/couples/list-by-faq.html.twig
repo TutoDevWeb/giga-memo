@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Memo: Liste des questions / Réponses
+{% endblock %}
+
+{% block javascripts %}
+	<script defer src="{{asset('assets/js/modal.js')}}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{asset('assets/css/modal.css')}}">
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1 class='text-center h3'>Liste des Questions / Réponses</h1>
+
+		{% if (faq.couples|length) != 0 %}
+			<table class="table text-center">
+				<thead>
+					<tr>
+						<th>Numéro</th>
+						<th>Question</th>
+						<th>Réponse</th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for couple in faq.couples %}
+						<tr>
+							<td>{{ couple.num }}</td>
+							<td>{{ couple.question }}</td>
+							<td>
+
+								{% if couple.reponse != '' %}
+									<p>{{ couple.reponse }}</p>
+								{% endif %}
+
+								{% for image in couple.images %}
+									<div>
+										<a id='trigger-link-{{image.id }}' class='trigger-link' href="#">{{image.id }}</a><br>
+										<img id='floating-image-{{image.id }}' class='floating-image' src="{{asset(image.name,'images_directory')}}" alt="Image en survol">
+									</div>
+								{% endfor %}
+
+							</td>
+							<td>{{ couple.regle }}</td>
+							<td>
+								<a href="{{ path('app_couples_update', { from : 'list',id: couple.id }) }}" class="btn btn-primary">Modifier</a>
+							</td>
+							<td>
+								<a href="{{ path('app_couples_delete', { id: couple.id }) }}" class="btn btn-primary">Supprimer</a>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			<p>Il n'y a pas de couple question/reponse dans cette Faq</p>
+		{% endif %}
+		<div class="my-4">
+			<a href="{{ path('app_couples_new', { id: faq.id }) }}" class="btn btn-primary">Créer un nouveau couple QR</a>
+		</div>
+	</div>
+{% endblock %}

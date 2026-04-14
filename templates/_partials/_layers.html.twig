@@ -1,0 +1,30 @@
+<div
+	class="container mt-4 text-center">
+
+	{# Si c'est un affichage LAYER_ONE #}
+	{% if faq.layerType.name == 'LAYER_ONE' %}
+
+		{% if couple.regle is not null %}
+			<div>{{ couple.regle }}</div>
+		{% endif %}
+
+		<p>{{ couple.question }}</p>
+
+		<p><input class='form-control text-center' type='text' size="100" maxlength="100" spellcheck='false'></p>
+
+		<p id='texte-reponse' class='reponse-hide pb-4'>{{ couple.reponse }}</p>
+
+	{% endif %}
+
+	{# Si c'est un affichage LAYER_TWO #}
+	{% if faq.layerType.name == 'LAYER_TWO' %}
+
+		<textarea class='form-control form-control-auto' spellcheck='false'>{{ couple.question }}</textarea>
+
+		<textarea class='form-control form-control-auto mt-4' spellcheck='false'></textarea>
+
+		<textarea id='texte-reponse' class='form-control form-control-auto reponse-hide mt-4' spellcheck='false'>{{ couple.reponse }}</textarea>
+
+	{% endif %}
+
+</div>

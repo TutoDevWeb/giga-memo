@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil du mode Edit
+{% endblock %}
+
+{% block body %}
+
+	<h1 class=' text-center h3'>Accueil du mode Edit</h1>
+
+	<h2 class='text-center darkred h4'>{{ faq.name }}</h2>
+
+	{# Liste des actions lorsqu'une Faq est sélectionner #}
+	{% if faq != null %}
+		<div class="container">
+			<div class="row text-center">
+				<div class="col-12 col-md-4 p-4">
+					<a class='btn btn-primary' title='Voir la liste des QRs (Question/Réponse) de la Faq' href="{{path('app_couples_list_by_faq',{id : faq.id})}}">Liste des QRs</a>
+				</div>
+				<div class="col-12 col-md-4 p-4">
+					<a class='btn btn-primary' title='Modifier la Faq' href="{{path('app_faqs_update',{id : faq.id})}}">Modifier</a>
+				</div>
+				<div class="col-12 col-md-4 p-4">
+					<a class='btn btn-primary' title='Supprimer la Faq' href="{{path('app_faqs_delete',{id : faq.id})}}">Supprimer</a>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
+{% endblock %}

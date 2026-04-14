@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Run du Memo
+{% endblock %}
+
+{% block body %}
+
+	<h1 class='text-center h3'>Run normal de la faq</h1>
+	<h2 class='text-center darkred h5'>{{ faq.name }}</h2>
+	{% if faq.duration is not null %}
+		<h3 class='text-center darkred h6'>{{ faq.duration.format('%i minutes') }}</h3>
+	{% endif %}
+
+	{# Si il n'y a plus de couple question/reponse #}
+	{% if couple is defined and couple is null %}
+		<div class="container mt-4">
+			<p>Il n'y a plus de questions / réponses</p>
+		</div>
+		<hr>
+
+	{% else %}
+
+		{% include "_partials/_layers.html.twig" %}
+
+		{% include "_partials/_images.html.twig" %}
+
+		<div class="container mt-4">
+			<div
+				class="row justify-content-center text-center">
+				{# Bouton Voir la réponse #}
+				<div class="col-12 col-md-4 p-4">
+					<button id='bouton-reponse' class='btn btn-primary'>Voir La réponse</button>
+				</div>
+				{# Bouton Suivant #}
+				<div class="col-12 col-md-4 p-4">
+					<a class='btn btn-primary' href="{{ path('app_faqs_next_run',{ id : faq.id})}}">Suivant
+						{#  #}
+						(<span id='nbSelectRun'>{{nbSelectRun}}</span>/<span id='nbTodoRun'>{{nbTodoRun - 1}}</span>)
+					</a>
+				</div>
+				{# Bouton A Revoir #}
+				<div class="col-12 col-md-4 p-4">
+					<button id='set-one-review' data-couple-id='{{couple.id}}' class='btn btn-primary' data-token={{ csrf_token('set-one-review' ~ couple.id)}}>A Revoir
+						{#  #}
+						(<span id='nbSelectReview'>{{nbSelectReview}}</span>)
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="text-center mt-4">(
+			{{couple.id}}
+			)</div>
+
+		<div class="text-center mt-4">
+			<a class='btn btn-primary' href="{{ path('app_couples_update',{ from: 'run',id : couple.id})}}">Modifier</a>
+		</div>
+
+	{% endif %}
+{% endblock %}

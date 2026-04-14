@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Index
+{% endblock %}
+
+{% block body %}
+
+	{{ form_start(form) }}
+	<div class="container">
+		<div class="row my-4 text-center">
+
+			{{ form_label(form.faq, null, { 'label': 'Choisir la Faq','label_attr': {'class':'mt-4'}}) }}
+
+			{{ form_widget(form.faq) }}
+
+			<div class="col-12 col-md-6 p-4">
+				{{ form_widget(form.run,{ 'label': 'Run Faq' ,'attr': {'class': 'btn-primary btn-large mt-4'}}) }}
+			</div>
+			<div class="col-12 col-md-6 p-4">
+				{{ form_widget(form.edit,{ 'label': 'Edit Faq' ,'attr': {'class': 'btn-primary btn-large mt-4'}}) }}
+			</div>
+
+			{{ form_errors(form) }}
+		</div>
+	</div>
+	{{ form_end(form) }}
+	<hr>
+	<div class='text-center mt-4'>
+		<a class='btn btn-primary' href={{path('app_faqs_new')}}>Créer une nouvelle Faq</a>
+	</div>
+
+{% endblock %}
