@@ -5,8 +5,6 @@ namespace App\Controller\Rules;
 use App\Entity\Faqs;
 use App\Entity\Rules;
 use App\Form\RulesType;
-use App\Repository\FaqsRepository;
-use App\Repository\RulesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -64,6 +62,7 @@ final class RulesController extends AbstractController
         #[MapEntity(id: 'id_rule')] Rules $rule
     ): Response {
         return $this->render('rules/show.html.twig', [
+            'ariane' => ['index' => true, 'edit' => true],
             'rule' => $rule,
             'faq' => $faq
         ]);
@@ -90,6 +89,7 @@ final class RulesController extends AbstractController
         }
 
         return $this->render('rules/edit.html.twig', [
+            'ariane' => ['index' => true, 'edit' => true],
             'rule' => $rule,
             'form' => $form,
             'faq' => $faq,

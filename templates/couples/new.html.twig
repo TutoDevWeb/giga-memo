@@ -19,12 +19,15 @@
 			{{ form_label(form.faq, null, { 'label': 'Sélectionner la Faq','label_attr': {'class': 'mt-4'}}) }}
 			{{ form_widget(form.faq, {'attr': {'disabled': 'disabled'}}) }}
 
+			{# Champ rules #}
+			{{ form_label(form.rules, null, { 'label': 'Rules','label_attr': {'class': 'mt-4'}}) }}
+			{{ form_widget(form.rules, { 'attr': {'class': 'mt-4'}}) }}
+
 			{# Champ régle #}
 			{% if faq.layerType.name ==  'LAYER_ONE' %}
 				{{ form_label(form.regle, null, { 'label': 'Régle','label_attr': {'class': 'mt-4'}}) }}
 				{{ form_widget(form.regle) }}
 			{% endif %}
-
 
 			{# Champ question #}
 			{{ form_label(form.question, null, { 'label': 'Question','label_attr': {'class': 'mt-4'}}) }}

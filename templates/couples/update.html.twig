@@ -23,6 +23,10 @@
 			{{ form_label(form.faq, null, { 'label': 'Sélectionner la Faq','label_attr': {'class': 'mt-4'}}) }}
 			{{ form_widget(form.faq, {'attr': {'class': 'form-select'}}) }}
 
+			{# Champ rules #}
+			{{ form_label(form.rules, null, { 'label': 'Rules','label_attr': {'class': 'mt-4'}}) }}
+			{{ form_widget(form.rules, { 'attr': {'class': 'mt-4'}}) }}
+
 			{# Champ régle #}
 			{% if couple.faq.layerType.name ==  'LAYER_ONE' %}
 				{{ form_label(form.regle, null, { 'label': 'Règle','label_attr': {'class': 'mt-4'}}) }}

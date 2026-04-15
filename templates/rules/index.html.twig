@@ -26,8 +26,12 @@
 								<td>{{ rule.name }}</td>
 								<td>{{ rule.content }}</td>
 								<td>
-									<a class='btn btn-primary' href="{{ path('app_rules_show', {'id_faq': faq.id,'id_rule': rule.id}) }}">show</a>
-									<a class='btn btn-primary' href="{{ path('app_rules_edit', {'id_faq': faq.id,'id_rule': rule.id}) }}">edit</a>
+									<div>
+										<a class='btn btn-primary' href="{{ path('app_rules_show', {'id_faq': faq.id,'id_rule': rule.id}) }}">show</a>
+									</div>
+									<div class='mt-4'>
+										<a class='btn btn-primary' href="{{ path('app_rules_edit', {'id_faq': faq.id,'id_rule': rule.id}) }}">edit</a>
+									</div>
 								</td>
 							</tr>
 						{% else %}

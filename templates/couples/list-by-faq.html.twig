@@ -47,7 +47,12 @@
 								{% endfor %}
 
 							</td>
-							<td>{{ couple.regle }}</td>
+							{# <td>{{ couple.regle }}</td> #}
+							<td>
+								{% for rule in couple.rules %}
+									{{ rule.name }}
+								{% endfor %}
+							</td>
 							<td>
 								<a href="{{ path('app_couples_update', { 'from' : 'list','id_faq' : faq.id, 'id_couple': couple.id }) }}" class="btn btn-primary">Modifier</a>
 							</td>
