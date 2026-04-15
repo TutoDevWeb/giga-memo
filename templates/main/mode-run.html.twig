@@ -18,12 +18,12 @@
 		<div class="container">
 			<div class="row text-center">
 				<div class="col-12 col-md-3 p-4">
-					<a class='btn btn-primary' title='Run de toute la Faq' href="{{path('app_faqs_run',{id : faq.id})}}">Run
+					<a class='btn btn-primary' title='Run de toute la Faq' href="{{path('app_faqs_run',{'id_faq' : faq.id})}}">Run
 						{# #}
 						(<span id='nbSelectRun'>{{nbSelectRun}}</span>/<span id='nbTodoRun'>{{nbTodoRun}}</span>)</a>
 				</div>
 				<div class="col-12 col-md-3 p-4">
-					<a class='btn btn-primary' title='Run de ce qui est à revoir' href="{{path('app_faqs_review',{id : faq.id})}}">Review
+					<a class='btn btn-primary' title='Run de ce qui est à revoir' href="{{path('app_faqs_review',{'id_faq' : faq.id})}}">Review
 						{# #}
 						(<span id='nbSelectReview'>{{nbSelectReview}}</span>/<span id='nbTodoReview'>{{nbTodoReview}}</span>)
 					</a>

@@ -1,7 +1,7 @@
 <div class="text-center my-4">
 	{% if ariane.index is defined and ariane.index == true %}
 		{% if faq.id is defined %}
-			<a class="btn btn-outline-primary" href="{{path('app_main_index',{id: faq.id})}}">Accueil</a>
+			<a class="btn btn-outline-primary" href="{{path('app_main_index',{id_faq: faq.id})}}">Accueil</a>
 		{% else %}
 			<a class="btn btn-outline-primary" href="{{path('app_main_index')}}">Accueil</a>
 		{% endif %}
@@ -9,7 +9,7 @@
 
 	{% if ariane.run is defined and ariane.run == true %}
 		{% if faq.id is defined %}
-			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="btn btn-outline-primary" href="{{path('app_main_run',{id: faq.id})}}">Mode run faq</a>
+			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="btn btn-outline-primary" href="{{path('app_main_run',{id_faq: faq.id})}}">Mode run faq</a>
 		{% else %}
 			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="btn btn-outline-primary" href="{{path('app_main_run')}}">Mode run faq</a>
 		{% endif %}
@@ -17,7 +17,7 @@
 
 	{% if ariane.edit is defined and ariane.edit == true %}
 		{% if faq.id is defined %}
-			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="btn btn-outline-primary" href="{{path('app_main_edit',{id: faq.id})}}">Mode edit faq</a>
+			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="btn btn-outline-primary" href="{{path('app_main_edit',{id_faq: faq.id})}}">Mode edit faq</a>
 		{% else %}
 			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="btn btn-outline-primary" href="{{path('app_main_edit')}}">Mode edit faq</a>
 		{% endif %}

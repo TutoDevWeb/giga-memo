@@ -7,6 +7,7 @@ use App\Form\FaqFormType;
 use App\Repository\CouplesRepository;
 use App\Repository\FaqsRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,9 +48,13 @@ class FaqsController extends AbstractController
      * Ce controleur a pour but de modifier le nom d'une Faq
      * Il est appelé lorsqu'un utilisateur clique sur le bouton Modifier du Mode-Edit.
      */
-    #[Route('/faqs/update/{id<\d+>}', name: 'app_faqs_update')]
-    public function update(EntityManagerInterface $entityManager, FaqsRepository $repo, Request $request, Faqs $faq): Response
-    {
+    #[Route('/faqs/update/{id_faq<\d+>}', name: 'app_faqs_update')]
+    public function update(
+        EntityManagerInterface $entityManager,
+        FaqsRepository $repo,
+        Request $request,
+        #[MapEntity(id: 'id_faq')] Faqs $faq
+    ): Response {
         $form = $this->createForm(FaqFormType::class, $faq);
 
         $form->handleRequest($request);
@@ -60,12 +65,13 @@ class FaqsController extends AbstractController
             $entityManager->persist($faq);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_main_index', ['id' => $faq->getId()]);
+            return $this->redirectToRoute('app_main_index', ['id_faq' => $faq->getId()]);
         }
 
         return $this->render('faqs/update.html.twig', [
             'ariane' => ['index' => true, 'edit' => true],
             'form' => $form,
+            'faq' => $faq
         ]);
     }
 
@@ -73,9 +79,12 @@ class FaqsController extends AbstractController
      * Ce contrôleur a pour but de supprimer une Faq
      * Il est appelé lorsqu'un utilisateur clique sur le bouton Supprimer du Mode-Edit.
      */
-    #[Route('/faqs/delete/{id<\d+>}', name: 'app_faqs_delete')]
-    public function delete(EntityManagerInterface $entityManager, FaqsRepository $repo, Faqs $faq): Response
-    {
+    #[Route('/faqs/delete/{id_faq<\d+>}', name: 'app_faqs_delete')]
+    public function delete(
+        EntityManagerInterface $entityManager,
+        FaqsRepository $repo,
+        #[MapEntity(id: 'id_faq')] Faqs $faq
+    ): Response {
         $entityManager->remove($faq);
         $entityManager->flush();
 
@@ -87,9 +96,11 @@ class FaqsController extends AbstractController
      * Pour ça l'utilisateur appuie sur le bouton Run du Mode-Run
      * Ensuite il appuie sur le bouton Suivant.
      */
-    #[Route('/faqs/run/{id<\d+>}', name: 'app_faqs_run')]
-    public function run(CouplesRepository $repo, Faqs $faq): Response
-    {
+    #[Route('/faqs/run/{id_faq<\d+>}', name: 'app_faqs_run')]
+    public function run(
+        CouplesRepository $repo,
+        #[MapEntity(id: 'id_faq')] Faqs $faq
+    ): Response {
         $couple = $repo->findNextSelectRun($faq);
 
         $nbTodoRun = $repo->countTodoRun($faq);
@@ -113,9 +124,11 @@ class FaqsController extends AbstractController
      * Pour ça l'utilisateur appuie sur le bouton Run Review du Mode-Run
      * Ensuite il appuie sur le bouton Suivant.
      */
-    #[Route('/faqs/review/{id<\d+>}', name: 'app_faqs_review')]
-    public function review(CouplesRepository $repo, Faqs $faq): Response
-    {
+    #[Route('/faqs/review/{id_faq<\d+>}', name: 'app_faqs_review')]
+    public function review(
+        CouplesRepository $repo,
+        #[MapEntity(id: 'id_faq')] Faqs $faq
+    ): Response {
         $couple = $repo->findNextSelectReview($faq);
 
         $nbTodoRun = $repo->countTodoRun($faq);
@@ -136,9 +149,12 @@ class FaqsController extends AbstractController
 
     /**
      */
-    #[Route('/faqs/next-run/{id<\d+>}', name: 'app_faqs_next_run')]
-    public function nextRun(CouplesRepository $repo, EntityManagerInterface $em, Faqs $faq): Response
-    {
+    #[Route('/faqs/next-run/{id_faq<\d+>}', name: 'app_faqs_next_run')]
+    public function nextRun(
+        CouplesRepository $repo,
+        EntityManagerInterface $em,
+        #[MapEntity(id: 'id_faq')] Faqs $faq
+    ): Response {
 
         $couple = $repo->findNextSelectRun($faq);
 
@@ -153,14 +169,17 @@ class FaqsController extends AbstractController
         $em->flush();
 
         // On redirige
-        return $this->redirectToRoute('app_faqs_run', ['id' => $faq->getId()]);
+        return $this->redirectToRoute('app_faqs_run', ['id_faq' => $faq->getId()]);
     }
 
     /**
      */
-    #[Route('/faqs/next-review/{id<\d+>}', name: 'app_faqs_next_review')]
-    public function nextReview(CouplesRepository $repo, EntityManagerInterface $em, Faqs $faq): Response
-    {
+    #[Route('/faqs/next-review/{id_faq<\d+>}', name: 'app_faqs_next_review')]
+    public function nextReview(
+        CouplesRepository $repo,
+        EntityManagerInterface $em,
+        #[MapEntity(id: 'id_faq')] Faqs $faq
+    ): Response {
 
         $couple = $repo->findNextSelectReview($faq);
         if ($couple !== null) {
@@ -174,7 +193,7 @@ class FaqsController extends AbstractController
         }
         $em->flush();
         // On redirige
-        return $this->redirectToRoute('app_faqs_review', ['id' => $faq->getId()]);
+        return $this->redirectToRoute('app_faqs_review', ['id_faq' => $faq->getId()]);
     }
 
 
@@ -182,9 +201,12 @@ class FaqsController extends AbstractController
      * Ce contrôleur est appelé lorsqu'un utilisateur appuie sur le bouton Restart
      * Il met à 1 tous les booléens todoRun et todoReview de la Faqs passée en argument.
      */
-    #[Route('/faqs/restart/{id<\d+>}', name: 'app_faqs_restart')]
-    public function restart(CouplesRepository $repo, Faqs $faq, Request $request): Response
-    {
+    #[Route('/faqs/restart/{id_faq<\d+>}', name: 'app_faqs_restart')]
+    public function restart(
+        CouplesRepository $repo,
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
+        Request $request
+    ): Response {
         $data = json_decode($request->getContent(), true);
         $token = $data['_token'];
 
@@ -215,9 +237,12 @@ class FaqsController extends AbstractController
      * Ce controlleur est appelé losqu'un utilisateur appuie sur le bouton 'Reset Review'
      * Il met à 0 tous les booléens selectReview des couples qui sont dans la liste des review cad bouton 'A Revoir'.
      */
-    #[Route('/faqs/reset-review/{id<\d+>}', name: 'app_faqs_reset_review')]
-    public function reset_review(CouplesRepository $repo, Faqs $faq, Request $request): Response
-    {
+    #[Route('/faqs/reset-review/{id_faq<\d+>}', name: 'app_faqs_reset_review')]
+    public function reset_review(
+        CouplesRepository $repo,
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
+        Request $request
+    ): Response {
         // On récupère le jeton CSRF
         $data = json_decode($request->getContent(), true);
         $token = $data['_token'];

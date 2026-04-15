@@ -26,8 +26,8 @@
 								<td>{{ rule.name }}</td>
 								<td>{{ rule.content }}</td>
 								<td>
-									<a class='btn btn-primary' href="{{ path('app_rules_show', {'id': rule.id}) }}">show</a>
-									<a class='btn btn-primary' href="{{ path('app_rules_edit', {'id': rule.id}) }}">edit</a>
+									<a class='btn btn-primary' href="{{ path('app_rules_show', {'id_faq': faq.id,'id_rule': rule.id}) }}">show</a>
+									<a class='btn btn-primary' href="{{ path('app_rules_edit', {'id_faq': faq.id,'id_rule': rule.id}) }}">edit</a>
 								</td>
 							</tr>
 						{% else %}
@@ -38,7 +38,7 @@
 					</tbody>
 				</table>
 
-				<a class='btn btn-primary' href="{{ path('app_rules_new',{'id': faq.id}) }}">Création nouvelle règle</a>
+				<a class='btn btn-primary' href="{{ path('app_rules_new',{'id_faq': faq.id}) }}">Création nouvelle règle</a>
 
 			</div>
 		</div>

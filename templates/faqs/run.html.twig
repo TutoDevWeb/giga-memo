@@ -33,7 +33,7 @@
 				</div>
 				{# Bouton Suivant #}
 				<div class="col-12 col-md-4 p-4">
-					<a class='btn btn-primary' href="{{ path('app_faqs_next_run',{ id : faq.id})}}">Suivant
+					<a class='btn btn-primary' href="{{ path('app_faqs_next_run',{ id_faq : faq.id})}}">Suivant
 						{#  #}
 						(<span id='nbSelectRun'>{{nbSelectRun}}</span>/<span id='nbTodoRun'>{{nbTodoRun - 1}}</span>)
 					</a>
@@ -53,7 +53,7 @@
 			)</div>
 
 		<div class="text-center mt-4">
-			<a class='btn btn-primary' href="{{ path('app_couples_update',{ from: 'run',id : couple.id})}}">Modifier</a>
+			<a class='btn btn-primary' href="{{ path('app_couples_update',{ 'from': 'run','id_faq' : faq.id, 'id_couple' : couple.id})}}">Modifier</a>
 		</div>
 
 	{% endif %}

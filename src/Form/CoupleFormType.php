@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Couples;
 use App\Entity\Faqs;
+use App\Entity\Rules;
 use App\Model\LayerTypeEnum;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -20,6 +21,12 @@ class CoupleFormType extends AbstractType
     {
         $builder
             ->add('num')
+            ->add('rules', EntityType::class, [
+                'class' => Rules::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => true,
+            ])
             ->add('question')
             ->add('reponse', TextareaType::class, [
                 'required' => false,

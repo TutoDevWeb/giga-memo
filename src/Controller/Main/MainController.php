@@ -5,6 +5,7 @@ namespace App\Controller\Main;
 use App\Entity\Faqs;
 use App\Repository\CouplesRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,9 +14,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class MainController extends AbstractController
 {
-    #[Route('/{id<\d+>?}', name: 'app_main_index')]
-    public function index(Request $request,?Faqs $faq): Response
-    {
+    #[Route('/{id_faq<\d+>?}', name: 'app_main_index')]
+    public function index(
+        Request $request,
+        #[MapEntity(id: 'id_faq')] ?Faqs $faq
+    ): Response {
 
         $form = $this->createFormBuilder()
             ->add('faq', EntityType::class, [
@@ -35,12 +38,12 @@ class MainController extends AbstractController
             $faq_id = $form->getData()['faq']->getId();
 
             if ($form->get('run')->isClicked()) {
-                return $this->redirectToRoute('app_main_run', ['id' => $faq_id]);
+                return $this->redirectToRoute('app_main_run', ['id_faq' => $faq_id]);
             }
 
 
             if ($form->get('edit')->isClicked()) {
-                return $this->redirectToRoute('app_main_edit', ['id' => $faq_id]);
+                return $this->redirectToRoute('app_main_edit', ['id_faq' => $faq_id]);
             }
         }
 
@@ -50,9 +53,12 @@ class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/mode-run/{id<\d+>}', name: 'app_main_run')]
-    public function run(CouplesRepository $repo, Request $request, Faqs $faq): Response
-    {
+    #[Route('/mode-run/{id_faq<\d+>}', name: 'app_main_run')]
+    public function run(
+        CouplesRepository $repo,
+        Request $request,
+        #[MapEntity(id: 'id_faq')] Faqs $faq
+    ): Response {
 
 
         $nbTodoRun = $repo->countTodoRun($faq);
@@ -70,9 +76,10 @@ class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/mode-edit/{id<\d+>?}', name: 'app_main_edit')]
-    public function edit(Request $request, ?Faqs $faq): Response
-    {
+    #[Route('/mode-edit/{id_faq<\d+>?}', name: 'app_main_edit')]
+    public function edit(
+        #[MapEntity(id: 'id_faq')] ?Faqs $faq
+    ): Response {
 
         return $this->render('main/mode-edit.html.twig', [
             'ariane' => ['index' => true, 'edit' => true],

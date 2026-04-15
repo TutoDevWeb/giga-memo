@@ -49,10 +49,10 @@
 							</td>
 							<td>{{ couple.regle }}</td>
 							<td>
-								<a href="{{ path('app_couples_update', { from : 'list',id: couple.id }) }}" class="btn btn-primary">Modifier</a>
+								<a href="{{ path('app_couples_update', { 'from' : 'list','id_faq' : faq.id, 'id_couple': couple.id }) }}" class="btn btn-primary">Modifier</a>
 							</td>
 							<td>
-								<a href="{{ path('app_couples_delete', { id: couple.id }) }}" class="btn btn-primary">Supprimer</a>
+								<a href="{{ path('app_couples_delete', {'id_faq' : faq.id,'id_couple': couple.id }) }}" class="btn btn-primary">Supprimer</a>
 							</td>
 						</tr>
 					{% endfor %}
@@ -62,7 +62,7 @@
 			<p>Il n'y a pas de couple question/reponse dans cette Faq</p>
 		{% endif %}
 		<div class="my-4">
-			<a href="{{ path('app_couples_new', { id: faq.id }) }}" class="btn btn-primary">Créer un nouveau couple QR</a>
+			<a href="{{ path('app_couples_new', { 'id_faq': faq.id }) }}" class="btn btn-primary">Créer un nouveau couple QR</a>
 		</div>
 	</div>
 {% endblock %}

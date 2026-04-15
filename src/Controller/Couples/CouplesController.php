@@ -8,6 +8,7 @@ use App\Form\CoupleFormType;
 use App\Repository\CouplesRepository;
 use App\Service\PictureService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,9 +20,10 @@ class CouplesController extends AbstractController
     /**
      * Ce contrôleur sert à afficher la liste des couples qr d'une faq.
      */
-    #[Route('/couples/list-by-faq/{id<\d+>}', name: 'app_couples_list_by_faq')]
-    public function list_by_faq(CouplesRepository $repo, Faqs $faq): Response
-    {
+    #[Route('/couples/list-by-faq/{id_faq<\d+>}', name: 'app_couples_list_by_faq')]
+    public function list_by_faq(
+        #[MapEntity(id: 'id_faq')] Faqs $faq
+    ): Response {
 
         return $this->render('couples/list-by-faq.html.twig', [
             'ariane' => ['index' => true, 'edit' => true],
@@ -32,12 +34,12 @@ class CouplesController extends AbstractController
     /**
      * Ce contrôleur sert à créer un nouveau couple qr.
      */
-    #[Route('/couples/new/{id<\d+>}', name: 'app_couples_new')]
+    #[Route('/couples/new/{id_faq<\d+>}', name: 'app_couples_new')]
     public function new(
         EntityManagerInterface $entityManager,
         PictureService $pictureService,
         Request $request,
-        Faqs $faq,
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
 
         $nbCouple = count($faq->getCouples());
@@ -70,25 +72,31 @@ class CouplesController extends AbstractController
             // On les passe au service
             $pictureService->upload($entityManager, $couple, $images);
 
-            return $this->redirectToRoute('app_couples_list_by_faq', ['id' => $couple->getFaq()->getId()]);
+            return $this->redirectToRoute('app_couples_list_by_faq', ['id_faq' => $faq->getId()]);
         }
 
         return $this->render('couples/new.html.twig', [
             'ariane' => ['index' => true, 'edit' => true],
             'form' => $form,
-            'faq' => $couple->getFaq(),
+            'faq' => $faq,
         ]);
     }
 
     /**
      * Ce contrôleur sert à modifier un couple qr.
      */
-    #[Route('/couples/update/{from<run|review|list>}/{id<\d+>}', name: 'app_couples_update')]
-    public function update(EntityManagerInterface $entityManager, Request $request, string $from, Couples $couple, PictureService $pictureService): Response
-    {
+    #[Route('/couples/update/{from<run|review|list>}/{id_faq<\d+>}/{id_couple<\d+>}', name: 'app_couples_update')]
+    public function update(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        string $from,
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
+        #[MapEntity(id: 'id_couple')] Couples $couple,
+        PictureService $pictureService
+    ): Response {
 
         $form = $this->createForm(CoupleFormType::class, $couple, [
-            'layerType' => $couple->getFaq()->getLayerType(),
+            'layerType' => $faq->getLayerType(),
             'from' => $from
         ]);
 
@@ -107,31 +115,37 @@ class CouplesController extends AbstractController
             // On les passe au service
             $pictureService->upload($entityManager, $couple, $images);
 
-            $id_faq = $couple->getFaq()->getId();
+            $id_faq = $faq->getId();
 
             if ($from == 'review')
-                return $this->redirectToRoute('app_faqs_review', ['id' => $id_faq]);
+                return $this->redirectToRoute('app_faqs_review', ['id_faq' => $id_faq]);
 
             if ($from == 'run')
-                return $this->redirectToRoute('app_faqs_run', ['id' => $id_faq]);
+                return $this->redirectToRoute('app_faqs_run', ['id_faq' => $id_faq]);
 
             if ($from == 'list')
-                return $this->redirectToRoute('app_couples_list_by_faq', ['id' => $id_faq]);
+                return $this->redirectToRoute('app_couples_list_by_faq', ['id_faq' => $id_faq]);
         }
 
         return $this->render('couples/update.html.twig', [
             'ariane' => ['index' => true, 'edit' => true],
             'form' => $form,
             'couple' => $couple,
+            'faq' => $faq
         ]);
     }
 
     /**
      * Ce contrôleur sert à supprimer un couple qr.
      */
-    #[Route('/couples/delete/{id<\d+>}', name: 'app_couples_delete')]
-    public function delete(EntityManagerInterface $entityManager, Couples $couple, PictureService $picture, $id): Response
-    {
+    #[Route('/couples/delete/{id_faq<\d+>}/{id_couple<\d+>}', name: 'app_couples_delete')]
+    public function delete(
+        EntityManagerInterface $entityManager,
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
+        #[MapEntity(id: 'id_couple')] Couples $couple,
+        PictureService $picture,
+    ): Response {
+
         foreach ($couple->getImages() as $image) {
             $picture->delete($image);
         }
@@ -139,16 +153,20 @@ class CouplesController extends AbstractController
         $entityManager->remove($couple);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_couples_list_by_faq', ['id' => $couple->getFaq()->getId()]);
+        return $this->redirectToRoute('app_couples_list_by_faq', ['id_faq' => $faq->getId()]);
     }
 
     /**
      * Ce contrôleur sert à enregister un couple qr dans la sélection selectReview
      * Il est appelé lorsqu'un utilisateur appuie sur le bouton A Revoir en Run-normal.
      */
-    #[Route('/couples/set-one-review/{id<\d+>}', name: 'app_couples_set_one_review')]
-    public function set_one_review(EntityManagerInterface $entityManager, CouplesRepository $repo, Couples $couple, Request $request): Response
-    {
+    #[Route('/couples/set-one-review/{id_couple<\d+>}', name: 'app_couples_set_one_review')]
+    public function set_one_review(
+        EntityManagerInterface $entityManager,
+        CouplesRepository $repo,
+        #[MapEntity(id: 'id_couple')] Couples $couple,
+        Request $request
+    ): Response {
         $data = json_decode($request->getContent(), true);
         $token = $data['_token'];
 
@@ -183,9 +201,13 @@ class CouplesController extends AbstractController
      * Ce contrôleur sert à enlever un couple qr de la sélection selectReview
      * Il est appelé lorsqu'un utilisateur appuie sur le bouton Ne plus revoir en Run-Review.
      */
-    #[Route('/couples/cancel-one-review/{id<\d+>}', name: 'app_couples_cancel_one_review')]
-    public function cancel_one_review(EntityManagerInterface $entityManager, CouplesRepository $repo, Couples $couple, Request $request): Response
-    {
+    #[Route('/couples/cancel-one-review/{id_couple<\d+>}', name: 'app_couples_cancel_one_review')]
+    public function cancel_one_review(
+        EntityManagerInterface $entityManager,
+        CouplesRepository $repo,
+        #[MapEntity(id: 'id_couple')] Couples $couple,
+        Request $request
+    ): Response {
         $data = json_decode($request->getContent(), true);
         $token = $data['_token'];
 

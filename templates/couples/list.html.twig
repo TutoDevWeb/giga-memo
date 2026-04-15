@@ -26,10 +26,10 @@
 							<td>{{ couple.question }}</td>
 							<td>{{ couple.reponse }}</td>
 							<td>
-								<a href="{{ path('app_couples_update', { id: couple.id }) }}" class="btn btn-primary">Modifier</a>
+								<a href="{{ path('app_couples_update', { id_couple: couple.id }) }}" class="btn btn-primary">Modifier</a>
 							</td>
 							<td>
-								<a href="{{ path('app_couples_delete', { id: couple.id }) }}" class="btn btn-primary">Supprimer</a>
+								<a href="{{ path('app_couples_delete', { id_couple: couple.id }) }}" class="btn btn-primary">Supprimer</a>
 							</td>
 						</tr>
 					{% endfor %}
