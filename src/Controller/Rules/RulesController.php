@@ -99,7 +99,7 @@ final class RulesController extends AbstractController
     #[Route('/{id_faq<\d+>}/{id_rule<\d+>}', name: 'app_rules_delete', methods: ['POST'])]
     public function delete(
         Request $request,
-        #[MapEntity(id: 'id_faq')] Rules $faq,
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
         #[MapEntity(id: 'id_rule')] Rules $rule,
         EntityManagerInterface $entityManager
     ): Response {

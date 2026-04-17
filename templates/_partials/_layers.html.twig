@@ -4,11 +4,17 @@
 	{# Si c'est un affichage LAYER_ONE #}
 	{% if faq.layerType.name == 'LAYER_ONE' %}
 
+
+		{% for rule in couple.rules %}
+			<textarea class='form-control form-control-auto mt-4' spellcheck='false'>{{ rule.name }}</textarea>
+			<textarea class='form-control form-control-auto mt-4' spellcheck='false'>{{ rule.content }}</textarea>
+		{% endfor %}
+
 		{% if couple.regle is not null %}
-			<div>{{ couple.regle }}</div>
+			<div class='mt-4'>{{ couple.regle }}</div>
 		{% endif %}
 
-		<p>{{ couple.question }}</p>
+		<p class='mt-4'>{{ couple.question }}</p>
 
 		<p><input class='form-control text-center' type='text' size="100" maxlength="100" spellcheck='false'></p>
 

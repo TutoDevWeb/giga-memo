@@ -6,6 +6,7 @@ use App\Entity\Faqs;
 use App\Form\FaqFormType;
 use App\Repository\CouplesRepository;
 use App\Repository\FaqsRepository;
+use App\Service\PictureService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -82,9 +83,19 @@ class FaqsController extends AbstractController
     #[Route('/faqs/delete/{id_faq<\d+>}', name: 'app_faqs_delete')]
     public function delete(
         EntityManagerInterface $entityManager,
-        FaqsRepository $repo,
+        PictureService $pictureService,
         #[MapEntity(id: 'id_faq')] Faqs $faq
     ): Response {
+
+        // Ici il faut récupérer toutes les images et les effacer physiquement.
+        foreach ($faq->getCouples() as $couple) {
+            foreach ($couple->getImages() as $image) {
+                $pictureService->delete($image);
+            }
+        }
+
+        // Là il me suffit de supprimer la faq et il y a cascade des suppressions.
+        // => couples => (images et rules)
         $entityManager->remove($faq);
         $entityManager->flush();
 
@@ -101,6 +112,7 @@ class FaqsController extends AbstractController
         CouplesRepository $repo,
         #[MapEntity(id: 'id_faq')] Faqs $faq
     ): Response {
+
         $couple = $repo->findNextSelectRun($faq);
 
         $nbTodoRun = $repo->countTodoRun($faq);
@@ -129,6 +141,7 @@ class FaqsController extends AbstractController
         CouplesRepository $repo,
         #[MapEntity(id: 'id_faq')] Faqs $faq
     ): Response {
+
         $couple = $repo->findNextSelectReview($faq);
 
         $nbTodoRun = $repo->countTodoRun($faq);
@@ -182,6 +195,7 @@ class FaqsController extends AbstractController
     ): Response {
 
         $couple = $repo->findNextSelectReview($faq);
+
         if ($couple !== null) {
             $couple->setTodoReview(false);
             $em->flush();
