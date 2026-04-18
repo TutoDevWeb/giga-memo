@@ -30,3 +30,7 @@
 .darkred {
     color: darkred;
 }
+
+.hidden {
+    display: none;
+}
