@@ -13,58 +13,7 @@
 
 		<h1 class='text-center h3'>Modification d'un couple Question / Réponse</h1>
 
-		<div class=" form-control">
-			{{ form_start(form) }}
-
-			{# Champ num #}
-			{{ form_label(form.question, null, { 'label': 'Position','label_attr': {'class': 'mt-4'}}) }}
-			{{ form_widget(form.num) }}
-
-			{{ form_label(form.faq, null, { 'label': 'Sélectionner la Faq','label_attr': {'class': 'mt-4'}}) }}
-			{{ form_widget(form.faq, {'attr': {'class': 'form-select'}}) }}
-
-			{# Champ rules #}
-			{{ form_label(form.rules, null, { 'label': 'Rules','label_attr': {'class': 'mt-4'}}) }}
-			{{ form_widget(form.rules, { 'attr': {'class': 'mt-4'}}) }}
-
-			{# Champ régle #}
-			{% if couple.faq.layerType.name ==  'LAYER_ONE' %}
-				{{ form_label(form.regle, null, { 'label': 'Règle','label_attr': {'class': 'mt-4'}}) }}
-				{{ form_widget(form.regle) }}
-			{% endif %}
-
-
-			{# Champ question #}
-			{{ form_label(form.question, null, { 'label': 'Question','label_attr': {'class': 'mt-4'}}) }}
-			{{ form_widget(form.question,{'attr': {'class': 'form-control-auto'}}) }}
-
-			{# Champ réponse #}
-			{{ form_label(form.reponse, null, { 'label': 'Réponse','label_attr': {'class': 'mt-4'}}) }}
-			{{ form_widget(form.reponse,{'attr': {'class': 'form-control-auto'}}) }}
-
-			{# Saisie des images #}
-			{{ form_label(form.images, null, { 'label': 'Ajouter les images','label_attr': {'class': 'mt-4'}}) }}
-			{{ form_widget(form.images) }}
-
-			{% for image in couple.images %}
-
-				<div class="mt-5 ms-4">
-					<img src="{{ asset(image.name,'images_directory')}}" alt="mes images" width="250">
-					<a href="{{ path('couple_delete_image',{id:image.id})}}" class="btn btn-primary m-4" data-delete data-token={{ csrf_token('delete' ~ image.id)}}>Supprimer</a>
-				</div>
-
-			{% endfor %}
-
-
-			{# Bouton Créer #}
-			{{ form_widget(form.submit, { 'label': 'Modifier un couple question / réponse' , 'attr': {'class': 'btn
-		btn-primary my-4'}}
-			) }}
-
-			{{ form_errors(form) }}
-
-			{{ form_end(form) }}
-		</div>
+		{{ include('couples/_form.html.twig') }}
 
 	</div>
 

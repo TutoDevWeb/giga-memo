@@ -79,6 +79,7 @@ class CouplesController extends AbstractController
             'ariane' => ['index' => true, 'edit' => true],
             'form' => $form,
             'faq' => $faq,
+            'formType' => 'new',
         ]);
     }
 
@@ -105,6 +106,7 @@ class CouplesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $couple->setFaq($faq);
             $couple = $form->getData();
 
             $entityManager->persist($couple);
@@ -132,7 +134,8 @@ class CouplesController extends AbstractController
             'ariane' => ['index' => true, 'edit' => true],
             'form' => $form,
             'couple' => $couple,
-            'faq' => $faq
+            'faq' => $faq,
+            'formType' => 'update',
         ]);
     }
 

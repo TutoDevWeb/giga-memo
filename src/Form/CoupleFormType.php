@@ -55,7 +55,6 @@ class CoupleFormType extends AbstractType
             ->add('from', HiddenType::class, [
                 'mapped' => false
             ])
-            ->add('submit', SubmitType::class)
         ;
 
         if (LayerTypeEnum::LAYER_ONE == $options['layerType']) {

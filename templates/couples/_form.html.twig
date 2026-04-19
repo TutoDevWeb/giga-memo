@@ -1,0 +1,50 @@
+{{ form_start(form) }}
+
+{# Champ num #}
+{{ form_label(form.question, null, { 'label': 'Position','label_attr': {'class': 'mt-4'}}) }}
+{{ form_widget(form.num) }}
+
+{{ form_label(form.faq, null, { 'label': 'Sélectionner la Faq','label_attr': {'class': 'mt-4'}}) }}
+{{ form_widget(form.faq, {'attr': {'disabled': 'disabled'}}) }}
+
+{# Champ rules #}
+{{ form_label(form.rules, null, { 'label': 'Rules','label_attr': {'class': 'mt-4'}}) }}
+{{ form_widget(form.rules, { 'attr': {'class': 'mt-4'}}) }}
+
+{# Champ régle #}
+{% if faq.layerType.name ==  'LAYER_ONE' %}
+	{{ form_label(form.regle, null, { 'label': 'Régle','label_attr': {'class': 'mt-4'}}) }}
+	{{ form_widget(form.regle) }}
+{% endif %}
+
+{# Champ question #}
+{{ form_label(form.question, null, { 'label': 'Question','label_attr': {'class': 'mt-4'}}) }}
+{{ form_widget(form.question, { 'attr': {'class': 'form-control-auto mt-4'}}) }}
+
+{# Champ réponse #}
+{{ form_label(form.reponse, null, { 'label': 'Réponse','label_attr': {'class': 'mt-4'}}) }}
+{{ form_widget(form.reponse, { 'attr': {'class': 'form-control-auto mt-4'}}) }}
+
+{{ form_label(form.images, null, { 'label': 'Ajouter les images','label_attr': {'class': 'mt-4'}}) }}
+{{ form_widget(form.images) }}
+
+
+{% if formType == 'update' %}
+
+	{% for image in couple.images %}
+
+		<div class="mt-5 ms-4">
+			<img src="{{ asset(image.name,'images_directory')}}" alt="mes images" width="250">
+			<a href="{{ path('couple_delete_image',{id:image.id})}}" class="btn btn-primary m-4" data-delete data-token={{ csrf_token('delete' ~ image.id)}}>Supprimer</a>
+		</div>
+
+	{% endfor %}
+
+{% endif %}
+
+
+<button class="btn btn-primary mt-4">{{ button_label|default('Sauvegarder') }}</button>
+
+{{ form_errors(form) }}
+
+{{ form_end(form) }}
