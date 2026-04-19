@@ -4,15 +4,12 @@
 	Memo: Liste des questions / Réponses
 {% endblock %}
 
-{% block javascripts %}
-	<script defer src="{{asset('assets/js/modal.js')}}"></script>
-{% endblock %}
-
-{% block stylesheets %}
-	<link rel="stylesheet" href="{{asset('assets/css/modal.css')}}">
-{% endblock %}
-
 {% block body %}
+
+	<div class="image-preview-overlay" data-image-preview-target="container">
+		<img src="" alt="Aperçu" data-image-preview-target="image">
+	</div>
+
 	<div class="container">
 		<h1 class='text-center h3'>Liste des Questions / Réponses</h1>
 
@@ -39,11 +36,11 @@
 									<p>{{ couple.reponse }}</p>
 								{% endif %}
 
+
 								{% for image in couple.images %}
-									<div>
-										<a id='trigger-link-{{image.id }}' class='trigger-link' href="#">{{image.id }}</a><br>
-										<img id='floating-image-{{image.id }}' class='floating-image' src="{{asset(image.name,'images_directory')}}" alt="Image en survol">
-									</div>
+									<a href="#" class="preview-link" data-image-preview-url="{{ asset(image.name,'images_directory') }}" data-action="mouseenter->image-preview#show mouseleave->image-preview#hide">
+										{{image.id }}
+									</a>
 								{% endfor %}
 
 							</td>
@@ -69,5 +66,6 @@
 		<div class="my-4">
 			<a href="{{ path('app_couples_new', { 'id_faq': faq.id }) }}" class="btn btn-primary">Créer un nouveau couple QR</a>
 		</div>
+		<div style="height: 100vh;"></div>
 	</div>
 {% endblock %}
