@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 
 /* stimulusFetch: 'lazy' */
 export default class extends Controller {
-    static targets = ['input']
+    static targets = ["input", "image"]
 
 
     show(event) {
@@ -10,7 +10,17 @@ export default class extends Controller {
 
         console.log(this.inputTarget);
 
+        this.imageTargets.forEach(element => {
+            console.log(element);
+        });
+
         // On retire la classe
-        this.inputTarget.classList.remove('reponse-hide');
+        if (this.hasInputTarget) {
+            this.inputTarget.classList.remove('reponse-hide');
+        }
+
+        this.imageTargets.forEach(element => {
+            element.classList.remove('reponse-hide');
+        });
     }
 }

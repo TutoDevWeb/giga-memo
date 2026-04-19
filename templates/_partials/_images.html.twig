@@ -2,7 +2,7 @@
 {% if couple.images|length %}
 	<div class="container mt-4">
 		{% for image in couple.images %}
-			<div class="images reponse-hide mt-4">
+			<div data-answer-target="image" class="images reponse-hide mt-4">
 				<img src="{{ asset(image.name,'images_directory')}}" alt="...">
 			</div>
 		{% endfor %}

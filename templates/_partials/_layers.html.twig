@@ -1,42 +1,30 @@
-<div
-	class="container mt-4 text-center">
+<div class="container mt-4 text-center">
 
-	{# Si c'est un affichage LAYER_ONE #}
-	{% if faq.layerType.name == 'LAYER_ONE' %}
+	{% for rule in couple.rules %}
+		<div data-controller="toggle" data-toggle-hidden-class="hidden">
 
-		{% for rule in couple.rules %}
-			<div data-controller="toggle" data-toggle-hidden-class="hidden">
-
-				<div class='mt-4'>
-					<a href="#" data-action="click->toggle#toggle">{{ rule.name }}</a>
-				</div>
-
-				<div data-toggle-target="element" class="hidden">
-					<textarea class='form-control form-control-auto mt-4' spellcheck='false'>{{ rule.content }}</textarea>
-				</div>
+			<div class='mt-4'>
+				<a href="#" data-action="click->toggle#toggle">{{ rule.name }}</a>
 			</div>
-		{% endfor %}
 
-		{% if couple.regle is not null %}
-			<div class='mt-4'>{{ couple.regle }}</div>
-		{% endif %}
+			<div data-toggle-target="element" class="hidden">
+				<textarea class='form-control form-control-auto mt-4' spellcheck='false'>{{ rule.content }}</textarea>
+			</div>
+		</div>
+	{% endfor %}
 
-		<p class='mt-4'>{{ couple.question }}</p>
-
-		<p><input class='form-control text-center' type='text' size="100" maxlength="100" spellcheck='false'></p>
-
-		<p id='texte-reponse' data-answer-target='input' class='reponse-hide pb-4'>{{ couple.reponse }}</p>
-
+	{% if couple.regle is not null %}
+		<div class='mt-4'>{{ couple.regle }}</div>
 	{% endif %}
 
-	{# Si c'est un affichage LAYER_TWO #}
-	{% if faq.layerType.name == 'LAYER_TWO' %}
+	{# <p class='mt-4'>{{ couple.question }}</p> #}
+	<textarea class='form-control form-control-auto mt-4' spellcheck='false'>{{ couple.question }}</textarea>
 
-		<textarea class='form-control form-control-auto' spellcheck='false'>{{ couple.question }}</textarea>
+	{# <p><input class='form-control text-center' type='text' size="100" maxlength="100" spellcheck='false'></p> #}
+	<textarea class='form-control form-control-auto mt-4' spellcheck='false'></textarea>
 
-		<textarea class='form-control form-control-auto mt-4' spellcheck='false'></textarea>
+	{# <p id='texte-reponse' data-answer-target='input' class='reponse-hide pb-4'>{{ couple.reponse }}</p> #}
+	<textarea data-answer-target='input' class='form-control form-control-auto reponse-hide mt-4' spellcheck='false'>{{ couple.reponse }}</textarea>
 
-		<textarea id='texte-reponse' class='form-control form-control-auto reponse-hide mt-4' spellcheck='false'>{{ couple.reponse }}</textarea>
 
-	{% endif %}
 </div>
