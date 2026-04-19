@@ -17,14 +17,11 @@
 		<div class='mt-4'>{{ couple.regle }}</div>
 	{% endif %}
 
-	{# <p class='mt-4'>{{ couple.question }}</p> #}
 	<textarea class='form-control form-control-auto mt-4' spellcheck='false'>{{ couple.question }}</textarea>
 
-	{# <p><input class='form-control text-center' type='text' size="100" maxlength="100" spellcheck='false'></p> #}
 	<textarea class='form-control form-control-auto mt-4' spellcheck='false'></textarea>
 
-	{# <p id='texte-reponse' data-answer-target='input' class='reponse-hide pb-4'>{{ couple.reponse }}</p> #}
-	<textarea data-answer-target='input' class='form-control form-control-auto reponse-hide mt-4' spellcheck='false'>{{ couple.reponse }}</textarea>
+	<textarea data-answer-target='input' class='form-control form-control-auto hidden mt-4' spellcheck='false'>{{ couple.reponse }}</textarea>
 
 
 </div>

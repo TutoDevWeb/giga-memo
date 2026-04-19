@@ -16,11 +16,11 @@ export default class extends Controller {
 
         // On retire la classe
         if (this.hasInputTarget) {
-            this.inputTarget.classList.remove('reponse-hide');
+            this.inputTarget.classList.remove('hidden');
         }
 
         this.imageTargets.forEach(element => {
-            element.classList.remove('reponse-hide');
+            element.classList.remove('hidden');
         });
     }
 }

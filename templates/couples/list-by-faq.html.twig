@@ -17,7 +17,8 @@
 			<table class="table text-center">
 				<thead>
 					<tr>
-						<th>Numéro</th>
+						<th>Id</th>
+						<th>Position</th>
 						<th>Question</th>
 						<th>Réponse</th>
 						<th></th>
@@ -28,6 +29,8 @@
 				<tbody>
 					{% for couple in faq.couples %}
 						<tr>
+							<td class='idTable'>(*
+								{{couple.id}})</td>
 							<td>{{ couple.num }}</td>
 							<td>{{ couple.question }}</td>
 							<td>
@@ -54,7 +57,7 @@
 								<a href="{{ path('app_couples_update', { 'from' : 'list','id_faq' : faq.id, 'id_couple': couple.id }) }}" class="btn btn-primary">Modifier</a>
 							</td>
 							<td>
-								<a href="{{ path('app_couples_delete', {'id_faq' : faq.id,'id_couple': couple.id }) }}" class="btn btn-primary">Supprimer</a>
+								<a href="{{ path('app_couples_delete', {'id_faq' : faq.id,'id_couple': couple.id }) }}" class="btn btn-primary" onclick="return confirm('Etes vous sûr de vouloir supprimer ?');">Supprimer</a>
 							</td>
 						</tr>
 					{% endfor %}

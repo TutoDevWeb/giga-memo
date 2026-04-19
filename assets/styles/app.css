@@ -1,11 +1,3 @@
-.reponse-hide {
-    display: none;
-}
-
-.reponse-show {
-    display: block;
-}
-
 .btn-large {
     --bs-btn-padding-x: 3rem;
 }
@@ -16,11 +8,11 @@
 }
 
 /* Conteneur des images en mode run */
-.images {
+.image-container {
     text-align: center;
 }
 
-.images img {
+.image-container img {
     max-width: 100%;
     /* Ne dépasse jamais la largeur du parent */
     height: auto;
@@ -35,8 +27,24 @@
     display: none;
 }
 
-/* Survol des images */
+.idTable {
+    text-align: center;
+    font-style: italic;
+    font-size: 0.7em;
+}
+
+/* Survol des liens et previsualisation des images */
 /* Le conteneur de l'aperçu */
+
+.preview-link {
+    width: 50px;
+    display: inline-block;
+    padding: 0.2em;
+    margin: 0.1em;
+    text-decoration: none;
+    background-color: rgb(188, 188, 247);
+}
+
 .image-preview-overlay {
     position: fixed;
     /* Fixé par rapport à l'écran */

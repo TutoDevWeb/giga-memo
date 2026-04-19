@@ -48,13 +48,13 @@
 			</div>
 		</div>
 
-		<div class="text-center mt-4">(
-			{{couple.id}}
-			)</div>
-
 		<div class="text-center mt-4">
 			<a class='btn btn-primary' href="{{ path('app_couples_update',{ 'from': 'run','id_faq' : faq.id, 'id_couple' : couple.id})}}">Modifier</a>
 		</div>
+
+		<div class="idTable mt-4">(
+			{{couple.id}}
+			)</div>
 
 	{% endif %}
 {% endblock %}

@@ -13,17 +13,17 @@
 	{% if faq != null %}
 		<div class="container">
 			<div class="row text-center">
-				<div class="col-12 col-md-4 p-4">
+				<div class="col-12 col-md-3 p-4">
 					<a class='btn btn-primary' title='Voir la liste des QRs (Question/Réponse) de la Faq' href="{{path('app_couples_list_by_faq',{'id_faq' : faq.id})}}">Liste des QRs</a>
 				</div>
-				<div class="col-12 col-md-4 p-4">
+				<div class="col-12 col-md-3 p-4">
 					<a class='btn btn-primary' title='Voir la liste des Règles de la Faq' href="{{path('app_rules_index',{'id_faq' : faq.id})}}">Liste des règles</a>
 				</div>
-				<div class="col-12 col-md-4 p-4">
+				<div class="col-12 col-md-3 p-4">
 					<a class='btn btn-primary' title='Modifier la Faq' href="{{path('app_faqs_update',{'id_faq' : faq.id})}}">Modifier</a>
 				</div>
-				<div class="col-12 col-md-4 p-4">
-					<a class='btn btn-primary' title='Supprimer la Faq' href="{{path('app_faqs_delete',{'id_faq' : faq.id})}}">Supprimer</a>
+				<div class="col-12 col-md-3 p-4">
+					<a onclick="return confirm('Etes vous sûr de vouloir supprimer ?');" class='btn btn-primary' title='Supprimer la Faq' href="{{path('app_faqs_delete',{'id_faq' : faq.id})}}">Supprimer</a>
 				</div>
 			</div>
 		</div>

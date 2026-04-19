@@ -209,6 +209,7 @@ class CouplesController extends AbstractController
         #[MapEntity(id: 'id_couple')] Couples $couple,
         Request $request
     ): Response {
+
         $data = json_decode($request->getContent(), true);
         $token = $data['_token'];
 
