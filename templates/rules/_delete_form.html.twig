@@ -1,4 +1,4 @@
-<form method="post" action="{{ path('app_rules_delete', {'id_faq': faq.id,'id_rule': rule.id}) }}" onsubmit="return confirm('Etes vous sûr de vouloir supprimer ?');">
+<form class='inline-form' method="post" action="{{ path('app_rules_delete', {'id_faq': faq.id,'id_rule': rule.id}) }}" onsubmit="return confirm('Etes vous sûr de vouloir supprimer ?');">
 	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rule.id) }}">
-	<button class="btn btn-primary mt-4">Delete</button>
+	<button class="btn btn-primary">Supprimer la règle</button>
 </form>

@@ -8,31 +8,30 @@
 		<div class="row">
 			<div class="col">
 
-				<h1>Rules index</h1>
+				<h1 class='text-center h3'>Liste des Règles</h1>
+				<h2 class='text-center darkred h4'>{{ faq.name }}</h2>
 
-				<table class="table">
+				<table class="table text-center">
 					<thead>
 						<tr>
 							<th>Id</th>
 							<th>Name</th>
 							<th>Content</th>
-							<th>actions</th>
+							<th></th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for rule in faq.rules %}
 							<tr>
-								<td>{{ rule.id }}</td>
+								<td class='idTable'>(*{{ rule.id }})</td>
 								<td>{{ rule.name }}</td>
 								<td>{{ rule.content }}</td>
 								<td>
-									<div>
-										<a class='btn btn-primary' href="{{ path('app_rules_show', {'id_faq': faq.id,'id_rule': rule.id}) }}">show</a>
-									</div>
-									<div class='mt-4'>
-										<a class='btn btn-primary' href="{{ path('app_rules_edit', {'id_faq': faq.id,'id_rule': rule.id}) }}">edit</a>
-									</div>
+									<a class='btn btn-primary' href="{{ path('app_rules_edit', {'id_faq': faq.id,'id_rule': rule.id}) }}">Modifier la règle</a>
 								</td>
+								<td>
+									{{ include('rules/_delete_form.html.twig') }}</td>
 							</tr>
 						{% else %}
 							<tr>
@@ -42,7 +41,7 @@
 					</tbody>
 				</table>
 
-				<a class='btn btn-primary' href="{{ path('app_rules_new',{'id_faq': faq.id}) }}">Création nouvelle règle</a>
+				<a class='btn btn-primary' href="{{ path('app_rules_new',{'id_faq': faq.id}) }}">Créer une nouvelle règle</a>
 
 			</div>
 		</div>

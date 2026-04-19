@@ -33,6 +33,13 @@
     font-size: 0.7em;
 }
 
+/* formulaire in-line pour les actions delete */
+.inline-form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
 /* Survol des liens et previsualisation des images */
 /* Le conteneur de l'aperçu */
 

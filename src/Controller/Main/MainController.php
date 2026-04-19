@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Form\SubmitButton;
 
 class MainController extends AbstractController
 {
@@ -37,13 +38,19 @@ class MainController extends AbstractController
 
             $faq_id = $form->getData()['faq']->getId();
 
-            if ($form->get('run')->isClicked()) {
-                return $this->redirectToRoute('app_main_run', ['id_faq' => $faq_id]);
+            // InstanceOf car sinon j'ai une erreur intelephense au ->isCliked() et il y en a partout !!
+            $runButton = $form->get('run');
+            if ($runButton instanceof SubmitButton) {
+                if ($runButton->isClicked()) {
+                    return $this->redirectToRoute('app_main_run', ['id_faq' => $faq_id]);
+                }
             }
 
-
-            if ($form->get('edit')->isClicked()) {
-                return $this->redirectToRoute('app_main_edit', ['id_faq' => $faq_id]);
+            $editButton = $form->get('edit');
+            if ($editButton instanceof SubmitButton) {
+                if ($editButton->isClicked()) {
+                    return $this->redirectToRoute('app_main_edit', ['id_faq' => $faq_id]);
+                }
             }
         }
 

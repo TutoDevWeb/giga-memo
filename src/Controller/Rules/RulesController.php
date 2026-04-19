@@ -15,12 +15,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/rules')]
 final class RulesController extends AbstractController
 {
-    #[Route('/{id_faq<\d+>}', name: 'app_rules_index', methods: ['GET'])]
-    public function index(
+    #[Route('/list-by-faq/{id_faq<\d+>}', name: 'app_rules_list_by_faq', methods: ['GET'])]
+    public function list_by_faq(
         #[MapEntity(id: 'id_faq')] Faqs $faq
     ): Response {
 
-        return $this->render('rules/index.html.twig', [
+        return $this->render('rules/list-by-faq.html.twig', [
             'ariane' => ['index' => true, 'edit' => true],
             'faq' => $faq
         ]);
@@ -45,7 +45,7 @@ final class RulesController extends AbstractController
             $entityManager->persist($rule);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_rules_index', ['id_faq' => $faq->getId()]);
+            return $this->redirectToRoute('app_rules_list_by_faq', ['id_faq' => $faq->getId()]);
         }
 
         return $this->render('rules/new.html.twig', [
@@ -85,7 +85,7 @@ final class RulesController extends AbstractController
             $rule = $form->getData();
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_rules_index', ['id_faq' => $faq->getId()]);
+            return $this->redirectToRoute('app_rules_list_by_faq', ['id_faq' => $faq->getId()]);
         }
 
         return $this->render('rules/edit.html.twig', [
@@ -108,6 +108,6 @@ final class RulesController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_rules_index', ['id_faq' => $faq->getId()]);
+        return $this->redirectToRoute('app_rules_list_by_faq', ['id_faq' => $faq->getId()]);
     }
 }
