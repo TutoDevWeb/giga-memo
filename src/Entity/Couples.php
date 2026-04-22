@@ -22,7 +22,7 @@ class Couples
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'couple')]
+    #[ORM\ManyToOne(inversedBy: 'couples')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Faqs $faq = null;
 
@@ -32,16 +32,16 @@ class Couples
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $reponse = null;
 
-    #[ORM\Column(options: ['default' => 'true'])]
-    private ?bool $todoRun = null;
+    #[ORM\Column(options: ['default' => true])]
+    private ?bool $todoRun = true;
 
-    #[ORM\Column(options: ['default' => 'true'])]
-    private ?bool $todoReview = null;
+    #[ORM\Column(options: ['default' => true])]
+    private ?bool $todoReview = true;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $regle = null;
 
-    #[ORM\Column(options: ['default' => 'false'])]
+    #[ORM\Column(options: ['default' => false])]
     private ?bool $selectReview = null;
 
     /**
