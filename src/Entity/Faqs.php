@@ -42,6 +42,9 @@ class Faqs
     #[ORM\OneToMany(targetEntity: Rules::class, mappedBy: 'faq', orphanRemoval: true)]
     private Collection $rules;
 
+    #[ORM\ManyToOne(inversedBy: 'faqs')]
+    private ?Categories $category = null;
+
     public function __construct()
     {
         $this->couples = new ArrayCollection();
@@ -158,6 +161,18 @@ class Faqs
                 $rule->setFaq(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?Categories
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Categories $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
