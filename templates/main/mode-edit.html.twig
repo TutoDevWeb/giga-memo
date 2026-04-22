@@ -23,7 +23,7 @@
 					<a class='btn btn-primary' title='Modifier la Faq' href="{{path('app_faqs_update',{'id_faq' : faq.id})}}">Modifier la Faq</a>
 				</div>
 				<div class="col-12 col-md-3 p-4">
-					<a onclick="return confirm('Etes vous sûr de vouloir supprimer ?');" class='btn btn-primary' title='Supprimer la Faq' href="{{path('app_faqs_delete',{'id_faq' : faq.id})}}">Supprimer la Faq</a>
+					{{ include ("faqs/_delete_form.html.twig") }}
 				</div>
 			</div>
 		</div>

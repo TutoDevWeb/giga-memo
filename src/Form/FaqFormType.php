@@ -17,7 +17,13 @@ class FaqFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class)
+            ->add(
+                'name',
+                TextType::class,
+                [
+                    'empty_data' => '' // Une chaine vide ne sera pas transformée en null. Elle reste vide et est filtrée au NotBlank.
+                ]
+            )
             ->add(
                 'layerType',
                 EnumType::class,
@@ -37,8 +43,7 @@ class FaqFormType extends AbstractType
                 'labels' => [
                     'minutes' => 'Minutes',
                 ],
-            ])
-            ->add('submit', SubmitType::class);
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

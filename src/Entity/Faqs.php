@@ -6,6 +6,7 @@ use App\Model\LayerTypeEnum;
 use App\Repository\FaqsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FaqsRepository::class)]
@@ -16,6 +17,7 @@ class Faqs
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: 'faqRequired')]
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 

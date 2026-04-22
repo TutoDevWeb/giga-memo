@@ -11,25 +11,10 @@
 
 		<div class="row  justify-content-center text-center">
 			<div class="col-12 col-md-8">
-				{{ form_start(form) }}
 
-				{# Champ Texte du Nom #}
-				{{ form_label(form.name, null, { 'label': 'Nom', 'label_attr': {'class': 'mt-4'}}) }}
-				{{ form_widget(form.name) }}
-				{{ form_help(form.name) }}
-				{{ form_errors(form.name) }}
+				{{ include ("faqs/_form.html.twig" , {'button_label': 'Modifier'}) }}
 
-				{# Choix du layer_type #}
-				{{ form_label(form.layerType, null, { 'label': 'Choisir le type de Layer', 'label_attr': {'class': 'mt-4'} }) }}
-				{{ form_widget(form.layerType) }}
 
-				{# Champ duré #}
-				{{ form_widget(form.duration,{ 'attr': {'class': 'mt-4'}}) }}
-
-				{# Bouton Modifier #}
-				{{ form_widget(form.submit, { 'label': 'Modifier une faq' , 'attr': {'class': 'btn-primary mt-4'}}) }}
-
-				{{ form_end(form) }}
 			</div>
 		</div>
 

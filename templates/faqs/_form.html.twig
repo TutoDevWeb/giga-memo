@@ -1,0 +1,23 @@
+{# {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }} #}
+
+{{ form_start(form) }}
+
+{# Champ Texte du Nom #}
+{{ form_label(form.name, null, { 'label': 'Nom', 'label_attr': {'class': 'mt-4'} }) }}
+{{ form_widget(form.name) }}
+{{ form_help(form.name) }}
+{{ form_errors(form.name) }}
+
+{# Choix du layer_type #}
+{{ form_label(form.layerType, null, { 'label': 'Choisir le type de Layer', 'label_attr': {'class': 'mt-4'} }) }}
+{{ form_widget(form.layerType) }}
+
+{# Champ duré #}
+{{ form_widget(form.duration,{ 'attr': {'class': 'mt-4'}}
+) }}
+
+{# Bouton Créer ou Modifier #}
+<button class="btn btn-primary my-4">
+	{{ button_label }}</button>
+
+{{ form_end(form) }}

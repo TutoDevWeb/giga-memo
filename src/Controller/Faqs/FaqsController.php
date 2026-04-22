@@ -52,10 +52,10 @@ class FaqsController extends AbstractController
     #[Route('/faqs/update/{id_faq<\d+>}', name: 'app_faqs_update')]
     public function update(
         EntityManagerInterface $entityManager,
-        FaqsRepository $repo,
         Request $request,
         #[MapEntity(id: 'id_faq')] Faqs $faq
     ): Response {
+
         $form = $this->createForm(FaqFormType::class, $faq);
 
         $form->handleRequest($request);
@@ -84,20 +84,24 @@ class FaqsController extends AbstractController
     public function delete(
         EntityManagerInterface $entityManager,
         PictureService $pictureService,
-        #[MapEntity(id: 'id_faq')] Faqs $faq
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
+        Request $request
     ): Response {
 
-        // Ici il faut récupérer toutes les images et les effacer physiquement.
-        foreach ($faq->getCouples() as $couple) {
-            foreach ($couple->getImages() as $image) {
-                $pictureService->delete($image);
-            }
-        }
+        if ($this->isCsrfTokenValid('delete' . $faq->getId(), $request->getPayload()->getString('_token'))) {
 
-        // Là il me suffit de supprimer la faq et il y a cascade des suppressions.
-        // => couples => (images et rules)
-        $entityManager->remove($faq);
-        $entityManager->flush();
+            // Ici il faut récupérer toutes les images et les effacer physiquement.
+            foreach ($faq->getCouples() as $couple) {
+                foreach ($couple->getImages() as $image) {
+                    $pictureService->delete($image);
+                }
+            }
+
+            // Là il me suffit de supprimer la faq et il y a cascade des suppressions.
+            // => couples => (images et rules)
+            $entityManager->remove($faq);
+            $entityManager->flush();
+        }
 
         return $this->redirectToRoute('app_main_index');
     }
