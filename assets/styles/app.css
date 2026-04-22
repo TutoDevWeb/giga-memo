@@ -2,6 +2,15 @@
     --bs-btn-padding-x: 3rem;
 }
 
+a.ariane {
+    color: maroon;
+}
+
+a.ariane:hover {
+    text-decoration: none;
+}
+
+
 .form-control-auto {
     field-sizing: content;
     resize: none;
@@ -27,10 +36,23 @@
     display: none;
 }
 
+/* les div qui sont sur l'accueil des modes run */
+.div_run {
+    background-color: rgb(233, 253, 253);
+    border: 2px solid rgb(29, 29, 139);
+}
+
+/* Le style des id en database */
 .idTable {
     text-align: center;
     font-style: italic;
     font-size: 0.7em;
+}
+
+/* Font pour titre Question / Réponses */
+.font-qr {
+    font-size: 0.6em;
+    font-style: italic;
 }
 
 /* formulaire in-line pour les actions delete */

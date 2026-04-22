@@ -11,7 +11,9 @@
 	</div>
 
 	<div class="container">
-		<h1 class='text-center h3'>Liste des Questions / Réponses</h1>
+		<h1 class='text-center h3'>Liste des QRs
+			<span class='font-qr'>(* Questions / Réponses)</span>
+		</h1>
 		<h2 class='text-center darkred h4'>{{ faq.name }}</h2>
 
 		{% if (faq.couples|length) != 0 %}
@@ -25,13 +27,13 @@
 						<th></th>
 						<th></th>
 						<th></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for couple in faq.couples %}
 						<tr>
-							<td class='idTable'>(*
-								{{couple.id}})</td>
+							<td class='idTable'>(*&nbsp;{{couple.id}})</td>
 							<td>{{ couple.num }}</td>
 							<td>{{ couple.question }}</td>
 							<td>
@@ -48,17 +50,17 @@
 								{% endfor %}
 
 							</td>
-							{# <td>{{ couple.regle }}</td> #}
+							<td>{{couple.regle}}</td>
 							<td>
 								{% for rule in couple.rules %}
 									{{ rule.name }}
 								{% endfor %}
 							</td>
 							<td>
-								<a href="{{ path('app_couples_update', { 'from' : 'list','id_faq' : faq.id, 'id_couple': couple.id }) }}" class="btn btn-primary">Modifier</a>
+								<a href="{{ path('app_couples_update', { 'from' : 'list','id_faq' : faq.id, 'id_couple': couple.id }) }}" class="btn btn-primary">Modifier le QR</a>
 							</td>
 							<td>
-								<a href="{{ path('app_couples_delete', {'id_faq' : faq.id,'id_couple': couple.id }) }}" class="btn btn-primary" onclick="return confirm('Etes vous sûr de vouloir supprimer ?');">Supprimer</a>
+								{% include "couples/_delete_form.html.twig" %}
 							</td>
 						</tr>
 					{% endfor %}

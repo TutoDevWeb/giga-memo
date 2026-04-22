@@ -9,15 +9,15 @@
 	<div class="container">
 		<div class="row my-4 text-center">
 
-			{{ form_label(form.faq, null, { 'label': 'Choisir la Faq','label_attr': {'class':'mt-4'}}) }}
+			{{ form_label(form.faq, null, { 'label': 'Choisir la faq','label_attr': {'class':'mt-4'}}) }}
 
 			{{ form_widget(form.faq) }}
 
 			<div class="col-12 col-md-6 p-4">
-				{{ form_widget(form.run,{ 'label': 'Run Faq' ,'attr': {'class': 'btn-primary btn-large mt-4'}}) }}
+				{{ form_widget(form.run,{ 'label': 'Accéder aux modes run de la faq' ,'attr': {'class': 'btn-primary btn-large mt-4'}}) }}
 			</div>
 			<div class="col-12 col-md-6 p-4">
-				{{ form_widget(form.edit,{ 'label': 'Edit Faq' ,'attr': {'class': 'btn-primary btn-large mt-4'}}) }}
+				{{ form_widget(form.edit,{ 'label': 'Editer la faq' ,'attr': {'class': 'btn-primary btn-large mt-4'}}) }}
 			</div>
 
 			{{ form_errors(form) }}

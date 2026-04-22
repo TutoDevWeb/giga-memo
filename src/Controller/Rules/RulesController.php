@@ -21,7 +21,7 @@ final class RulesController extends AbstractController
     ): Response {
 
         return $this->render('rules/list-by-faq.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true],
+            'ariane' => ['index' => true, 'edit' => true, 'list_by_faq' => 'rule'],
             'faq' => $faq
         ]);
     }
@@ -56,17 +56,6 @@ final class RulesController extends AbstractController
         ]);
     }
 
-    #[Route('/show/{id_faq<\d+>}/{id_rule<\d+>}', name: 'app_rules_show', methods: ['GET'])]
-    public function show(
-        #[MapEntity(id: 'id_faq')] Faqs $faq,
-        #[MapEntity(id: 'id_rule')] Rules $rule
-    ): Response {
-        return $this->render('rules/show.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true],
-            'rule' => $rule,
-            'faq' => $faq
-        ]);
-    }
 
     #[Route('/edit/{id_faq<\d+>}/{id_rule<\d+>}', name: 'app_rules_edit', methods: ['GET', 'POST'])]
     public function edit(
@@ -89,14 +78,14 @@ final class RulesController extends AbstractController
         }
 
         return $this->render('rules/edit.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true],
+            'ariane' => ['index' => true, 'edit' => true, 'update' => 'rule'],
             'rule' => $rule,
             'form' => $form,
             'faq' => $faq,
         ]);
     }
 
-    #[Route('/{id_faq<\d+>}/{id_rule<\d+>}', name: 'app_rules_delete', methods: ['POST'])]
+    #[Route('/delete/{id_faq<\d+>}/{id_rule<\d+>}', name: 'app_rules_delete', methods: ['POST'])]
     public function delete(
         Request $request,
         #[MapEntity(id: 'id_faq')] Faqs $faq,

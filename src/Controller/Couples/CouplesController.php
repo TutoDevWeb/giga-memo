@@ -26,7 +26,7 @@ class CouplesController extends AbstractController
     ): Response {
 
         return $this->render('couples/list-by-faq.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true],
+            'ariane' => ['index' => true, 'edit' => true, 'list_by_faq' => 'couple'],
             'faq' => $faq
         ]);
     }
@@ -131,7 +131,7 @@ class CouplesController extends AbstractController
         }
 
         return $this->render('couples/update.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true],
+            'ariane' => ['index' => true, 'edit' => true, 'update' => 'couple'],
             'form' => $form,
             'couple' => $couple,
             'faq' => $faq,
@@ -148,14 +148,18 @@ class CouplesController extends AbstractController
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         #[MapEntity(id: 'id_couple')] Couples $couple,
         PictureService $picture,
+        Request $request
     ): Response {
 
-        foreach ($couple->getImages() as $image) {
-            $picture->delete($image);
-        }
+        if ($this->isCsrfTokenValid('delete' . $couple->getId(), $request->getPayload()->getString('_token'))) {
 
-        $entityManager->remove($couple);
-        $entityManager->flush();
+            foreach ($couple->getImages() as $image) {
+                $picture->delete($image);
+            }
+
+            $entityManager->remove($couple);
+            $entityManager->flush();
+        }
 
         return $this->redirectToRoute('app_couples_list_by_faq', ['id_faq' => $faq->getId()]);
     }
