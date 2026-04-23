@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Categories
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+		<div class="row">
+			<div class="col">
+
+				<h1>Modifier une categorie</h1>
+
+				{{ include('categories/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

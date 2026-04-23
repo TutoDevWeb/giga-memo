@@ -8,6 +8,12 @@
 {{ form_help(form.name) }}
 {{ form_errors(form.name) }}
 
+{# Champ Category #}
+{{ form_label(form.category, null, { 'label': 'Categorie', 'label_attr': {'class': 'mt-4'} }) }}
+{{ form_widget(form.category) }}
+{{ form_help(form.category) }}
+{{ form_errors(form.category) }}
+
 {# Choix du layer_type #}
 {{ form_label(form.layerType, null, { 'label': 'Choisir le type de Layer', 'label_attr': {'class': 'mt-4'} }) }}
 {{ form_widget(form.layerType) }}

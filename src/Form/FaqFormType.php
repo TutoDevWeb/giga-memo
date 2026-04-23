@@ -2,8 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\Categories;
 use App\Entity\Faqs;
 use App\Model\LayerTypeEnum;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
@@ -24,6 +26,10 @@ class FaqFormType extends AbstractType
                     'empty_data' => '' // Une chaine vide ne sera pas transformée en null. Elle reste vide et est filtrée au NotBlank.
                 ]
             )
+            ->add('category', EntityType::class, [
+                'class' => Categories::class,
+                'choice_label' => 'name',
+            ])
             ->add(
                 'layerType',
                 EnumType::class,
