@@ -14,10 +14,11 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/categories')]
 final class CategoriesController extends AbstractController
 {
-    #[Route(name: 'app_categories_index', methods: ['GET'])]
-    public function index(CategoriesRepository $categoriesRepository): Response
+    #[Route(name: 'app_categories_list', methods: ['GET'])]
+    public function list(CategoriesRepository $categoriesRepository): Response
     {
-        return $this->render('categories/index.html.twig', [
+        return $this->render('categories/list.html.twig', [
+            'ariane' => ['index' => true, 'category' => true],
             'categories' => $categoriesRepository->findAll(),
         ]);
     }
@@ -33,10 +34,11 @@ final class CategoriesController extends AbstractController
             $entityManager->persist($category);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_categories_list', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('categories/new.html.twig', [
+            'ariane' => ['index' => true, 'category' => true, 'create' => 'category'],
             'category' => $category,
             'form' => $form,
         ]);
@@ -46,6 +48,7 @@ final class CategoriesController extends AbstractController
     public function show(Categories $category): Response
     {
         return $this->render('categories/show.html.twig', [
+            'ariane' => ['index' => true, 'category' => true],
             'category' => $category,
         ]);
     }
@@ -59,10 +62,11 @@ final class CategoriesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_categories_list', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('categories/edit.html.twig', [
+            'ariane' => ['index' => true, 'category' => true, 'update' => 'category'],
             'category' => $category,
             'form' => $form,
         ]);
@@ -76,6 +80,6 @@ final class CategoriesController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_categories_list', [], Response::HTTP_SEE_OTHER);
     }
 }

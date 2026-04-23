@@ -40,7 +40,7 @@ class FaqsController extends AbstractController
         }
 
         return $this->render('faqs/new.html.twig', [
-            'ariane' => ['index' => true, 'create' => true],
+            'ariane' => ['index' => true, 'faq' => true, 'create' => true],
             'form' => $form,
         ]);
     }

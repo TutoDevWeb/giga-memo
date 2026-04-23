@@ -45,8 +45,20 @@
 		{% endif %}
 	{% endif %}
 
-	{% if ariane.create is defined and ariane.create == true %}
-		&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_faqs_new')}}">Creation faq</a>
+	{% if ariane.faq is defined and ariane.faq == true %}
+		{% if ariane.create is defined and ariane.create == true %}
+			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_faqs_new')}}">Creation faq</a>
+		{% endif %}
+	{% endif %}
+
+	{% if ariane.category is defined and ariane.category == true %}
+		&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_categories_list')}}">Gestion des catégories</a>
+		{% if ariane.update is defined and ariane.update == 'category' %}
+			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une catégorie
+		{% endif %}
+		{% if ariane.create is defined and ariane.create == 'category' %}
+			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer une catégorie
+		{% endif %}
 	{% endif %}
 
 
