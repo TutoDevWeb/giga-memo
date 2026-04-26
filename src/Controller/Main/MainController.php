@@ -3,11 +3,10 @@
 namespace App\Controller\Main;
 
 use App\Entity\Faqs;
+use App\Form\SelectFaqFormType;
 use App\Repository\CouplesRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -21,16 +20,7 @@ class MainController extends AbstractController
         #[MapEntity(id: 'id_faq')] ?Faqs $faq
     ): Response {
 
-        $form = $this->createFormBuilder()
-            ->add('faq', EntityType::class, [
-                'class' => Faqs::class,
-                'choice_label' => 'name',
-                'placeholder' => 'Choisir ... ',
-                'data' => $faq,
-            ])
-            ->add('run', SubmitType::class)
-            ->add('edit', SubmitType::class)
-            ->getForm();
+        $form = $this->createForm(SelectFaqFormType::class, null, ['faq' => $faq]);
 
         $form->handleRequest($request);
 

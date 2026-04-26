@@ -1,0 +1,4 @@
+<option value="">Sélectionnez une FAQ</option>
+{% for faq in faqs %}
+	<option value="{{ faq.id }}">{{ faq.name }}</option>
+{% endfor %}
