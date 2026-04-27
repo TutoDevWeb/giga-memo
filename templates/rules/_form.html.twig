@@ -9,7 +9,7 @@
 
 {# Champ content #}
 {{ form_label(form.content, null, { 'label': 'Enoncé de la règle','label_attr': {'class': 'mt-4'}}) }}
-{{ form_widget(form.content) }}
+{{ form_widget(form.content, {'attr': {'class': 'form-control-auto'}}) }}
 
 <button class="btn btn-primary mt-4">{{ button_label|default('Sauvegarder') }}</button>
 {{ form_end(form) }}
