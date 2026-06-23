@@ -12,8 +12,8 @@ a.ariane:hover {
 
 
 .form-control-auto {
-    field-sizing: content;
-    resize: none;
+    field-sizing: content !important;
+    resize: none !important;
 }
 
 /* Conteneur des images en mode run */
