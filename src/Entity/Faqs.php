@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\HasUserTrait;
 use App\Model\LayerTypeEnum;
 use App\Repository\FaqsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,6 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: FaqsRepository::class)]
 class Faqs
 {
+
+    use HasUserTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

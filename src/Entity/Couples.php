@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\HasUserTrait;
 use App\Repository\CouplesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CouplesRepository::class)]
 class Couples
 {
+
+    use HasUserTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
