@@ -6,6 +6,7 @@ use App\Entity\Faqs;
 use App\Form\FaqFormType;
 use App\Repository\CouplesRepository;
 use App\Repository\FaqsRepository;
+use App\Security\Voter\ResourceOwnerVoter;
 use App\Service\PictureService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -24,6 +25,7 @@ class FaqsController extends AbstractController
     #[Route('/faqs/new', name: 'app_faqs_new')]
     public function new(EntityManagerInterface $entityManager, Request $request): Response
     {
+
         $faq = new Faqs();
 
         $form = $this->createForm(FaqFormType::class, $faq);
@@ -32,6 +34,10 @@ class FaqsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $faq = $form->getData();
+
+            // 🔒 C'est ici que la magie opère :
+            // On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
+            $faq->setUser($this->getUser());
 
             $entityManager->persist($faq);
             $entityManager->flush();
@@ -55,6 +61,10 @@ class FaqsController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id_faq')] Faqs $faq
     ): Response {
+
+
+        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
+        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $faq);
 
         $form = $this->createForm(FaqFormType::class, $faq);
 
@@ -87,6 +97,9 @@ class FaqsController extends AbstractController
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         Request $request
     ): Response {
+
+        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
+        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $faq);
 
         if ($this->isCsrfTokenValid('delete' . $faq->getId(), $request->getPayload()->getString('_token'))) {
 

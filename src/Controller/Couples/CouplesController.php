@@ -6,6 +6,7 @@ use App\Entity\Couples;
 use App\Entity\Faqs;
 use App\Form\CoupleFormType;
 use App\Repository\CouplesRepository;
+use App\Security\Voter\ResourceOwnerVoter;
 use App\Service\PictureService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -53,6 +54,11 @@ class CouplesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // 🔒 C'est ici que la magie opère :
+            // On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
+            $couple->setUser($this->getUser());
+
             /*
              * Il faut refaire le set de la Faq car le champ faq est disabled dans le formulaire
              * Du coup on perd la valeur dans le $form->handleRequest()
@@ -95,6 +101,9 @@ class CouplesController extends AbstractController
         #[MapEntity(id: 'id_couple')] Couples $couple,
         PictureService $pictureService
     ): Response {
+
+        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
+        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $couple);
 
         $form = $this->createForm(CoupleFormType::class, $couple, [
             'layerType' => $faq->getLayerType(),
@@ -150,6 +159,10 @@ class CouplesController extends AbstractController
         PictureService $picture,
         Request $request
     ): Response {
+
+        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
+        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $couple);
+
 
         if ($this->isCsrfTokenValid('delete' . $couple->getId(), $request->getPayload()->getString('_token'))) {
 

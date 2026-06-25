@@ -3,21 +3,22 @@
 // src/Entity/Trait/HasUserTrait.php
 namespace App\Entity\Trait;
 
-use App\Entity\User;
+
+use App\Entity\Users;
 use Doctrine\ORM\Mapping as ORM;
 
 trait HasUserTrait
 {
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: Users::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    private ?Users $user = null;
 
-    public function getUser(): ?User
+    public function getUser(): ?Users
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(?Users $user): self
     {
         $this->user = $user;
 
