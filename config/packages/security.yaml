@@ -34,8 +34,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # 1. Protection de toutes les URLs de création (ex: /faq/new, /couple/new)
-        - { path: ^/[^/]+/new$, roles: ROLE_USER }
+        # 1. On laisse l'accès public à la page de login (à adapter selon ton URL réelle)
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        
+        # 2. Ensuite, on verrouille tout le reste du site
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:
