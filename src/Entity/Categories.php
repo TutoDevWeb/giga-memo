@@ -25,7 +25,7 @@ class Categories
     /**
      * @var Collection<int, Faqs>
      */
-    #[ORM\OneToMany(targetEntity: Faqs::class, mappedBy: 'category')]
+    #[ORM\OneToMany(targetEntity: Faqs::class, mappedBy: 'category', orphanRemoval: true)]
     private Collection $faqs;
 
     public function __construct()

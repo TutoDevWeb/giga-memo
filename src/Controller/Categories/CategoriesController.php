@@ -5,6 +5,7 @@ namespace App\Controller\Categories;
 use App\Entity\Categories;
 use App\Form\CategoriesType;
 use App\Repository\CategoriesRepository;
+use App\Security\Voter\ResourceOwnerVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +32,10 @@ final class CategoriesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
+            $category->setUser($this->getUser());
+
             $entityManager->persist($category);
             $entityManager->flush();
 
@@ -56,6 +61,10 @@ final class CategoriesController extends AbstractController
     #[Route('/{id}/edit', name: 'app_categories_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
     {
+
+        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
+        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $category);
+
         $form = $this->createForm(CategoriesType::class, $category);
         $form->handleRequest($request);
 
@@ -75,6 +84,10 @@ final class CategoriesController extends AbstractController
     #[Route('/{id}', name: 'app_categories_delete', methods: ['POST'])]
     public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
     {
+
+        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
+        $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $category);
+
         if ($this->isCsrfTokenValid('delete' . $category->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();

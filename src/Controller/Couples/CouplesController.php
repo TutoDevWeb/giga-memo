@@ -55,8 +55,7 @@ class CouplesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // 🔒 C'est ici que la magie opère :
-            // On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
+            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
             $couple->setUser($this->getUser());
 
             /*
@@ -76,7 +75,7 @@ class CouplesController extends AbstractController
             $images = $form->get('images')->getData();
 
             // On les passe au service
-            $pictureService->upload($entityManager, $couple, $images);
+            $pictureService->upload($entityManager, $couple, $images, $this->getUser());
 
             return $this->redirectToRoute('app_couples_list_by_faq', ['id_faq' => $faq->getId()]);
         }
@@ -161,8 +160,7 @@ class CouplesController extends AbstractController
     ): Response {
 
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
-        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $couple);
-
+        $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $couple);
 
         if ($this->isCsrfTokenValid('delete' . $couple->getId(), $request->getPayload()->getString('_token'))) {
 

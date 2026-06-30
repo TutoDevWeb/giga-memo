@@ -35,8 +35,7 @@ class FaqsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $faq = $form->getData();
 
-            // 🔒 C'est ici que la magie opère :
-            // On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
+            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
             $faq->setUser($this->getUser());
 
             $entityManager->persist($faq);
@@ -99,7 +98,7 @@ class FaqsController extends AbstractController
     ): Response {
 
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
-        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $faq);
+        $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $faq);
 
         if ($this->isCsrfTokenValid('delete' . $faq->getId(), $request->getPayload()->getString('_token'))) {
 

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Couples;
 use App\Entity\Images;
+use App\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -20,6 +21,7 @@ class PictureService
         EntityManagerInterface $entityManager,
         Couples $couple,
         array $uploadedFiles,
+        Users $user
     ): void {
         $idc = $couple->getId();
 
@@ -31,14 +33,14 @@ class PictureService
 
             if (false !== $mime && 'image/png' === $mime['mime']) {
                 // On donne un nouveau nom au fichier avant de le tranférer
-                $relFilename = $idc.'-'.md5(uniqid(rand(), true)).'.png';
+                $relFilename = $idc . '-' . md5(uniqid(rand(), true)) . '.png';
 
                 $absImagesDir = $this->params->get('images_directory');
 
                 $uploadedFile->move($absImagesDir, $relFilename);
 
                 // On teste que le fichier physique existe bien avant de mettre son nom en database
-                if (\file_exists($absImagesDir.$relFilename)) {
+                if (\file_exists($absImagesDir . $relFilename)) {
                     $image = new Images();
                     $image->setName($relFilename);
                     $couple->addImage($image);
@@ -52,6 +54,7 @@ class PictureService
 
     public function delete(
         Images $image,
+        Users $user
     ): bool {
         $success = true;
 
@@ -59,7 +62,7 @@ class PictureService
         $absImagesDir = $this->params->get('images_directory');
 
         // Noms des fichiers en absolu pour les image
-        $absImageFilename = $absImagesDir.$image->getName();
+        $absImageFilename = $absImagesDir . $image->getName();
 
         if (file_exists($absImageFilename)) {
             try {

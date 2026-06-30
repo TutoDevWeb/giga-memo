@@ -5,6 +5,7 @@ namespace App\Controller\Rules;
 use App\Entity\Faqs;
 use App\Entity\Rules;
 use App\Form\RulesType;
+use App\Security\Voter\ResourceOwnerVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,6 +40,8 @@ final class RulesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
+            $rule->setUser($this->getUser());
 
             $rule->setFaq($faq);
             $rule = $form->getData();
@@ -64,6 +67,9 @@ final class RulesController extends AbstractController
         #[MapEntity(id: 'id_rule')] Rules $rule,
         EntityManagerInterface $entityManager
     ): Response {
+
+        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
+        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $rule);
 
         $form = $this->createForm(RulesType::class, $rule);
         $form->handleRequest($request);
@@ -92,6 +98,10 @@ final class RulesController extends AbstractController
         #[MapEntity(id: 'id_rule')] Rules $rule,
         EntityManagerInterface $entityManager
     ): Response {
+
+        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
+        $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $rule);
+
         if ($this->isCsrfTokenValid('delete' . $rule->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($rule);
             $entityManager->flush();

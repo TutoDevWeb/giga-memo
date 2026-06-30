@@ -3,6 +3,7 @@
 namespace App\Controller\Images;
 
 use App\Entity\Images;
+use App\Security\Voter\ResourceOwnerVoter;
 use App\Service\PictureService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,6 +20,10 @@ final class DeleteImageController extends AbstractController
         Images $image,
         Request $request,
     ): JsonResponse {
+
+        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
+        $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $image);
+
         $data = json_decode($request->getContent(), true);
         $token = $data['_token'];
 
@@ -27,7 +32,7 @@ final class DeleteImageController extends AbstractController
             $entityManager->remove($image);
             $entityManager->flush();
 
-            $pictureService->delete($image);
+            $pictureService->delete($image, $this->getUser());
         } else {
             return new JsonResponse(['message' => 'KO']);
         }
