@@ -28,7 +28,9 @@ class FaqsController extends AbstractController
 
         $faq = new Faqs();
 
-        $form = $this->createForm(FaqFormType::class, $faq);
+        $form = $this->createForm(FaqFormType::class, $faq, [
+            'user' => $this->getUser(),
+        ]);
 
         $form->handleRequest($request);
 
@@ -65,7 +67,10 @@ class FaqsController extends AbstractController
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
         $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $faq);
 
-        $form = $this->createForm(FaqFormType::class, $faq);
+        $form = $this->createForm(FaqFormType::class, $faq, [
+            'user' => $this->getUser(),
+        ]);
+
 
         $form->handleRequest($request);
 

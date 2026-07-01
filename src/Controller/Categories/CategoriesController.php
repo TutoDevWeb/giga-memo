@@ -18,12 +18,19 @@ final class CategoriesController extends AbstractController
     #[Route(name: 'app_categories_list', methods: ['GET'])]
     public function list(CategoriesRepository $categoriesRepository): Response
     {
+        // On récupère l'utilisateur connecté
+        $user = $this->getUser();
+
+        // Sécurité optionnelle : si tu veux bloquer l'accès aux utilisateurs anonymes
+        if (!$user) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à vos catégories.');
+        }
+
         return $this->render('categories/list.html.twig', [
             'ariane' => ['index' => true, 'category' => true],
-            'categories' => $categoriesRepository->findAll(),
+            'categories' => $categoriesRepository->findBy(['user' => $user]),
         ]);
     }
-
     #[Route('/new', name: 'app_categories_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

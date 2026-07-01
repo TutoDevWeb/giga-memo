@@ -43,6 +43,7 @@ class PictureService
                 if (\file_exists($absImagesDir . $relFilename)) {
                     $image = new Images();
                     $image->setName($relFilename);
+                    $image->setUser($user);
                     $couple->addImage($image);
                     // On ne persiste que couple car il y a un cascade: ['persist']) dans l'entité Couples
                     $entityManager->persist($couple);
@@ -53,8 +54,7 @@ class PictureService
     }
 
     public function delete(
-        Images $image,
-        Users $user
+        Images $image
     ): bool {
         $success = true;
 

@@ -124,7 +124,7 @@ class CouplesController extends AbstractController
             $images = $form->get('images')->getData();
 
             // On les passe au service
-            $pictureService->upload($entityManager, $couple, $images);
+            $pictureService->upload($entityManager, $couple, $images, $this->getUser());
 
             $id_faq = $faq->getId();
 

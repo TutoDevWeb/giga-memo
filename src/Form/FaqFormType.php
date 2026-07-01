@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Categories;
 use App\Entity\Faqs;
 use App\Model\LayerTypeEnum;
+use Doctrine\ORM\EntityRepository; // Ne pas oublier cet import pour le query_builder
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
@@ -18,17 +19,28 @@ class FaqFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // On récupère l'utilisateur passé en option depuis le contrôleur
+        $user = $options['user'];
+
         $builder
             ->add(
                 'name',
                 TextType::class,
                 [
-                    'empty_data' => '' // Une chaine vide ne sera pas transformée en null. Elle reste vide et est filtrée au NotBlank.
+                    'empty_data' => '' // Une chaîne vide ne sera pas transformée en null. Elle reste vide et est filtrée au NotBlank.
                 ]
             )
             ->add('category', EntityType::class, [
                 'class' => Categories::class,
                 'choice_label' => 'name',
+                'placeholder' => 'Sélectionnez une catégorie', // Optionnel mais plus propre visuellement
+                // On filtre les catégories pour ne proposer que celles de l'utilisateur connecté
+                'query_builder' => function (EntityRepository $er) use ($user) {
+                    return $er->createQueryBuilder('c')
+                        ->where('c.user = :user')
+                        ->setParameter('user', $user)
+                        ->orderBy('c.name', 'ASC'); // Trié par ordre alphabétique
+                },
             ])
             ->add(
                 'layerType',
@@ -56,6 +68,11 @@ class FaqFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Faqs::class,
+            'user' => null, // On définit l'option par défaut
         ]);
+
+        // On rend l'option 'user' obligatoire pour ce formulaire
+        $resolver->setRequired('user');
+        $resolver->setAllowedTypes('user', ['App\Entity\Users']);
     }
 }

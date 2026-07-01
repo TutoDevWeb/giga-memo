@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Categories;
 use App\Entity\Faqs;
+use App\Entity\Users; // À adapter selon ton namespace User
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -17,6 +18,8 @@ class SelectFaqFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // On récupère l'utilisateur passé en option
+        $user = $options['user'];
 
         $builder
             ->add('category', EntityType::class, [
@@ -24,6 +27,12 @@ class SelectFaqFormType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Sélectionnez une catégorie',
                 'mapped' => false,
+                // Filtrage de la catégorie de départ pour l'utilisateur connecté
+                'query_builder' => function (EntityRepository $er) use ($user) {
+                    return $er->createQueryBuilder('c')
+                        ->where('c.user = :user') // Remplace 'user' par ta propriété de relation dans Categories
+                        ->setParameter('user', $user);
+                },
                 'attr' => ['data-action' => 'change->dynamic-select#updateFaqs'] // Action Stimulus
             ])
             ->add(
@@ -41,25 +50,25 @@ class SelectFaqFormType extends AbstractType
             ->add('run', SubmitType::class)
             ->add('edit', SubmitType::class);
 
-        // Après le SUBMIT le framework va vérifier que la valeur proposée dans le select est une valeur autorisée.
-        // Donc ici AVANT le submit on reconstitue cette liste.
+        // Validation lors de la soumission (PRE_SUBMIT)
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
-            function (FormEvent $event) {
+            function (FormEvent $event) use ($user) {
                 $form = $event->getForm();
-                $data = $event->getData(); // Les données envoyées (le tableau $_POST)
+                $data = $event->getData();
 
-                // On récupère l'ID de la catégorie soumise
-                $categoryId = $data['category'] ?? null;
+                $category = $data['category'] ?? null;
 
-                if ($categoryId) {
-                    // On redéfinit le champ "faq" mais avec les bons choix cette fois
+                if ($category) {
                     $form->add('faq', EntityType::class, [
                         'class' => Faqs::class,
-                        'query_builder' => function (EntityRepository $er) use ($categoryId) {
+                        // On sécurise en vérifiant la catégorie ET l'utilisateur
+                        'query_builder' => function (EntityRepository $er) use ($category, $user) {
                             return $er->createQueryBuilder('f')
                                 ->where('f.category = :cat')
-                                ->setParameter('cat', $categoryId);
+                                ->andWhere('f.user = :user') // Remplace 'user' par ta propriété dans Faqs
+                                ->setParameter('cat', $category)
+                                ->setParameter('user', $user);
                         },
                         'attr' => ['data-dynamic-select-target' => 'faqSelect']
                     ]);
@@ -67,26 +76,27 @@ class SelectFaqFormType extends AbstractType
             }
         );
 
+        // Initialisation si édition / données existantes (PRE_SET_DATA)
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) use ($options) {
-
-                // Si il n'y a pas de faq en option ça ne sert à rien de venir ici
+            function (FormEvent $event) use ($options, $user) {
                 if ($options['faq'] === null) return;
-
-                // Si l'option faq n'est pas une instance de Faqs on ne trouvera pas ce dont on a besoin.
                 if (!($options['faq'] instanceof Faqs)) return;
 
                 $category = $options['faq']->getCategory();
-
                 $form = $event->getForm();
 
                 // On traite le select category
                 $form->add('category', EntityType::class, [
                     'class' => Categories::class,
                     'choice_label' => 'name',
-                    'data' => $category, // Forcer le select des catégories
+                    'data' => $category,
                     'placeholder' => 'Sélectionnez une catégorie',
+                    'query_builder' => function (EntityRepository $er) use ($user) {
+                        return $er->createQueryBuilder('c')
+                            ->where('c.user = :user')
+                            ->setParameter('user', $user);
+                    },
                     'attr' => ['data-action' => 'change->dynamic-select#updateFaqs']
                 ]);
 
@@ -94,11 +104,13 @@ class SelectFaqFormType extends AbstractType
                 $form->add('faq', EntityType::class, [
                     'class' => Faqs::class,
                     'choice_label' => 'name',
-                    'data' => $options['faq'], // Forcer le select des Faqs
-                    'query_builder' => function (EntityRepository $er) use ($category) {
+                    'data' => $options['faq'],
+                    'query_builder' => function (EntityRepository $er) use ($category, $user) {
                         return $er->createQueryBuilder('f')
                             ->where('f.category = :cat')
-                            ->setParameter('cat', $category);
+                            ->andWhere('f.user = :user')
+                            ->setParameter('cat', $category)
+                            ->setParameter('user', $user);
                     },
                     'attr' => ['data-dynamic-select-target' => 'faqSelect']
                 ]);
@@ -106,15 +118,17 @@ class SelectFaqFormType extends AbstractType
         );
     }
 
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'faq' => null
+            'faq' => null,
+            'user' => null, // On définit la nouvelle option par défaut
         ]);
 
-        // Optionnel mais recommandé : on précise que 'faq' doit être 
-        // soit null, soit une instance de ton entité Faq.
         $resolver->setAllowedTypes('faq', ['null', 'App\Entity\Faqs']);
+
+        // On exige que l'option user soit une instance de la classe User
+        $resolver->setAllowedTypes('user', ['App\Entity\Users']);
+        $resolver->setRequired('user'); // Rend l'option obligatoire
     }
 }

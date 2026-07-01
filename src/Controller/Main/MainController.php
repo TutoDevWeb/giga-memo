@@ -20,7 +20,10 @@ class MainController extends AbstractController
         #[MapEntity(id: 'id_faq')] ?Faqs $faq
     ): Response {
 
-        $form = $this->createForm(SelectFaqFormType::class, null, ['faq' => $faq]);
+        $form = $this->createForm(SelectFaqFormType::class, null, [
+            'user' => $this->getUser(), // Passe l'utilisateur connecté
+            'faq' => $faq,
+        ]);
 
         $form->handleRequest($request);
 
