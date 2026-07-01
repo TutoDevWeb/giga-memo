@@ -24,32 +24,31 @@ class PictureService
         Users $user
     ): void {
         $idc = $couple->getId();
-
-        // Récupérer le nombre actuel de photos en database pour cette annonce
+        $hasNewImages = false; // Petit flag pour savoir si on doit flush à la fin
 
         foreach ($uploadedFiles as $uploadedFile) {
-            // On récupère le mime de l'image
             $mime = getimagesize($uploadedFile);
 
             if (false !== $mime && 'image/png' === $mime['mime']) {
-                // On donne un nouveau nom au fichier avant de le tranférer
                 $relFilename = $idc . '-' . md5(uniqid((string)rand(), true)) . '.png';
-
                 $absImagesDir = $this->params->get('images_directory');
-
                 $uploadedFile->move($absImagesDir, $relFilename);
 
-                // On teste que le fichier physique existe bien avant de mettre son nom en database
                 if (\file_exists($absImagesDir . $relFilename)) {
                     $image = new Images();
                     $image->setName($relFilename);
                     $image->setUser($user);
                     $couple->addImage($image);
-                    // On ne persiste que couple car il y a un cascade: ['persist']) dans l'entité Couples
+
                     $entityManager->persist($couple);
-                    $entityManager->flush();
+                    $hasNewImages = true; // On a au moins une image valide
                 }
             }
+        }
+
+        // Une fois la boucle COMPLÈTE, on envoie tout en une seule fois en BDD 🚀
+        if ($hasNewImages) {
+            $entityManager->flush();
         }
     }
 
