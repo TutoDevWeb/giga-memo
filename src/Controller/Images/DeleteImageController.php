@@ -32,7 +32,7 @@ final class DeleteImageController extends AbstractController
             $entityManager->remove($image);
             $entityManager->flush();
 
-            $pictureService->delete($image, $this->getUser());
+            $pictureService->delete($image);
         } else {
             return new JsonResponse(['message' => 'KO']);
         }

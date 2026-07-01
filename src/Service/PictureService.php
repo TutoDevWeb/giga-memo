@@ -33,7 +33,7 @@ class PictureService
 
             if (false !== $mime && 'image/png' === $mime['mime']) {
                 // On donne un nouveau nom au fichier avant de le tranférer
-                $relFilename = $idc . '-' . md5(uniqid(rand(), true)) . '.png';
+                $relFilename = $idc . '-' . md5(uniqid((string)rand(), true)) . '.png';
 
                 $absImagesDir = $this->params->get('images_directory');
 

@@ -4,6 +4,7 @@ namespace App\Controller\Rules;
 
 use App\Entity\Faqs;
 use App\Entity\Rules;
+use App\Entity\Users;
 use App\Form\RulesType;
 use App\Security\Voter\ResourceOwnerVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,8 +41,11 @@ final class RulesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            /** @var Users $user */
+            $user = $this->getUser();
+
             // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
-            $rule->setUser($this->getUser());
+            $rule->setUser($user);
 
             $rule->setFaq($faq);
             $rule = $form->getData();

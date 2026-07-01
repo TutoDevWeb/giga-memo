@@ -4,6 +4,7 @@ namespace App\Controller\Couples;
 
 use App\Entity\Couples;
 use App\Entity\Faqs;
+use App\Entity\Users;
 use App\Form\CoupleFormType;
 use App\Repository\CouplesRepository;
 use App\Security\Voter\ResourceOwnerVoter;
@@ -55,8 +56,11 @@ class CouplesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            /** @var Users $user */
+            $user = $this->getUser();
+
             // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
-            $couple->setUser($this->getUser());
+            $couple->setUser($user);
 
             /*
              * Il faut refaire le set de la Faq car le champ faq est disabled dans le formulaire
@@ -75,7 +79,7 @@ class CouplesController extends AbstractController
             $images = $form->get('images')->getData();
 
             // On les passe au service
-            $pictureService->upload($entityManager, $couple, $images, $this->getUser());
+            $pictureService->upload($entityManager, $couple, $images, $user);
 
             return $this->redirectToRoute('app_couples_list_by_faq', ['id_faq' => $faq->getId()]);
         }
@@ -123,8 +127,11 @@ class CouplesController extends AbstractController
             // On récupère les images
             $images = $form->get('images')->getData();
 
+            /** @var Users $user */
+            $user = $this->getUser();
+
             // On les passe au service
-            $pictureService->upload($entityManager, $couple, $images, $this->getUser());
+            $pictureService->upload($entityManager, $couple, $images, $user);
 
             $id_faq = $faq->getId();
 

@@ -3,6 +3,7 @@
 namespace App\Controller\Categories;
 
 use App\Entity\Categories;
+use App\Entity\Users;
 use App\Form\CategoriesType;
 use App\Repository\CategoriesRepository;
 use App\Security\Voter\ResourceOwnerVoter;
@@ -18,6 +19,8 @@ final class CategoriesController extends AbstractController
     #[Route(name: 'app_categories_list', methods: ['GET'])]
     public function list(CategoriesRepository $categoriesRepository): Response
     {
+
+
         // On récupère l'utilisateur connecté
         $user = $this->getUser();
 
@@ -40,8 +43,11 @@ final class CategoriesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
-            $category->setUser($this->getUser());
+            /** @var Users $user */
+            $user = $this->getUser();
+
+            // Maintenant PHPStan sait à 100% que $user est une instance de Users
+            $category->setUser($user);
 
             $entityManager->persist($category);
             $entityManager->flush();
