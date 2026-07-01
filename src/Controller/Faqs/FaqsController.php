@@ -5,7 +5,6 @@ namespace App\Controller\Faqs;
 use App\Entity\Faqs;
 use App\Form\FaqFormType;
 use App\Repository\CouplesRepository;
-use App\Repository\FaqsRepository;
 use App\Security\Voter\ResourceOwnerVoter;
 use App\Service\PictureService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,7 +24,6 @@ class FaqsController extends AbstractController
     #[Route('/faqs/new', name: 'app_faqs_new')]
     public function new(EntityManagerInterface $entityManager, Request $request): Response
     {
-
         $faq = new Faqs();
 
         $form = $this->createForm(FaqFormType::class, $faq, [
@@ -60,17 +58,14 @@ class FaqsController extends AbstractController
     public function update(
         EntityManagerInterface $entityManager,
         Request $request,
-        #[MapEntity(id: 'id_faq')] Faqs $faq
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-
-
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
         $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $faq);
 
         $form = $this->createForm(FaqFormType::class, $faq, [
             'user' => $this->getUser(),
         ]);
-
 
         $form->handleRequest($request);
 
@@ -86,7 +81,7 @@ class FaqsController extends AbstractController
         return $this->render('faqs/update.html.twig', [
             'ariane' => ['index' => true, 'edit' => true, 'update' => 'faq'],
             'form' => $form,
-            'faq' => $faq
+            'faq' => $faq,
         ]);
     }
 
@@ -99,14 +94,12 @@ class FaqsController extends AbstractController
         EntityManagerInterface $entityManager,
         PictureService $pictureService,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
-        Request $request
+        Request $request,
     ): Response {
-
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
         $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $faq);
 
-        if ($this->isCsrfTokenValid('delete' . $faq->getId(), $request->getPayload()->getString('_token'))) {
-
+        if ($this->isCsrfTokenValid('delete'.$faq->getId(), $request->getPayload()->getString('_token'))) {
             // Ici il faut récupérer toutes les images et les effacer physiquement.
             foreach ($faq->getCouples() as $couple) {
                 foreach ($couple->getImages() as $image) {
@@ -131,9 +124,8 @@ class FaqsController extends AbstractController
     #[Route('/faqs/run/{id_faq<\d+>}', name: 'app_faqs_run')]
     public function run(
         CouplesRepository $repo,
-        #[MapEntity(id: 'id_faq')] Faqs $faq
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-
         $couple = $repo->findNextSelectRun($faq);
 
         $nbTodoRun = $repo->countTodoRun($faq);
@@ -160,9 +152,8 @@ class FaqsController extends AbstractController
     #[Route('/faqs/review/{id_faq<\d+>}', name: 'app_faqs_review')]
     public function review(
         CouplesRepository $repo,
-        #[MapEntity(id: 'id_faq')] Faqs $faq
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-
         $couple = $repo->findNextSelectReview($faq);
 
         $nbTodoRun = $repo->countTodoRun($faq);
@@ -181,15 +172,12 @@ class FaqsController extends AbstractController
         ]);
     }
 
-    /**
-     */
     #[Route('/faqs/next-run/{id_faq<\d+>}', name: 'app_faqs_next_run')]
     public function nextRun(
         CouplesRepository $repo,
         EntityManagerInterface $em,
-        #[MapEntity(id: 'id_faq')] Faqs $faq
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-
         $couple = $repo->findNextSelectRun($faq);
 
         // Si c'est null c'est qu'il n'y a plus de couple à traiter.
@@ -206,31 +194,28 @@ class FaqsController extends AbstractController
         return $this->redirectToRoute('app_faqs_run', ['id_faq' => $faq->getId()]);
     }
 
-    /**
-     */
     #[Route('/faqs/next-review/{id_faq<\d+>}', name: 'app_faqs_next_review')]
     public function nextReview(
         CouplesRepository $repo,
         EntityManagerInterface $em,
-        #[MapEntity(id: 'id_faq')] Faqs $faq
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-
         $couple = $repo->findNextSelectReview($faq);
 
-        if ($couple !== null) {
+        if (null !== $couple) {
             $couple->setTodoReview(false);
             $em->flush();
         }
 
         // On a fini la faq.
-        if ($repo->countTodoReview($faq) == 0) {
+        if (0 == $repo->countTodoReview($faq)) {
             $repo->restartTodoReview($faq);
         }
         $em->flush();
+
         // On redirige
         return $this->redirectToRoute('app_faqs_review', ['id_faq' => $faq->getId()]);
     }
-
 
     /**
      * Ce contrôleur est appelé lorsqu'un utilisateur appuie sur le bouton Restart
@@ -240,13 +225,13 @@ class FaqsController extends AbstractController
     public function restart(
         CouplesRepository $repo,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
-        Request $request
+        Request $request,
     ): Response {
         $data = json_decode($request->getContent(), true);
         $token = $data['_token'];
 
         // On teste pour savoir si le token est valide.
-        if ($this->isCsrfTokenValid('restart' . $faq->getId(), $token)) {
+        if ($this->isCsrfTokenValid('restart'.$faq->getId(), $token)) {
             // Faire le restart sur les run et les review.
             $repo->restartTodoRun($faq);
             $repo->restartTodoReview($faq);
@@ -276,14 +261,14 @@ class FaqsController extends AbstractController
     public function reset_review(
         CouplesRepository $repo,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
-        Request $request
+        Request $request,
     ): Response {
         // On récupère le jeton CSRF
         $data = json_decode($request->getContent(), true);
         $token = $data['_token'];
 
         // On teste pour savoir si le token est valide.
-        if ($this->isCsrfTokenValid('reset-review' . $faq->getId(), $token)) {
+        if ($this->isCsrfTokenValid('reset-review'.$faq->getId(), $token)) {
             // Faire le reset des review
             $repo->resetSelectReview($faq);
 

@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CouplesRepository::class)]
 class Couples
 {
-
     use HasUserTrait;
 
     #[ORM\Id]

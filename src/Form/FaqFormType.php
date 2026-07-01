@@ -10,7 +10,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,7 +26,7 @@ class FaqFormType extends AbstractType
                 'name',
                 TextType::class,
                 [
-                    'empty_data' => '' // Une chaîne vide ne sera pas transformée en null. Elle reste vide et est filtrée au NotBlank.
+                    'empty_data' => '', // Une chaîne vide ne sera pas transformée en null. Elle reste vide et est filtrée au NotBlank.
                 ]
             )
             ->add('category', EntityType::class, [
@@ -52,10 +51,10 @@ class FaqFormType extends AbstractType
             ->add('duration', DateIntervalType::class, [
                 'label' => 'Durée prévue',
                 // On choisit les unités à afficher
-                'with_years'  => false,
+                'with_years' => false,
                 'with_months' => false,
-                'with_days'   => false,
-                'with_hours'  => false,
+                'with_days' => false,
+                'with_hours' => false,
                 'with_minutes' => true,
                 // Le format d'affichage dans le formulaire
                 'labels' => [

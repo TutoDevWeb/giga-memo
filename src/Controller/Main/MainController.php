@@ -7,19 +7,18 @@ use App\Form\SelectFaqFormType;
 use App\Repository\CouplesRepository;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Form\SubmitButton;
 
 class MainController extends AbstractController
 {
     #[Route('/{id_faq<\d+>?}', name: 'app_main_index')]
     public function index(
         Request $request,
-        #[MapEntity(id: 'id_faq')] ?Faqs $faq
+        #[MapEntity(id: 'id_faq')] ?Faqs $faq,
     ): Response {
-
         $form = $this->createForm(SelectFaqFormType::class, null, [
             'user' => $this->getUser(), // Passe l'utilisateur connecté
             'faq' => $faq,
@@ -28,7 +27,6 @@ class MainController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $faq_id = $form->getData()['faq']->getId();
 
             // InstanceOf car sinon j'ai une erreur intelephense au ->isCliked() et il y en a partout !!
@@ -49,7 +47,7 @@ class MainController extends AbstractController
 
         return $this->render('main/index.html.twig', [
             'ariane' => ['index' => true],
-            'form' => $form
+            'form' => $form,
         ]);
     }
 
@@ -57,10 +55,8 @@ class MainController extends AbstractController
     public function run(
         CouplesRepository $repo,
         Request $request,
-        #[MapEntity(id: 'id_faq')] Faqs $faq
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-
-
         $nbTodoRun = $repo->countTodoRun($faq);
         $nbTodoReview = $repo->countTodoReview($faq);
         $nbSelectRun = $repo->countSelectRun($faq);
@@ -78,12 +74,11 @@ class MainController extends AbstractController
 
     #[Route('/mode-edit/{id_faq<\d+>?}', name: 'app_main_edit')]
     public function edit(
-        #[MapEntity(id: 'id_faq')] ?Faqs $faq
+        #[MapEntity(id: 'id_faq')] ?Faqs $faq,
     ): Response {
-
         return $this->render('main/mode-edit.html.twig', [
             'ariane' => ['index' => true, 'edit' => true],
-            'faq' => $faq ?? null
+            'faq' => $faq ?? null,
         ]);
     }
 }

@@ -2,14 +2,13 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\HasUserTrait;
 use App\Repository\ImagesRepository;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Trait\HasUserTrait;
 
 #[ORM\Entity(repositoryClass: ImagesRepository::class)]
 class Images
 {
-
     use HasUserTrait;
 
     #[ORM\Id]

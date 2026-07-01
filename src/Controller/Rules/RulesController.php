@@ -19,12 +19,11 @@ final class RulesController extends AbstractController
 {
     #[Route('/list-by-faq/{id_faq<\d+>}', name: 'app_rules_list_by_faq', methods: ['GET'])]
     public function list_by_faq(
-        #[MapEntity(id: 'id_faq')] Faqs $faq
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-
         return $this->render('rules/list-by-faq.html.twig', [
             'ariane' => ['index' => true, 'edit' => true, 'list_by_faq' => 'rule'],
-            'faq' => $faq
+            'faq' => $faq,
         ]);
     }
 
@@ -32,7 +31,7 @@ final class RulesController extends AbstractController
     public function new(
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): Response {
         $rule = new Rules();
         $rule->setFaq($faq);
@@ -40,7 +39,6 @@ final class RulesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             /** @var Users $user */
             $user = $this->getUser();
 
@@ -57,21 +55,19 @@ final class RulesController extends AbstractController
 
         return $this->render('rules/new.html.twig', [
             'ariane' => ['index' => true, 'edit' => true],
-            'rule'      => $rule,
-            'form'      => $form,
-            'faq'       => $faq
+            'rule' => $rule,
+            'form' => $form,
+            'faq' => $faq,
         ]);
     }
-
 
     #[Route('/edit/{id_faq<\d+>}/{id_rule<\d+>}', name: 'app_rules_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         #[MapEntity(id: 'id_rule')] Rules $rule,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): Response {
-
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
         $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $rule);
 
@@ -79,7 +75,6 @@ final class RulesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $rule->setFaq($faq);
             $rule = $form->getData();
             $entityManager->flush();
@@ -100,13 +95,12 @@ final class RulesController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         #[MapEntity(id: 'id_rule')] Rules $rule,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): Response {
-
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
         $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $rule);
 
-        if ($this->isCsrfTokenValid('delete' . $rule->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$rule->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($rule);
             $entityManager->flush();
         }

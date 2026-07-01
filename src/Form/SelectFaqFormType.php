@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Categories;
 use App\Entity\Faqs;
-use App\Entity\Users; // À adapter selon ton namespace User
+// À adapter selon ton namespace User
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -33,7 +33,7 @@ class SelectFaqFormType extends AbstractType
                         ->where('c.user = :user') // Remplace 'user' par ta propriété de relation dans Categories
                         ->setParameter('user', $user);
                 },
-                'attr' => ['data-action' => 'change->dynamic-select#updateFaqs'] // Action Stimulus
+                'attr' => ['data-action' => 'change->dynamic-select#updateFaqs'], // Action Stimulus
             ])
             ->add(
                 'faq',
@@ -44,7 +44,7 @@ class SelectFaqFormType extends AbstractType
                     'placeholder' => 'Choisissez une catégorie d\'abord',
                     'label' => 'Liste des Faqs',
                     'mapped' => false,
-                    'attr' => ['data-dynamic-select-target' => 'faqSelect'] // Cible Stimulus
+                    'attr' => ['data-dynamic-select-target' => 'faqSelect'], // Cible Stimulus
                 ]
             )
             ->add('run', SubmitType::class)
@@ -70,7 +70,7 @@ class SelectFaqFormType extends AbstractType
                                 ->setParameter('cat', $category)
                                 ->setParameter('user', $user);
                         },
-                        'attr' => ['data-dynamic-select-target' => 'faqSelect']
+                        'attr' => ['data-dynamic-select-target' => 'faqSelect'],
                     ]);
                 }
             }
@@ -80,8 +80,12 @@ class SelectFaqFormType extends AbstractType
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) use ($options, $user) {
-                if ($options['faq'] === null) return;
-                if (!($options['faq'] instanceof Faqs)) return;
+                if (null === $options['faq']) {
+                    return;
+                }
+                if (!$options['faq'] instanceof Faqs) {
+                    return;
+                }
 
                 $category = $options['faq']->getCategory();
                 $form = $event->getForm();
@@ -97,7 +101,7 @@ class SelectFaqFormType extends AbstractType
                             ->where('c.user = :user')
                             ->setParameter('user', $user);
                     },
-                    'attr' => ['data-action' => 'change->dynamic-select#updateFaqs']
+                    'attr' => ['data-action' => 'change->dynamic-select#updateFaqs'],
                 ]);
 
                 // On traite le select faq
@@ -112,7 +116,7 @@ class SelectFaqFormType extends AbstractType
                             ->setParameter('cat', $category)
                             ->setParameter('user', $user);
                     },
-                    'attr' => ['data-dynamic-select-target' => 'faqSelect']
+                    'attr' => ['data-dynamic-select-target' => 'faqSelect'],
                 ]);
             }
         );

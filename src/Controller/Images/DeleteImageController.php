@@ -20,7 +20,6 @@ final class DeleteImageController extends AbstractController
         Images $image,
         Request $request,
     ): JsonResponse {
-
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
         $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $image);
 
@@ -28,7 +27,7 @@ final class DeleteImageController extends AbstractController
         $token = $data['_token'];
 
         // On teste pour savoir si le token est valide.
-        if ($this->isCsrfTokenValid('delete' . $image->getId(), $token)) {
+        if ($this->isCsrfTokenValid('delete'.$image->getId(), $token)) {
             $entityManager->remove($image);
             $entityManager->flush();
 
@@ -37,6 +36,6 @@ final class DeleteImageController extends AbstractController
             return new JsonResponse(['message' => 'KO']);
         }
 
-        return new JsonResponse(['message' => 'OK => :' . $image->getName()]);
+        return new JsonResponse(['message' => 'OK => :'.$image->getName()]);
     }
 }

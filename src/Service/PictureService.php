@@ -21,7 +21,7 @@ class PictureService
         EntityManagerInterface $entityManager,
         Couples $couple,
         array $uploadedFiles,
-        Users $user
+        Users $user,
     ): void {
         $idc = $couple->getId();
         $hasNewImages = false; // Petit flag pour savoir si on doit flush à la fin
@@ -30,11 +30,11 @@ class PictureService
             $mime = getimagesize($uploadedFile);
 
             if (false !== $mime && 'image/png' === $mime['mime']) {
-                $relFilename = $idc . '-' . md5(uniqid((string)rand(), true)) . '.png';
+                $relFilename = $idc.'-'.md5(uniqid((string) rand(), true)).'.png';
                 $absImagesDir = $this->params->get('images_directory');
                 $uploadedFile->move($absImagesDir, $relFilename);
 
-                if (\file_exists($absImagesDir . $relFilename)) {
+                if (\file_exists($absImagesDir.$relFilename)) {
                     $image = new Images();
                     $image->setName($relFilename);
                     $image->setUser($user);
@@ -53,7 +53,7 @@ class PictureService
     }
 
     public function delete(
-        Images $image
+        Images $image,
     ): bool {
         $success = true;
 
@@ -61,7 +61,7 @@ class PictureService
         $absImagesDir = $this->params->get('images_directory');
 
         // Noms des fichiers en absolu pour les image
-        $absImageFilename = $absImagesDir . $image->getName();
+        $absImageFilename = $absImagesDir.$image->getName();
 
         if (file_exists($absImageFilename)) {
             try {

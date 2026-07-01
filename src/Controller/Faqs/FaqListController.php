@@ -9,7 +9,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class FaqListController extends AbstractController
 {
-
     #[Route('/faq/list-by-category/{id}', name: 'faq_by_category')]
     public function listByCategory(Categories $category): Response
     {

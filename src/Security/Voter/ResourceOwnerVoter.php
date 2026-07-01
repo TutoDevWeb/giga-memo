@@ -29,6 +29,7 @@ final class ResourceOwnerVoter extends Voter
         // Si l'utilisateur n'est pas connecté, accès refusé d'office
         if (!$user instanceof UserInterface) {
             $vote?->addReason('The user must be logged in to access this resource.');
+
             return false;
         }
 

@@ -7,13 +7,12 @@ use App\Model\LayerTypeEnum;
 use App\Repository\FaqsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FaqsRepository::class)]
 class Faqs
 {
-
     use HasUserTrait;
 
     #[ORM\Id]

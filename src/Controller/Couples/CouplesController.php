@@ -24,12 +24,11 @@ class CouplesController extends AbstractController
      */
     #[Route('/couples/list-by-faq/{id_faq<\d+>}', name: 'app_couples_list_by_faq')]
     public function list_by_faq(
-        #[MapEntity(id: 'id_faq')] Faqs $faq
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-
         return $this->render('couples/list-by-faq.html.twig', [
             'ariane' => ['index' => true, 'edit' => true, 'list_by_faq' => 'couple'],
-            'faq' => $faq
+            'faq' => $faq,
         ]);
     }
 
@@ -43,7 +42,6 @@ class CouplesController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-
         $nbCouple = count($faq->getCouples());
 
         $couple = new Couples();
@@ -55,7 +53,6 @@ class CouplesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             /** @var Users $user */
             $user = $this->getUser();
 
@@ -102,22 +99,20 @@ class CouplesController extends AbstractController
         string $from,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         #[MapEntity(id: 'id_couple')] Couples $couple,
-        PictureService $pictureService
+        PictureService $pictureService,
     ): Response {
-
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
         $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $couple);
 
         $form = $this->createForm(CoupleFormType::class, $couple, [
             'layerType' => $faq->getLayerType(),
             'from' => $from,
-            'faq' => $faq
+            'faq' => $faq,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $couple->setFaq($faq);
             $couple = $form->getData();
 
@@ -135,14 +130,17 @@ class CouplesController extends AbstractController
 
             $id_faq = $faq->getId();
 
-            if ($from == 'review')
+            if ('review' == $from) {
                 return $this->redirectToRoute('app_faqs_review', ['id_faq' => $id_faq]);
+            }
 
-            if ($from == 'run')
+            if ('run' == $from) {
                 return $this->redirectToRoute('app_faqs_run', ['id_faq' => $id_faq]);
+            }
 
-            if ($from == 'list')
+            if ('list' == $from) {
                 return $this->redirectToRoute('app_couples_list_by_faq', ['id_faq' => $id_faq]);
+            }
         }
 
         return $this->render('couples/update.html.twig', [
@@ -163,14 +161,12 @@ class CouplesController extends AbstractController
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         #[MapEntity(id: 'id_couple')] Couples $couple,
         PictureService $picture,
-        Request $request
+        Request $request,
     ): Response {
-
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
         $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $couple);
 
-        if ($this->isCsrfTokenValid('delete' . $couple->getId(), $request->getPayload()->getString('_token'))) {
-
+        if ($this->isCsrfTokenValid('delete'.$couple->getId(), $request->getPayload()->getString('_token'))) {
             foreach ($couple->getImages() as $image) {
                 $picture->delete($image);
             }
@@ -191,13 +187,13 @@ class CouplesController extends AbstractController
         EntityManagerInterface $entityManager,
         CouplesRepository $repo,
         #[MapEntity(id: 'id_couple')] Couples $couple,
-        Request $request
+        Request $request,
     ): Response {
         $data = json_decode($request->getContent(), true);
         $token = $data['_token'];
 
         // On teste pour savoir si le token est valide.
-        if ($this->isCsrfTokenValid('set-one-review' . $couple->getId(), $token)) {
+        if ($this->isCsrfTokenValid('set-one-review'.$couple->getId(), $token)) {
             // On le met dans la sélection
             $couple->setSelectReview(true);
             // Du coup il est à faire
@@ -232,14 +228,13 @@ class CouplesController extends AbstractController
         EntityManagerInterface $entityManager,
         CouplesRepository $repo,
         #[MapEntity(id: 'id_couple')] Couples $couple,
-        Request $request
+        Request $request,
     ): Response {
-
         $data = json_decode($request->getContent(), true);
         $token = $data['_token'];
 
         // On teste pour savoir si le token est valide.
-        if ($this->isCsrfTokenValid('cancel-one-review' . $couple->getId(), $token)) {
+        if ($this->isCsrfTokenValid('cancel-one-review'.$couple->getId(), $token)) {
             // On l'enlève de la sélection Review
             $couple->setSelectReview(false);
 
