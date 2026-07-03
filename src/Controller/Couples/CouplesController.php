@@ -166,7 +166,8 @@ class CouplesController extends AbstractController
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
         $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $couple);
 
-        if ($this->isCsrfTokenValid('delete'.$couple->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $couple->getId(), $request->getPayload()->getString('_token'))) {
+
             foreach ($couple->getImages() as $image) {
                 $picture->delete($image);
             }
@@ -193,7 +194,7 @@ class CouplesController extends AbstractController
         $token = $data['_token'];
 
         // On teste pour savoir si le token est valide.
-        if ($this->isCsrfTokenValid('set-one-review'.$couple->getId(), $token)) {
+        if ($this->isCsrfTokenValid('set-one-review' . $couple->getId(), $token)) {
             // On le met dans la sélection
             $couple->setSelectReview(true);
             // Du coup il est à faire
@@ -234,7 +235,7 @@ class CouplesController extends AbstractController
         $token = $data['_token'];
 
         // On teste pour savoir si le token est valide.
-        if ($this->isCsrfTokenValid('cancel-one-review'.$couple->getId(), $token)) {
+        if ($this->isCsrfTokenValid('cancel-one-review' . $couple->getId(), $token)) {
             // On l'enlève de la sélection Review
             $couple->setSelectReview(false);
 
