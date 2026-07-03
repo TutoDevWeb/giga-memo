@@ -168,10 +168,7 @@ class CouplesController extends AbstractController
 
         if ($this->isCsrfTokenValid('delete' . $couple->getId(), $request->getPayload()->getString('_token'))) {
 
-            foreach ($couple->getImages() as $image) {
-                $picture->delete($image);
-            }
-
+            // remove du couple => remove des images car orphanremoval => suppression physique sur eventListener
             $entityManager->remove($couple);
             $entityManager->flush();
         }
