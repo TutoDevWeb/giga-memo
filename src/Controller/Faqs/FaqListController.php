@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+// Ce controleur est utilisé par dynamic_select_controller.js
 class FaqListController extends AbstractController
 {
     #[Route('/faq/list-by-category/{id}', name: 'faq_by_category')]
