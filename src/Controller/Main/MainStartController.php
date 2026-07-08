@@ -24,7 +24,7 @@ class MainStartController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response {
 
-        // Si il n'y a pas de categories
+        // Si on est ici, on vérifie que le user connecté n'a pas de categories
         if ($categoriesRepository->findNbCategory($this->getUser()) === 0) {
 
             $cat = new Categories;
@@ -56,14 +56,13 @@ class MainStartController extends AbstractController
     }
 
     #[Route('/start-create-faq', name: 'app_main_start_create_faq')]
-    // 🔒 On vérifie directement que le user de la faq correspond au user connecté
     public function createFaq(
         Request $request,
         FaqsRepository $faqsRepository,
         EntityManagerInterface $entityManager
     ): Response {
 
-        // Si il n'y a pas de faq
+        // Si on est ici, on vérifie que le user connecté n'a pas de faqs
         if ($faqsRepository->findNbFaq($this->getUser()) === 0) {
 
             $form = $this->createForm(FaqFormType::class, null, [
@@ -78,10 +77,9 @@ class MainStartController extends AbstractController
 
                 $faq = $form->getData();
                 $faq->setUser($this->getUser());
-                $category = $faq->getCategory();
 
-                // On vérifie que la catégorie appartient bien à l'utilisateur connecté.
-                $this->denyAccessUnlessGranted(ResourceOwnerVoter::VIEW, $category);
+                // On vérifie que la catégorie parente appartient bien à l'utilisateur connecté.
+                $this->denyAccessUnlessGranted(ResourceOwnerVoter::NEW, $faq->getCategory());
 
                 $entityManager->persist($faq);
 

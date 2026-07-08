@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/rules')]
 final class RulesController extends AbstractController
@@ -28,13 +29,12 @@ final class RulesController extends AbstractController
     }
 
     #[Route('/new/{id_faq<\d+>}', name: 'app_rules_new', methods: ['GET', 'POST'])]
+    #[IsGranted(ResourceOwnerVoter::NEW, subject: 'faq')]
     public function new(
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         Request $request,
         EntityManagerInterface $entityManager,
     ): Response {
-
-        dump('Rules / new');
 
         $rule = new Rules();
         $rule->setFaq($faq);

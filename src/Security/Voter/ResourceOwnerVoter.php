@@ -10,14 +10,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class ResourceOwnerVoter extends Voter
 {
     // On renomme les attributs pour qu'ils soient génériques (valables pour FAQ, Couple, Category, etc.)
-    public const EDIT = 'RESOURCE_EDIT';
-    public const VIEW = 'RESOURCE_VIEW';
+    public const NEW    = 'RESOURCE_NEW';
+    public const EDIT   = 'RESOURCE_EDIT';
+    public const VIEW   = 'RESOURCE_VIEW';
     public const DELETE = 'RESOURCE_DELETE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // Le voter s'active si l'attribut est géré ET si le sujet est un objet possédant la méthode getUser()
-        return in_array($attribute, [self::EDIT, self::VIEW, self::DELETE])
+        return in_array($attribute, [self::NEW, self::EDIT, self::VIEW, self::DELETE])
             && is_object($subject)
             && method_exists($subject, 'getUser');
     }

@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CouplesController extends AbstractController
 {
@@ -36,6 +37,7 @@ class CouplesController extends AbstractController
      * Ce contrôleur sert à créer un nouveau couple qr.
      */
     #[Route('/couples/new/{id_faq<\d+>}', name: 'app_couples_new')]
+    #[IsGranted(ResourceOwnerVoter::NEW, subject: 'faq')]
     public function new(
         EntityManagerInterface $entityManager,
         PictureService $pictureService,
@@ -53,10 +55,11 @@ class CouplesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             /** @var Users $user */
             $user = $this->getUser();
 
-            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
+            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité
             $couple->setUser($user);
 
             /*

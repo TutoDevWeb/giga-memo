@@ -35,8 +35,11 @@ class FaqsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $faq = $form->getData();
 
-            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
+            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité
             $faq->setUser($this->getUser());
+
+            // On vérifie que la catégorie parente appartient bien à l'utilisateur connecté.
+            $this->denyAccessUnlessGranted(ResourceOwnerVoter::NEW, $faq->getCategory());
 
             $entityManager->persist($faq);
             $entityManager->flush();
@@ -99,7 +102,7 @@ class FaqsController extends AbstractController
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
         $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $faq);
 
-        if ($this->isCsrfTokenValid('delete'.$faq->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $faq->getId(), $request->getPayload()->getString('_token'))) {
             // Ici il faut récupérer toutes les images et les effacer physiquement.
             foreach ($faq->getCouples() as $couple) {
                 foreach ($couple->getImages() as $image) {
@@ -231,7 +234,7 @@ class FaqsController extends AbstractController
         $token = $data['_token'];
 
         // On teste pour savoir si le token est valide.
-        if ($this->isCsrfTokenValid('restart'.$faq->getId(), $token)) {
+        if ($this->isCsrfTokenValid('restart' . $faq->getId(), $token)) {
             // Faire le restart sur les run et les review.
             $repo->restartTodoRun($faq);
             $repo->restartTodoReview($faq);
@@ -268,7 +271,7 @@ class FaqsController extends AbstractController
         $token = $data['_token'];
 
         // On teste pour savoir si le token est valide.
-        if ($this->isCsrfTokenValid('reset-review'.$faq->getId(), $token)) {
+        if ($this->isCsrfTokenValid('reset-review' . $faq->getId(), $token)) {
             // Faire le reset des review
             $repo->resetSelectReview($faq);
 
