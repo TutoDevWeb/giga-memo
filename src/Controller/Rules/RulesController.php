@@ -4,7 +4,6 @@ namespace App\Controller\Rules;
 
 use App\Entity\Faqs;
 use App\Entity\Rules;
-use App\Entity\Users;
 use App\Form\RulesType;
 use App\Security\Voter\ResourceOwnerVoter;
 use Doctrine\ORM\EntityManagerInterface;

@@ -62,15 +62,6 @@ final class CategoriesController extends AbstractController
         ]);
     }
 
-    // #[Route('/{id}', name: 'app_categories_show', methods: ['GET'])]
-    // public function show(Categories $category): Response
-    // {
-    //     return $this->render('categories/show.html.twig', [
-    //         'ariane' => ['index' => true, 'category' => true],
-    //         'category' => $category,
-    //     ]);
-    // }
-
     #[Route('/{id}/edit', name: 'app_categories_edit', methods: ['GET', 'POST'])]
     #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'category')]
     public function edit(

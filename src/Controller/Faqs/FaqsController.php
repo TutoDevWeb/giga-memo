@@ -6,7 +6,6 @@ use App\Entity\Faqs;
 use App\Form\FaqFormType;
 use App\Repository\CouplesRepository;
 use App\Security\Voter\ResourceOwnerVoter;
-use App\Service\PictureService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
