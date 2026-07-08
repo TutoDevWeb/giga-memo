@@ -7,12 +7,15 @@ use App\Form\SelectFaqFormType;
 use App\Repository\CategoriesRepository;
 use App\Repository\CouplesRepository;
 use App\Repository\FaqsRepository;
+use App\Security\Voter\ResourceOwnerVoter;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 class MainController extends AbstractController
 {
@@ -24,18 +27,20 @@ class MainController extends AbstractController
         FaqsRepository $faqsRepository,
     ): Response {
 
-        // Si il n'y a pas de categories
+        // Si l'utilisateur connecté n'a pas encore de categories
         if ($categoriesRepository->findNbCategory($this->getUser()) == 0) {
-
             return $this->redirectToRoute('app_main_start_create_category');
         }
 
-        // Si il n'y a pas de faqs
+        // Si l'utilisateur connecté n'a pas encore de faqs
         if ($faqsRepository->findNbFaq($this->getUser()) == 0) {
-
             return $this->redirectToRoute('app_main_start_create_faq');
         }
 
+        // Si il y a une faq en argument il faut qu'elle appartienne à l'utilisateur connecté.
+        if ($faq !== null) {
+            $this->denyAccessUnlessGranted(ResourceOwnerVoter::VIEW, $faq);
+        }
 
         $form = $this->createForm(SelectFaqFormType::class, null, [
             'user' => $this->getUser(), // Passe l'utilisateur connecté
@@ -70,9 +75,9 @@ class MainController extends AbstractController
     }
 
     #[Route('/mode-run/{id_faq<\d+>}', name: 'app_main_run')]
+    #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
     public function run(
         CouplesRepository $repo,
-        Request $request,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
         $nbTodoRun = $repo->countTodoRun($faq);
@@ -90,13 +95,15 @@ class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/mode-edit/{id_faq<\d+>?}', name: 'app_main_edit')]
+    #[Route('/mode-edit/{id_faq<\d+>}', name: 'app_main_edit')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]
     public function edit(
-        #[MapEntity(id: 'id_faq')] ?Faqs $faq,
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
+
         return $this->render('main/mode-edit.html.twig', [
             'ariane' => ['index' => true, 'edit' => true],
-            'faq' => $faq ?? null,
+            'faq' => $faq,
         ]);
     }
 }

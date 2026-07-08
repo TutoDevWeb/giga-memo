@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class FaqsController extends AbstractController
 {
@@ -58,13 +59,12 @@ class FaqsController extends AbstractController
      * Il est appelé lorsqu'un utilisateur clique sur le bouton Modifier du Mode-Edit.
      */
     #[Route('/faqs/update/{id_faq<\d+>}', name: 'app_faqs_update')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]
     public function update(
         EntityManagerInterface $entityManager,
         Request $request,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
-        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $faq);
 
         $form = $this->createForm(FaqFormType::class, $faq, [
             'user' => $this->getUser(),
@@ -93,22 +93,15 @@ class FaqsController extends AbstractController
      * Il est appelé lorsqu'un utilisateur clique sur le bouton Supprimer du Mode-Edit.
      */
     #[Route('/faqs/delete/{id_faq<\d+>}', name: 'app_faqs_delete')]
+    #[IsGranted(ResourceOwnerVoter::DELETE, subject: 'faq')]
     public function delete(
         EntityManagerInterface $entityManager,
-        PictureService $pictureService,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         Request $request,
     ): Response {
-        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
-        $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $faq);
+
 
         if ($this->isCsrfTokenValid('delete' . $faq->getId(), $request->getPayload()->getString('_token'))) {
-            // Ici il faut récupérer toutes les images et les effacer physiquement.
-            foreach ($faq->getCouples() as $couple) {
-                foreach ($couple->getImages() as $image) {
-                    $pictureService->delete($image);
-                }
-            }
 
             // Là il me suffit de supprimer la faq et il y a cascade des suppressions.
             // => couples => (images et rules)
@@ -125,6 +118,7 @@ class FaqsController extends AbstractController
      * Ensuite il appuie sur le bouton Suivant.
      */
     #[Route('/faqs/run/{id_faq<\d+>}', name: 'app_faqs_run')]
+    #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
     public function run(
         CouplesRepository $repo,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
@@ -153,6 +147,7 @@ class FaqsController extends AbstractController
      * Ensuite il appuie sur le bouton Suivant.
      */
     #[Route('/faqs/review/{id_faq<\d+>}', name: 'app_faqs_review')]
+    #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
     public function review(
         CouplesRepository $repo,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
@@ -176,6 +171,7 @@ class FaqsController extends AbstractController
     }
 
     #[Route('/faqs/next-run/{id_faq<\d+>}', name: 'app_faqs_next_run')]
+    #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
     public function nextRun(
         CouplesRepository $repo,
         EntityManagerInterface $em,
@@ -198,6 +194,7 @@ class FaqsController extends AbstractController
     }
 
     #[Route('/faqs/next-review/{id_faq<\d+>}', name: 'app_faqs_next_review')]
+    #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
     public function nextReview(
         CouplesRepository $repo,
         EntityManagerInterface $em,
@@ -225,6 +222,7 @@ class FaqsController extends AbstractController
      * Il met à 1 tous les booléens todoRun et todoReview de la Faqs passée en argument.
      */
     #[Route('/faqs/restart/{id_faq<\d+>}', name: 'app_faqs_restart')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]
     public function restart(
         CouplesRepository $repo,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
@@ -261,6 +259,7 @@ class FaqsController extends AbstractController
      * Il met à 0 tous les booléens selectReview des couples qui sont dans la liste des review cad bouton 'A Revoir'.
      */
     #[Route('/faqs/reset-review/{id_faq<\d+>}', name: 'app_faqs_reset_review')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]
     public function reset_review(
         CouplesRepository $repo,
         #[MapEntity(id: 'id_faq')] Faqs $faq,

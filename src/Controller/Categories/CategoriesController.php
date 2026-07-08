@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/categories')]
 final class CategoriesController extends AbstractController
@@ -60,20 +62,22 @@ final class CategoriesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_categories_show', methods: ['GET'])]
-    public function show(Categories $category): Response
-    {
-        return $this->render('categories/show.html.twig', [
-            'ariane' => ['index' => true, 'category' => true],
-            'category' => $category,
-        ]);
-    }
+    // #[Route('/{id}', name: 'app_categories_show', methods: ['GET'])]
+    // public function show(Categories $category): Response
+    // {
+    //     return $this->render('categories/show.html.twig', [
+    //         'ariane' => ['index' => true, 'category' => true],
+    //         'category' => $category,
+    //     ]);
+    // }
 
     #[Route('/{id}/edit', name: 'app_categories_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
-    {
-        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
-        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $category);
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'category')]
+    public function edit(
+        Request $request,
+        #[MapEntity(id: 'id')] Categories $category,
+        EntityManagerInterface $entityManager
+    ): Response {
 
         $form = $this->createForm(CategoriesType::class, $category);
         $form->handleRequest($request);
@@ -92,12 +96,14 @@ final class CategoriesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_categories_delete', methods: ['POST'])]
-    public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
-    {
-        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
-        $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $category);
+    #[IsGranted(ResourceOwnerVoter::DELETE, subject: 'category')]
+    public function delete(
+        Request $request,
+        #[MapEntity(id: 'id')] Categories $category,
+        EntityManagerInterface $entityManager
+    ): Response {
 
-        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $category->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
         }

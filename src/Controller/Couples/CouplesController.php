@@ -18,12 +18,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+
 class CouplesController extends AbstractController
 {
     /**
      * Ce contrôleur sert à afficher la liste des couples qr d'une faq.
      */
     #[Route('/couples/list-by-faq/{id_faq<\d+>}', name: 'app_couples_list_by_faq')]
+    #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
     public function list_by_faq(
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
@@ -96,6 +98,8 @@ class CouplesController extends AbstractController
      * Ce contrôleur sert à modifier un couple qr.
      */
     #[Route('/couples/update/{from<run|review|list>}/{id_faq<\d+>}/{id_couple<\d+>}', name: 'app_couples_update')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'couple')]
     public function update(
         EntityManagerInterface $entityManager,
         Request $request,
@@ -104,8 +108,6 @@ class CouplesController extends AbstractController
         #[MapEntity(id: 'id_couple')] Couples $couple,
         PictureService $pictureService,
     ): Response {
-        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
-        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $couple);
 
         $form = $this->createForm(CoupleFormType::class, $couple, [
             'layerType' => $faq->getLayerType(),
@@ -159,15 +161,14 @@ class CouplesController extends AbstractController
      * Ce contrôleur sert à supprimer un couple qr.
      */
     #[Route('/couples/delete/{id_faq<\d+>}/{id_couple<\d+>}', name: 'app_couples_delete')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'couple')]
     public function delete(
         EntityManagerInterface $entityManager,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         #[MapEntity(id: 'id_couple')] Couples $couple,
-        PictureService $picture,
         Request $request,
     ): Response {
-        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
-        $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $couple);
 
         if ($this->isCsrfTokenValid('delete' . $couple->getId(), $request->getPayload()->getString('_token'))) {
 
@@ -184,6 +185,7 @@ class CouplesController extends AbstractController
      * Il est appelé lorsqu'un utilisateur appuie sur le bouton A Revoir en Run-normal.
      */
     #[Route('/couples/set-one-review/{id_couple<\d+>}', name: 'app_couples_set_one_review')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'couple')]
     public function set_one_review(
         EntityManagerInterface $entityManager,
         CouplesRepository $repo,
@@ -225,6 +227,7 @@ class CouplesController extends AbstractController
      * Il est appelé lorsqu'un utilisateur appuie sur le bouton Ne plus revoir en Run-Review.
      */
     #[Route('/couples/cancel-one-review/{id_couple<\d+>}', name: 'app_couples_cancel_one_review')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'couple')]
     public function cancel_one_review(
         EntityManagerInterface $entityManager,
         CouplesRepository $repo,

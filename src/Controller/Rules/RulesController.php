@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class RulesController extends AbstractController
 {
     #[Route('/list-by-faq/{id_faq<\d+>}', name: 'app_rules_list_by_faq', methods: ['GET'])]
+    #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
     public function list_by_faq(
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
@@ -64,14 +65,15 @@ final class RulesController extends AbstractController
     }
 
     #[Route('/edit/{id_faq<\d+>}/{id_rule<\d+>}', name: 'app_rules_edit', methods: ['GET', 'POST'])]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'rule')]
     public function edit(
         Request $request,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         #[MapEntity(id: 'id_rule')] Rules $rule,
         EntityManagerInterface $entityManager,
     ): Response {
-        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
-        $this->denyAccessUnlessGranted(ResourceOwnerVoter::EDIT, $rule);
+
 
         $form = $this->createForm(RulesType::class, $rule);
         $form->handleRequest($request);
@@ -93,14 +95,14 @@ final class RulesController extends AbstractController
     }
 
     #[Route('/delete/{id_faq<\d+>}/{id_rule<\d+>}', name: 'app_rules_delete', methods: ['POST'])]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]
+    #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'rule')]
     public function delete(
         Request $request,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         #[MapEntity(id: 'id_rule')] Rules $rule,
         EntityManagerInterface $entityManager,
     ): Response {
-        // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
-        $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $rule);
 
         if ($this->isCsrfTokenValid('delete' . $rule->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($rule);
