@@ -9,7 +9,7 @@ use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
 
 #[AsEntityListener(event: Events::preRemove, method: 'preRemove', entity: Images::class)]
-class ImageUploadListener
+class ImageDeleteListener
 {
     private PictureService $pictureService;
 
