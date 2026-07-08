@@ -33,20 +33,22 @@ final class RulesController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
     ): Response {
+
+        dump('Rules / new');
+
         $rule = new Rules();
         $rule->setFaq($faq);
+        $rule->setUser($this->getUser());
+
         $form = $this->createForm(RulesType::class, $rule);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Users $user */
-            $user = $this->getUser();
 
-            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité grâce au Trait
-            $rule->setUser($user);
-
-            $rule->setFaq($faq);
             $rule = $form->getData();
+            $rule->setFaq($faq);
+
             $entityManager->persist($rule);
             $entityManager->flush();
 
@@ -100,7 +102,7 @@ final class RulesController extends AbstractController
         // 🔒 Sécurisation : Si l'user connecté n'est pas le proprio, Symfony balance une 403 Access Denied
         $this->denyAccessUnlessGranted(ResourceOwnerVoter::DELETE, $rule);
 
-        if ($this->isCsrfTokenValid('delete'.$rule->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $rule->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($rule);
             $entityManager->flush();
         }

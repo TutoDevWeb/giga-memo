@@ -4,7 +4,9 @@ namespace App\Controller\Main;
 
 use App\Entity\Faqs;
 use App\Form\SelectFaqFormType;
+use App\Repository\CategoriesRepository;
 use App\Repository\CouplesRepository;
+use App\Repository\FaqsRepository;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\SubmitButton;
@@ -18,7 +20,23 @@ class MainController extends AbstractController
     public function index(
         Request $request,
         #[MapEntity(id: 'id_faq')] ?Faqs $faq,
+        CategoriesRepository $categoriesRepository,
+        FaqsRepository $faqsRepository,
     ): Response {
+
+        // Si il n'y a pas de categories
+        if ($categoriesRepository->findNbCategory($this->getUser()) == 0) {
+
+            return $this->redirectToRoute('app_main_start_create_category');
+        }
+
+        // Si il n'y a pas de faqs
+        if ($faqsRepository->findNbFaq($this->getUser()) == 0) {
+
+            return $this->redirectToRoute('app_main_start_create_faq');
+        }
+
+
         $form = $this->createForm(SelectFaqFormType::class, null, [
             'user' => $this->getUser(), // Passe l'utilisateur connecté
             'faq' => $faq,

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Categories;
+use App\Entity\Users;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,6 +16,19 @@ class CategoriesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Categories::class);
     }
+
+    /**
+     * @return int Returns the number of Categories objects
+     */
+    public function findNbCategory(Users $actuelUser): int
+    {
+        return count($this->createQueryBuilder('c')
+            ->andWhere('c.user = :oneUser')
+            ->setParameter('oneUser', $actuelUser)
+            ->getQuery()
+            ->getResult());
+    }
+
 
     //    /**
     //     * @return Categories[] Returns an array of Categories objects

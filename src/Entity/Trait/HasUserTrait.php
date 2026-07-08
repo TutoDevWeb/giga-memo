@@ -6,6 +6,7 @@ namespace App\Entity\Trait;
 
 use App\Entity\Users;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 trait HasUserTrait
 {

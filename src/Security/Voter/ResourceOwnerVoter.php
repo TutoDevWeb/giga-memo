@@ -33,8 +33,6 @@ final class ResourceOwnerVoter extends Voter
             return false;
         }
 
-        // Grâce à la vérification method_exists() dans supports(),
-        // on est sûr à 100% que $subject possède la méthode getUser() issue de ton Trait.
         return $subject->getUser() === $user;
     }
 }

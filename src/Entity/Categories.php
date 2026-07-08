@@ -7,6 +7,7 @@ use App\Repository\CategoriesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategoriesRepository::class)]
 class Categories
@@ -18,6 +19,8 @@ class Categories
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotNull(message: "Cette valeur ne doit pas être nulle.")]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
