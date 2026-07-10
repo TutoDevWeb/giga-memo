@@ -1,1 +1,2 @@
-faqRequired: 'Merci de saisir le nom de la Faq.'
+notNull: 'Cette valeur ne doit pas être nulle.'
+notBlank: 'Ce champ doit être renseigné.'

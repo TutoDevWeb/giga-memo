@@ -20,7 +20,7 @@ class Faqs
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Assert\NotBlank(message: 'faqRequired')]
+    #[Assert\NotBlank(message: 'notBlank')]
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 

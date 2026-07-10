@@ -19,8 +19,7 @@ class Categories
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Assert\NotNull(message: "Cette valeur ne doit pas être nulle.")]
-    #[Assert\NotBlank(message: "Le nom ne peut pas être vide.")]
+    #[Assert\NotBlank(message: 'notBlank')]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 

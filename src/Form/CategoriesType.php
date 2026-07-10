@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Categories;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -11,9 +12,9 @@ class CategoriesType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('name')
-        ;
+        $builder->add('name', TextType::class, [
+            'empty_data' => '', // Pour éviter le null si la chaîne est vide.
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
