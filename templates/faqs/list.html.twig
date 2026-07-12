@@ -1,28 +1,29 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/crud_list.html.twig' %}
 
-{% block title %}Memo: Liste des Faqs
+{% set page_title = 'Gestion des Faqs' %}
+{% set page_icon = 'bi-book' %}
+
+{% block list %}
+
+	{% if faqs|length != 0 %}
+
+		{% for faq in faqs %}
+			<p>{{faq.name}}</p>
+		{% endfor %}
+
+	{% else %}
+
+		<p>Il n'y a pas de Faqs</p>
+
+	{% endif %}
+
 {% endblock %}
 
-{% block body %}
+{% block actions %}
 
-	<div class="container">
-
-		<h1 class='text-center h3'>Liste des Faqs</h1>
-
-		{% if faqs|length != 0 %}
-
-			{% for faq in faqs %}
-				<p>{{faq.name}}</p>
-			{% endfor %}
-
-		{% else %}
-
-			<p>Il n'y a pas de Faqs</p>
-
-		{% endif %}
-
-		<a class='btn btn-primary my-4' href="{{path('app_faqs_new')}}">Créer une Faq</a>
-
-	</div>
+	<a class="btn btn-primary" href="{{path('app_faqs_new')}}">
+		<i class="bi bi-plus-circle me-2"></i>
+		Créer une Faq
+	</a>
 
 {% endblock %}

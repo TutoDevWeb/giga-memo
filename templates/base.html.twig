@@ -24,12 +24,27 @@
 
 	</head>
 
-	<body data-controller="answer image-preview">
+	<body class="d-flex flex-column min-vh-100" data-controller="answer image-preview">
 
 		{% include "_partials/_nav.html.twig" %}
-		{% block body %}{% endblock %}
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-	</body>
 
-</html>
+		<main class="flex-grow-1"> {% block body %}{% endblock %}
+			</main>
+
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+			<footer class="footer py-3">
+				<div class="container text-center">
+					<small>
+						<i class="bi bi-journal-code me-2"></i>
+						Memo - Application Symfony •
+						{{ "now"|date("Y") }}
+					</small>
+				</div>
+			</footer>
+
+		</body>
+
+
+	</html>

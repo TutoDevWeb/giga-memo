@@ -178,3 +178,33 @@ body {
 .form-check-label {
     color: #ddd;
 }
+
+.footer {
+    background: #2b2d31;
+    border-top: 1px solid #3c3f44;
+    color: #adb5bd;
+}
+
+.footer i {
+    color: #6ea8fe;
+}
+
+.footer a {
+    color: #adb5bd;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: #ffffff;
+}
+
+.table {
+    color: #e8e8e8;
+    --bs-table-bg: transparent;
+    --bs-table-border-color: #444;
+}
+
+.table-hover tbody tr:hover {
+    --bs-table-hover-bg: #34373c;
+    color: white;
+}
