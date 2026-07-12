@@ -1,20 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/form_card.html.twig' %}
 
-{% block title %}New Categories
-{% endblock %}
+{% set page_title = 'Créer une nouvelle catégorie' %}
+{% set page_icon = 'bi-folder-plus' %}
 
-{% block body %}
+{% block form %}
 
-	<div class="container">
-		<div class="row">
-			<div class="col">
-
-				<h1 class='text-center h3'>Créer une nouvelle catégorie</h1>
-
-				{{ include('categories/_form.html.twig', {'button_label': 'Créer'}) }}
-
-			</div>
-		</div>
-	</div>
+	{{ include('categories/_form.html.twig', {
+        button_label: 'Créer',
+        button_icon: 'plus-circle'
+    }) }}
 
 {% endblock %}

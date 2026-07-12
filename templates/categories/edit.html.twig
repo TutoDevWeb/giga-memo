@@ -1,23 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/form_card.html.twig' %}
 
-{% block title %}Edit Categories
-{% endblock %}
+{% set page_title = 'Modifier une catégorie' %}
+{% set page_icon = 'bi-folder-plus' %}
 
-{% block body %}
+{% block form %}
 
-	<div class="container">
-		<div class="row">
-			<div class="col">
-
-
-				<h1 class='text-center h3'>Modifier une categorie</h1>
-				<h2 class='text-center darkred h4'>{{ category.name }}</h2>
-
-				{{ include('categories/_form.html.twig', {'button_label': 'Modifier'}) }}
-
-
-			</div>
-		</div>
-	</div>
+	{{ include('categories/_form.html.twig', {
+        button_label: 'Modifier',
+        button_icon: 'pencil-square'
+    }) }}
 
 {% endblock %}

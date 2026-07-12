@@ -3,7 +3,9 @@
 }
 
 a.ariane {
-    color: maroon;
+
+    color: #e8e8e8;
+
 }
 
 a.ariane:hover {
@@ -111,4 +113,68 @@ a.ariane:hover {
     border-radius: 4px;
     object-fit: contain;
     /* Garde les proportions de l'image */
+}
+
+/* Pour les boutons liés aux faqs sur la page d'accueil */
+.btn-responsive {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .btn-responsive {
+        width: 50%;
+        max-width: 400px;
+    }
+}
+
+/* Page gérer les Faqs */
+.btn-action {
+    margin-top: 1em;
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .btn-action {
+        width: 50%;
+        max-width: 400px;
+    }
+}
+
+body {
+    background: #1e1f22;
+    color: #e8e8e8;
+}
+
+.card {
+    background: #2b2d31;
+    border: 1px solid #3c3f44;
+    border-radius: 12px;
+
+
+}
+
+.card-header {
+    background: #34373c;
+    border-bottom: 1px solid #444;
+    color: #e8e8e8;
+}
+
+.form-control {
+    background: #1f2124;
+    border: 1px solid #555;
+    color: #fff;
+}
+
+.form-control:focus {
+    background: #26282c;
+    color: #fff;
+}
+
+.form-label {
+    color: #ddd;
+}
+
+.col-form-label,
+.form-check-label {
+    color: #ddd;
 }

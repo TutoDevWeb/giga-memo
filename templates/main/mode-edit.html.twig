@@ -5,28 +5,33 @@
 
 {% block body %}
 
-	<h1 class=' text-center h3'>Accueil du mode Edit</h1>
+<h1 class=' text-center h3'>Accueil du mode Edit</h1>
 
-	<h2 class='text-center darkred h4'>{{ faq.name }}</h2>
+<h2 class='text-center darkred h4'>{{ faq.name }}</h2>
 
-	{# Liste des actions lorsqu'une Faq est sélectionner #}
-	{% if faq != null %}
-		<div class="container">
-			<div class="row text-center">
-				<div class="col-12 col-md-3 p-4">
-					<a class='btn btn-primary' title='Voir la liste des QRs (Question/Réponse) de la Faq' href="{{path('app_couples_list_by_faq',{'id_faq' : faq.id})}}">Liste des QRs de la Faq</a>
-				</div>
-				<div class="col-12 col-md-3 p-4">
-					<a class='btn btn-primary' title='Voir la liste des Règles de la Faq' href="{{path('app_rules_list_by_faq',{'id_faq' : faq.id})}}">Liste des règles de la Faq</a>
-				</div>
-				<div class="col-12 col-md-3 p-4">
-					<a class='btn btn-primary' title='Modifier la Faq' href="{{path('app_faqs_update',{'id_faq' : faq.id})}}">Modifier la Faq</a>
-				</div>
-				<div class="col-12 col-md-3 p-4">
-					{{ include ("faqs/_delete_form.html.twig") }}
-				</div>
-			</div>
+{# Liste des actions lorsqu'une Faq est sélectionner #}
+{% if faq != null %}
+
+	<div class="container">
+
+		<div class="d-flex flex-column align-items-center gap-3 div_run p-4 mt-4">
+
+			<a class="btn btn-primary btn-action" href="{{ path('app_couples_list_by_faq', {'id_faq': faq.id}) }}" title="Voir la liste des QRs (Question/Réponse) de la FAQ">
+				Liste des QRs de la FAQ
+			</a>
+
+			<a class="btn btn-primary btn-action" href="{{ path('app_rules_list_by_faq', {'id_faq': faq.id}) }}" title="Voir la liste des Règles de la FAQ">
+				Liste des règles de la FAQ
+			</a>
+
+			<a class="btn btn-primary btn-action" href="{{ path('app_faqs_update', {'id_faq': faq.id}) }}" title="Modifier la FAQ">
+				Modifier la FAQ
+			</a>
+
+			{{ include('faqs/_delete_form.html.twig') }}
+
 		</div>
-	{% endif %}
 
-{% endblock %}
+	</div>
+
+</div>{% endif %}{% endblock %}

@@ -1,68 +1,75 @@
-<div class="text-center my-4">
-	{% if ariane.index is defined and ariane.index == true %}
-		{% if faq.id is defined %}
-			<a class="ariane" href="{{path('app_main_index',{id_faq: faq.id})}}">Accueil</a>
-		{% else %}
-			<a class="ariane" href="{{path('app_main_index')}}">Accueil</a>
-		{% endif %}
-	{% endif %}
+{% if ariane.index is defined %}
+	<nav class="container">
+		<div class="row align-items-center my-4">
+			<div class="col text-start p-2">
+				{% if ariane.index == true %}
+					{% if faq.id is defined %}
+						<a class="ariane" href="{{path('app_main_index',{id_faq: faq.id})}}">Accueil</a>
+					{% else %}
+						<a class="ariane" href="{{path('app_main_index')}}">Accueil</a>
+					{% endif %}
+				{% endif %}
 
-	{% if ariane.run is defined and ariane.run == true %}
-		{% if faq.id is defined %}
-			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_main_run',{id_faq: faq.id})}}">Modes run faq</a>
-			{% if ariane.mode_run is defined and ariane.mode_run=='normal' %}
-				&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Run en mode normal
-			{% endif %}
-			{% if ariane.mode_run is defined and ariane.mode_run=='review' %}
-				&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Run en mode révision
-			{% endif %}
+				{% if ariane.run is defined and ariane.run == true %}
+					{% if faq.id is defined %}
+						&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_main_run',{id_faq: faq.id})}}">Modes run faq</a>
+						{% if ariane.mode_run is defined and ariane.mode_run=='normal' %}
+							&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Normal
+						{% endif %}
+						{% if ariane.mode_run is defined and ariane.mode_run=='review' %}
+							&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Révision
+						{% endif %}
 
-		{% else %}
-			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_main_run')}}">Mode run faq</a>
-		{% endif %}
-	{% endif %}
+					{% else %}
+						&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_main_run')}}">Mode run faq</a>
+					{% endif %}
+				{% endif %}
 
-	{% if ariane.edit is defined and ariane.edit == true %}
-		{% if faq.id is defined %}
-			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_main_edit',{id_faq: faq.id})}}">Mode edit faq</a>
-			{% if ariane.list_by_faq is defined and ariane.list_by_faq == 'couple' %}
-				&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Liste des couples
-			{% endif %}
-			{% if ariane.list_by_faq is defined and ariane.list_by_faq == 'rule' %}
-				&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Liste des règles
-			{% endif %}
-			{% if ariane.update is defined and ariane.update == 'faq' %}
-				&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une faq
-			{% endif %}
-			{% if ariane.update is defined and ariane.update == 'couple' %}
-				&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier un QR
-			{% endif %}
-			{% if ariane.update is defined and ariane.update == 'rule' %}
-				&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une règle
-			{% endif %}
-		{% else %}
-			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_main_edit')}}">Mode edit faq</a>
-		{% endif %}
-	{% endif %}
+				{% if ariane.edit is defined and ariane.edit == true %}
+					{% if faq.id is defined %}
+						&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_main_edit',{id_faq: faq.id})}}">Mode edit faq</a>
+						{% if ariane.list_by_faq is defined and ariane.list_by_faq == 'couple' %}
+							&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Liste des couples
+						{% endif %}
+						{% if ariane.list_by_faq is defined and ariane.list_by_faq == 'rule' %}
+							&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Liste des règles
+						{% endif %}
+						{% if ariane.update is defined and ariane.update == 'faq' %}
+							&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une faq
+						{% endif %}
+						{% if ariane.update is defined and ariane.update == 'couple' %}
+							&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier un QR
+						{% endif %}
+						{% if ariane.update is defined and ariane.update == 'rule' %}
+							&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une règle
+						{% endif %}
+					{% else %}
+						&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_main_edit')}}">Mode edit faq</a>
+					{% endif %}
+				{% endif %}
 
-	{% if ariane.faq is defined and ariane.faq == true %}
-		{% if ariane.create is defined and ariane.create == true %}
-			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_faqs_new')}}">Creation faq</a>
-		{% endif %}
-	{% endif %}
+				{% if ariane.faq is defined and ariane.faq == true %}
+					{% if ariane.create is defined and ariane.create == true %}
+						&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_faqs_new')}}">Creation faq</a>
+					{% endif %}
+				{% endif %}
 
-	{% if ariane.category is defined and ariane.category == true %}
-		&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_categories_list')}}">Gestion des catégories</a>
-		{% if ariane.update is defined and ariane.update == 'category' %}
-			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une catégorie
-		{% endif %}
-		{% if ariane.create is defined and ariane.create == 'category' %}
-			&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer une catégorie
-		{% endif %}
-	{% endif %}
+				{% if ariane.category is defined and ariane.category == true %}
+					&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a class="ariane" href="{{path('app_categories_list')}}">Gestion des catégories</a>
+					{% if ariane.update is defined and ariane.update == 'category' %}
+						&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une catégorie
+					{% endif %}
+					{% if ariane.create is defined and ariane.create == 'category' %}
+						&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer une catégorie
+					{% endif %}
+				{% endif %}
+			</div>
 
-
-</div>
-{% if ariane.index is defined and ariane.index == true %}
-	<hr>
+			<div class="col-auto p-2">
+				<a href="{{ logout_path() }}">
+					<img src="{{ asset('images/logout.png') }}" width="32" height="32" alt="Se déconnecter">
+				</a>
+			</div>
+		</div>
+	</nav>
 {% endif %}

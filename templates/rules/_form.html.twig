@@ -11,5 +11,9 @@
 {{ form_label(form.content, null, { 'label': 'Enoncé de la règle','label_attr': {'class': 'mt-4'}}) }}
 {{ form_widget(form.content, {'attr': {'class': 'form-control-auto'}}) }}
 
-<button class="btn btn-primary mt-4">{{ button_label|default('Sauvegarder') }}</button>
+<button class="btn btn-primary mt-4">
+	<i class="bi bi-{{ button_icon|default('check-circle') }} me-2"></i>
+	{{ button_label|default('Sauvegarder') }}
+</button>
+
 {{ form_end(form) }}

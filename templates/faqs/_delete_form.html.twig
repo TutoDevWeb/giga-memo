@@ -1,4 +1,9 @@
-<form class='inline-form' method="post" action="{{ path('app_faqs_delete', {'id_faq': faq.id}) }}" onsubmit="return confirm('Etes vous sûr de vouloir supprimer ?');">
+<form class="btn-action" method="post" action="{{ path('app_faqs_delete', {'id_faq': faq.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ?');">
+
 	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ faq.id) }}">
-	<button class="btn btn-primary">Supprimer la faq</button>
+
+	<button class="btn btn-primary w-100">
+		Supprimer la FAQ
+	</button>
+
 </form>

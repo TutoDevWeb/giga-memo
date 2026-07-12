@@ -1,23 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/form_card.html.twig' %}
 
-{% block title %}Memo: Liste des Faqs
-{% endblock %}
+{% set page_title = 'Modifier une FAQ' %}
+{% set page_icon = 'bi-book' %}
 
-{% block body %}
+{% block form %}
 
-	<div class="container">
-
-		<h1 class='text-center h3'>Modification d'une Faq</h1>
-
-		<div class="row  justify-content-center text-center">
-			<div class="col-12 col-md-8">
-
-				{{ include ("faqs/_form.html.twig" , {'button_label': 'Modifier'}) }}
-
-
-			</div>
-		</div>
-
-	</div>
+	{{ include('faqs/_form.html.twig', {
+        button_label: 'Modifier',
+        button_icon: 'pencil-square'
+    }) }}
 
 {% endblock %}

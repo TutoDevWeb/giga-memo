@@ -1,18 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/form_card.html.twig' %}
 
-{% block title %}Edit Rules
-{% endblock %}
+{% set page_title = 'Modifier une règle' %}
+{% set page_icon = 'bi-card-checklist' %}
 
-{% block body %}
-	<div class="container">
-		<div class="row">
-			<div class="col">
-				<h1 class='text-center h3'>Modifier la règle</h1>
-				<h2 class='text-center darkred h4'>{{ faq.name }}</h2>
+{% block form %}
 
-				{{ include('rules/_form.html.twig', {'button_label': 'Modifier'}) }}
+	{{ include('rules/_form.html.twig', {
+        button_label: 'Modifier',
+        button_icon: 'pencil-square'
+    }) }}
 
-			</div>
-		</div>
-	</div>
 {% endblock %}

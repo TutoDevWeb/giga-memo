@@ -1,15 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/form_card.html.twig' %}
 
-{% block title %}Memo: Liste des questions / réponses
-{% endblock %}
+{% set page_title = 'Créer un nouveau QR' %}
+{% set page_icon = 'bi-patch-question' %}
 
-{% block body %}
+{% block form %}
 
-	<div class='container'>
+	{{ include('couples/_form.html.twig', {
+        button_label: 'Créer',
+        button_icon: 'plus-circle'
+    }) }}
 
-		<h1 class='text-center h3'>Création d'un couple Question / Réponse</h1>
-
-		{{ include('couples/_form.html.twig') }}
-
-	</div>
 {% endblock %}

@@ -1,21 +1,18 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/form_card.html.twig' %}
 
-{% block title %}Memo: Liste des questions / réponses
-{% endblock %}
+{% set page_title = 'Modifier un QR' %}
+{% set page_icon = 'bi-patch-question' %}
 
 {% block javascripts %}
 	{{ parent() }}
 	<script defer src="{{ asset('assets/js/images.js') }}"></script>
 {% endblock %}
 
-{% block body %}
+{% block form %}
 
-	<div class='container'>
-
-		<h1 class='text-center h3'>Modification d'un couple Question / Réponse</h1>
-
-		{{ include('couples/_form.html.twig') }}
-
-	</div>
+	{{ include('couples/_form.html.twig', {
+        button_label: 'Modifier',
+        button_icon: 'pencil-square'
+    }) }}
 
 {% endblock %}

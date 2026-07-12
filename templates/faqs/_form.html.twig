@@ -22,8 +22,9 @@
 {{ form_widget(form.duration,{ 'attr': {'class': 'mt-4'}}
 ) }}
 
-{# Bouton Créer ou Modifier #}
-<button class="btn btn-primary my-4">
-	{{ button_label }}</button>
+<button class="btn btn-primary btn-responsive mt-4">
+	<i class="bi bi-{{ button_icon|default('check-circle') }} me-2"></i>
+	{{ button_label|default('Save') }}
+</button>
 
 {{ form_end(form) }}
