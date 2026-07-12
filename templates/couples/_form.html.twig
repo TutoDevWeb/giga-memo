@@ -1,5 +1,7 @@
 {{ form_start(form) }}
 
+{{ form_errors(form) }}
+
 {# Champ num #}
 {{ form_label(form.num, null, { 'label': 'Position','label_attr': {'class': 'mt-4'}}) }}
 {{ form_errors(form.num) }}
@@ -49,9 +51,7 @@
 
 <button class="btn btn-primary mt-4">
 	<i class="bi bi-{{ button_icon|default('check-circle') }} me-2"></i>
-	{{ button_label|default('Créer') }}
+	{{ button_label|default('Default') }}
 </button>
-
-{{ form_errors(form) }}
 
 {{ form_end(form) }}

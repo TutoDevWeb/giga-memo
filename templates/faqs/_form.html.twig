@@ -2,17 +2,17 @@
 
 {{ form_start(form) }}
 
+{{ form_errors(form) }}
+
 {# Champ Texte du Nom #}
 {{ form_label(form.name, null, { 'label': 'Nom', 'label_attr': {'class': 'mt-4'} }) }}
-{{ form_widget(form.name) }}
-{{ form_help(form.name) }}
 {{ form_errors(form.name) }}
+{{ form_widget(form.name) }}
 
 {# Champ Category #}
 {{ form_label(form.category, null, { 'label': 'Categorie', 'label_attr': {'class': 'mt-4'} }) }}
-{{ form_widget(form.category) }}
-{{ form_help(form.category) }}
 {{ form_errors(form.category) }}
+{{ form_widget(form.category) }}
 
 {# Choix du layer_type #}
 {{ form_label(form.layerType, null, { 'label': 'Choisir le type de Layer', 'label_attr': {'class': 'mt-4'} }) }}
@@ -24,7 +24,7 @@
 
 <button class="btn btn-primary btn-responsive mt-4">
 	<i class="bi bi-{{ button_icon|default('check-circle') }} me-2"></i>
-	{{ button_label|default('Save') }}
+	{{ button_label|default('Default') }}
 </button>
 
 {{ form_end(form) }}

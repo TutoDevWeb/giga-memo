@@ -1,19 +1,24 @@
 {{ form_start(form) }}
 
+{{ form_errors(form) }}
+
 {{ form_label(form.faq, null, { 'label': 'Nom de la Faq','label_attr': {'class': 'mt-4'}}) }}
+{{ form_errors(form.faq) }}
 {{ form_widget(form.faq, {'attr': {'disabled': 'disabled'}}) }}
 
 {# Champ name #}
 {{ form_label(form.name, null, { 'label': 'Nom de la règle','label_attr': {'class': 'mt-4'}}) }}
+{{ form_errors(form.name) }}
 {{ form_widget(form.name) }}
 
 {# Champ content #}
 {{ form_label(form.content, null, { 'label': 'Enoncé de la règle','label_attr': {'class': 'mt-4'}}) }}
+{{ form_errors(form.content) }}
 {{ form_widget(form.content, {'attr': {'class': 'form-control-auto'}}) }}
 
 <button class="btn btn-primary mt-4">
 	<i class="bi bi-{{ button_icon|default('check-circle') }} me-2"></i>
-	{{ button_label|default('Sauvegarder') }}
+	{{ button_label|default('Default') }}
 </button>
 
 {{ form_end(form) }}
