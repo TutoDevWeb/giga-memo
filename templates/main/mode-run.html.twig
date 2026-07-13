@@ -1,3 +1,51 @@
+/* /templates/main/mode-run.html.twig */
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil du mode Run
+{% endblock %}
+
+{% block body %}
+
+	<h1 class=' text-center h3'>Accueil des modes Run de la faq</h1>
+
+	<h2 class=' text-center darkred h4'>{{ faq.name }}</h2>
+
+	{% if faq.duration is not null %}
+		<h3 class='text-center darkred h6'>{{ faq.duration.format('%i minutes') }}</h3>
+	{% endif %}
+
+	{# Liste des actions lorsqu'une Faq est sélectionner #}
+	{% if faq != null %}
+		<div class="container">
+			<div class="row g-4 text-center">
+				<div class="col-12 col-md-6">
+					<div class='p-5 div_run h-100 d-flex flex-column gap-2'>
+						<p>Run en mode normal</p>
+						<a class='btn btn-primary' title='Run de toute la Faq' href="{{path('app_faqs_run',{'id_faq' : faq.id})}}">Run
+							{# #}
+							(<span id='nbSelectRun'>{{nbSelectRun}}</span>/<span id='nbTodoRun'>{{nbTodoRun}}</span>)</a>
+						<button id="{{'restart_' ~ faq.id}}" title='Restart de toute la Faq' class='btn btn-primary btn-restart' data-token={{ csrf_token('restart' ~ faq.id)}}>Reprendre au début</button>
+					</div>
+				</div>
+				<div class="col-12 col-md-6">
+					<div class="p-5 div_run h-100 d-flex flex-column gap-2">
+						<p>Run en mode révision</p>
+						<a class='btn btn-primary' title='Run de ce qui est à revoir' href="{{path('app_faqs_review',{'id_faq' : faq.id})}}">Run
+							{# #}
+							(<span id='nbSelectReview'>{{nbSelectReview}}</span>/<span id='nbTodoReview'>{{nbTodoReview}}</span>)
+						</a>
+						<button id="{{'reset_review_' ~ faq.id}}" title='Reset des review de la Faq' class='btn btn-primary btn-reset-review' data-token={{ csrf_token('reset-review' ~ faq.id)}}>Vider la liste de révision
+							{# #}
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
+{% endblock %}
+
+/* /templates/main/mode-run.html.twig */
 {% extends 'base.html.twig' %}
 
 {% block title %}Accueil du mode Run
