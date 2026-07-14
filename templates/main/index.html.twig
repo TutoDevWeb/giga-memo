@@ -1,64 +1,64 @@
 {# /templates/main/index.html.twig #}
-{% extends 'base.html.twig' %}
+{% extends 'layouts/dashboard_index.html.twig' %}
 
 {% block title %}Index
 {% endblock %}
 
-{% block body %}
+{% set dashboard_title = 'Accueil' %}
 
-	<div class="container">
-
-		<div class='div_run text-center p-4 mt-4'>
-			<a class='btn btn-primary' href={{path('app_categories_list')}}>Gérer les catégories</a>
-		</div>
-
-		{{ form_start(form) }}
-		<div>
-			<div class="div_run p-4 mt-4">
-				<div class="row text-center">
-
-					<div data-controller="dynamic-select">
-
-						{{ form_label(form.category, null, { 'label': 'Choisir la catégorie','label_attr': {'class':'mt-4'}}) }}
-						{{ form_widget(form.category) }}
-						{{ form_errors(form.category) }}
+{% block dashboard_content %}
 
 
-						{{ form_label(form.faq, null, { 'label': 'Choisir la faq','label_attr': {'class':'mt-4'}}) }}
-						{{ form_widget(form.faq) }}
-						{{ form_errors(form.faq) }}
-
-					</div>
-				</div>
-
-				<div class="row text-center">
-
-					<div class="col-12 col-md-6 p-4 d-flex justify-content-center">
-						{{ form_widget(form.edit, { 'label': 'Éditer la FAQ', 'attr': { 'class': 'btn btn-primary btn-responsive' } }) }}
-					</div>
-
-					<div class="col-12 col-md-6 p-4 d-flex justify-content-center">
-						<a class="btn btn-primary btn-responsive" href="{{ path('app_faqs_new') }}">
-							Créer une nouvelle FAQ
-						</a>
-					</div>
-
-				</div>
-
-			</div>
-
-			<div class="row my-4 text-center">
-
-				<div class="col-12">
-					{{ form_widget(form.run,{ 'label': 'Accéder aux modes run de la FAQ' ,'attr': {'class': 'btn-primary btn-large mt-4'}}) }}
-				</div>
-
-			</div>
-
-
-		</div>
-		{{ form_errors(form) }}
-		{{ form_end(form) }}
+	<div class='div_run text-center p-4 mt-4'>
+		<a class='btn btn-primary' href={{path('app_categories_list')}}>Gérer les catégories</a>
 	</div>
+
+	{{ form_start(form) }}
+	<div>
+		<div class="div_run p-4 mt-4">
+			<div class="row text-center">
+
+				{{ form_errors(form) }}
+				<div data-controller="dynamic-select">
+
+					{{ form_label(form.category, null, { 'label': 'Choisir la catégorie','label_attr': {'class':'mt-4'}}) }}
+					{{ form_errors(form.category) }}
+					{{ form_widget(form.category) }}
+
+
+					{{ form_label(form.faq, null, { 'label': 'Choisir la faq','label_attr': {'class':'mt-4'}}) }}
+					{{ form_errors(form.faq) }}
+					{{ form_widget(form.faq) }}
+
+				</div>
+			</div>
+
+			<div class="row text-center">
+
+				<div class="col-12 col-md-6 p-4 d-flex justify-content-center">
+					{{ form_widget(form.edit, { 'label': 'Éditer la FAQ', 'attr': { 'class': 'btn btn-primary btn-responsive' } }) }}
+				</div>
+
+				<div class="col-12 col-md-6 p-4 d-flex justify-content-center">
+					<a class="btn btn-primary btn-responsive" href="{{ path('app_faqs_new') }}">
+						Créer une nouvelle FAQ
+					</a>
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="row my-4 text-center">
+
+			<div class="col-12">
+				{{ form_widget(form.run,{ 'label': 'Accéder aux modes run de la FAQ' ,'attr': {'class': 'btn-primary btn-large mt-4'}}) }}
+			</div>
+
+		</div>
+
+
+	</div>
+	{{ form_end(form) }}
 
 {% endblock %}

@@ -1,22 +1,23 @@
-/* /templates/main/index_start_create_category.html.twig */
-{% extends 'base.html.twig' %}
+{# /templates/main/index_start_create_category.html.twig  #}
+{% extends 'layouts/dashboard_index.html.twig' %}
 
 {% block title %}Création de la première catégorie
 {% endblock %}
 
-{% block body %}
+
+{% set dashboard_title = 'Démarer : Créer la première catégorie' %}
+
+{% block dashboard_content %}
 
 	{{ form_start(form) }}
-	<div class="container">
-		<div class="row">
-			<div class="col">
+	<div class="row">
+		<div class="col">
 
-				{{ form_label(form.name, null, { 'label': 'Saisir le nom de votre première catégorie','label_attr': {'class':'mt-4'}}) }}
-				{{ form_widget(form.name) }}
-				{{ form_errors(form.name) }}
+			{{ form_label(form.name, null, { 'label': 'Saisir le nom de votre première catégorie','label_attr': {'class':'mt-4'}}) }}
+			{{ form_widget(form.name) }}
+			{{ form_errors(form.name) }}
 
-				<button class="btn btn-primary mt-4">Créer la catégorie</button>
-			</div>
+			<button class="btn btn-primary mt-4">Créer la catégorie</button>
 		</div>
 	</div>
 	{{ form_end(form) }}

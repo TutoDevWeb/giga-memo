@@ -1,18 +1,17 @@
-/* /templates/main/index_start_create_faq.html.twig */
-{% extends 'base.html.twig' %}
+{# /templates/main/index_start_create_faq.html.twig  #}
+{% extends 'layouts/dashboard_index.html.twig' %}
 
 {% block title %}Création de la première faq
 {% endblock %}
 
-{% block body %}
+{% set dashboard_title = 'Démarer : Créer la première faq' %}
 
-	<div class="container">
-		<div class="row">
-			<div class="col">
-				{{ include ("faqs/_form.html.twig" , {'button_label': 'Créer'}) }}
-			</div>
+{% block dashboard_content %}
+
+	<div class="row">
+		<div class="col">
+			{{ include ("faqs/_form.html.twig" , {'button_label': 'Créer'}) }}
 		</div>
 	</div>
-
 
 {% endblock %}
