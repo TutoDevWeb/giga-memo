@@ -1,28 +1,29 @@
-/* /templates/faqs/run.html.twig */
-{% extends 'base.html.twig' %}
+{# /templates/faqs/run.html.twig  #}
+{% extends 'layouts/learning.html.twig' %}
 
 {% block title %}Run du Memo
 {% endblock %}
 
-{% block body %}
 
-	<h1 class='text-center h3'>Run normal de la faq</h1>
+{% set learning_title = 'Run normal de la faq' %}
+
+{% block learning_subtitle %}
 	<h2 class='text-center darkred h5'>{{ faq.name }}</h2>
 	{% if faq.duration is not null %}
 		<h3 class='text-center darkred h6'>{{ faq.duration.format('%i minutes') }}</h3>
 	{% endif %}
 
-	{# Si il n'y a plus de couple question/reponse #}
+{% endblock %}
+
+{% block learning_content %}
 	{% if couple is defined and couple is null %}
 		<div class="container mt-4">
 			<p>Il n'y a plus de questions / réponses</p>
 		</div>
 		<hr>
-
 	{% else %}
 
 		{% include "_partials/_layers.html.twig" %}
-
 		{% include "_partials/_images.html.twig" %}
 
 		<div class="container mt-4">
@@ -49,6 +50,7 @@
 			</div>
 		</div>
 
+		{# Bouton Modifier #}
 		<div class="text-center mt-4">
 			<a class='btn btn-primary' href="{{ path('app_couples_update',{ 'from': 'run','id_faq' : faq.id, 'id_couple' : couple.id})}}">Modifier</a>
 		</div>

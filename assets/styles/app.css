@@ -40,8 +40,8 @@ a.ariane:hover {
 
 /* les div qui sont sur l'accueil des modes run */
 .div_run {
-    background-color: rgb(233, 253, 253);
-    border: 2px solid rgb(29, 29, 139);
+    background-color: rgb(60, 61, 61);
+    border: 2px solid rgb(21, 21, 22);
 }
 
 /* Le style des id en database */

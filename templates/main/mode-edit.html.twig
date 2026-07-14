@@ -1,38 +1,34 @@
 {# /templates/main/mode-edit.html.twig #}
-{% extends 'base.html.twig' %}
+{% extends 'layouts/dashboard_bi.html.twig' %}
 
 {% block title %}Accueil du mode Edit
 {% endblock %}
 
-{% block body %}
+{% set dashboard_title = 'Accueil du mode Edit' %}
 
-<h1 class=' text-center h3'>Accueil du mode Edit</h1>
+{% block dashboard_subtitle %}
 
-<h2 class='text-center darkred h4'>{{ faq.name }}</h2>
+	<h2 class='text-center darkred h4'>{{ faq.name }}</h2>
 
-{# Liste des actions lorsqu'une Faq est sélectionner #}
-{% if faq != null %}
+{% endblock %}
 
-	<div class="container">
+{% block dashboard_content_left %}
 
-		<div class="d-flex flex-column align-items-center gap-3 div_run p-4 mt-4">
+	<a class="btn btn-primary btn-action" href="{{ path('app_couples_list_by_faq', {'id_faq': faq.id}) }}" title="Voir la liste des QRs (Question/Réponse) de la FAQ">
+		Liste des QRs de la FAQ
+	</a>
 
-			<a class="btn btn-primary btn-action" href="{{ path('app_couples_list_by_faq', {'id_faq': faq.id}) }}" title="Voir la liste des QRs (Question/Réponse) de la FAQ">
-				Liste des QRs de la FAQ
-			</a>
+	<a class="btn btn-primary btn-action" href="{{ path('app_rules_list_by_faq', {'id_faq': faq.id}) }}" title="Voir la liste des Règles de la FAQ">
+		Liste des règles de la FAQ
+	</a>
 
-			<a class="btn btn-primary btn-action" href="{{ path('app_rules_list_by_faq', {'id_faq': faq.id}) }}" title="Voir la liste des Règles de la FAQ">
-				Liste des règles de la FAQ
-			</a>
+{% endblock %}
 
-			<a class="btn btn-primary btn-action" href="{{ path('app_faqs_update', {'id_faq': faq.id}) }}" title="Modifier la FAQ">
-				Modifier la FAQ
-			</a>
+{% block dashboard_content_right %}
+	<a class="btn btn-primary btn-action" href="{{ path('app_faqs_update', {'id_faq': faq.id}) }}" title="Modifier la FAQ">
+		Modifier la FAQ
+	</a>
 
-			{{ include('faqs/_delete_form.html.twig') }}
+	{{ include('faqs/_delete_form.html.twig') }}
 
-		</div>
-
-	</div>
-
-</div>{% endif %}{% endblock %}
+{% endblock %}
