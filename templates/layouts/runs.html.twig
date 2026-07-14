@@ -1,0 +1,70 @@
+{# templates/layouts/runs.html.twig #}
+{# run (run normal) / review (run révision)#}
+
+{% extends 'base.html.twig' %}
+
+	{% block body %}
+
+		<div class="container py-4"> <div class="row justify-content-center">
+
+			<div class="col-12 col-md-11 col-lg-10">
+
+				<div class="card shadow-sm">
+
+					<div class="card-header">
+
+						<h1 class="h3 text-center mb-0">
+							{{ run_type_title }}
+						</h1>
+
+						<h2 class='text-center darkred h5'>{{ faq.name }}</h2>
+						{% if faq.duration is not null %}
+							<h3 class='text-center darkred h6'>{{ faq.duration.format('%i minutes') }}</h3>
+						{% endif %}
+
+					</div>
+
+					<div class="card-body">
+
+						{% if couple is defined and couple is null %}
+							<div class="container mt-4">
+								<p>Il n'y a plus de questions / réponses</p>
+							</div>
+							<hr>
+						{% else %}
+
+							{% include "_partials/_layers.html.twig" %}
+							{% include "_partials/_images.html.twig" %}
+
+							<div
+								class="row justify-content-center text-center">
+								{# Bouton Voir la réponse #}
+								<div class="col-12 col-md-4 p-4"> {% block bouton_reponse %}{% endblock %}
+									</div>
+									{# Bouton Suivant #}
+									<div class="col-12 col-md-4 p-4"> {% block bouton_suivant %}{% endblock %}
+										</div>
+										{# Bouton A Revoir #}
+										<div class="col-12 col-md-4 p-4"> {% block bouton_revoir %}{% endblock %}
+											</div>
+										</div>
+
+										{# Bouton Modifier #}
+										<div class="text-center mt-4"> {% block bouton_modifier %}{% endblock %}
+											</div>
+
+											<div class="text-center idTable mt-4">(*&nbsp;{{ couple.id}})</div>
+
+										{% endif %}
+
+									</div>
+									{# card-body #}
+								</div>
+								{# card #}
+							</div>
+							{# col #}
+						</div>
+						{# row #}
+					</div>
+					{# container #}
+				{% endblock %}

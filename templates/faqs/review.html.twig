@@ -1,61 +1,28 @@
 {# /templates/faqs/review.html.twig #}
-{% extends 'layouts/learning.html.twig' %}
+{% extends 'layouts/runs.html.twig' %}
 
 {% block title %}Review du Memo
 {% endblock %}
 
+{% set run_type_title = 'Run review de la faq' %}
 
-{% set learning_title = 'Run review de la faq' %}
-
-{% block learning_subtitle %}
-	<h2 class='text-center darkred h5'>{{ faq.name }}</h2>
-	{% if faq.duration is not null %}
-		<h3 class='text-center darkred h6'>{{ faq.duration.format('%i minutes') }}</h3>
-	{% endif %}
-
+{% block bouton_reponse %}
+	<button id='bouton-reponse' data-action="click->answer#show" class='btn btn-primary'>Voir La réponse</button>
 {% endblock %}
 
-{% block learning_content %}
-	{% if couple is defined and couple is null %}
-		<div class="container mt-4">
-			<p>Il n'y a plus de questions / réponses</p>
-		</div>
-		<hr>
-	{% else %}
+{% block bouton_suivant %}
+	<a class='btn btn-primary' href="{{ path('app_faqs_next_review',{ id_faq : faq.id})}}">Suivant
+		{# #}
+		(<span id='nbSelectReview'>{{nbSelectReview}}</span>/<span id='nbTodoReview'>{{ nbTodoReview - 1}}</span>)
+	</a>
+{% endblock %}
 
-		{% include "_partials/_layers.html.twig" %}
-		{% include "_partials/_images.html.twig" %}
+{% block bouton_revoir %}
+	<button id='cancel-one-review' data-couple-id='{{couple.id}}' class='btn btn-primary' data-token={{csrf_token('cancel-one-review' ~ couple.id)}}>Ne Plus Revoir
+		{# #}
+	</button>
+{% endblock %}
 
-		<div class="container mt-4">
-			<div
-				class="row justify-content-center text-center">
-				{# Bouton Voir la réponse #}
-				<div class="col-12 col-md-4 p-4">
-					<button id='bouton-reponse' data-action="click->answer#show" class='btn btn-primary'>Voir La réponse</button>
-				</div>
-				{# Bouton Suivant #}
-				<div class="col-12 col-md-4 p-4">
-					<a class='btn btn-primary' href="{{ path('app_faqs_next_review',{ id_faq : faq.id})}}">Suivant
-						{# #}
-						(<span id='nbSelectReview'>{{nbSelectReview}}</span>/<span id='nbTodoReview'>{{ nbTodoReview - 1}}</span>)
-					</a>
-				</div>
-				{# Bouton A Revoir #}
-				<div class="col-12 col-md-4 p-4">
-					<button id='cancel-one-review' data-couple-id='{{couple.id}}' class='btn btn-primary' data-token={{csrf_token('cancel-one-review' ~ couple.id)}}>Ne Plus Revoir
-						{# #}
-
-					</button>
-				</div>
-			</div>
-		</div>
-
-		{# Bouton Modifier #}
-		<div class="text-center mt-4">
-			<a class='btn btn-primary' href="{{ path('app_couples_update',{ from: 'review','id_faq' : faq.id,id_couple : couple.id})}}">Modifier</a>
-		</div>
-
-		<div class="text-center idTable mt-4">(*&nbsp;{{ couple.id}})</div>
-
-	{% endif %}
+{% block bouton_modifier %}
+	<a class='btn btn-primary' href="{{ path('app_couples_update',{ from: 'review','id_faq' : faq.id,id_couple : couple.id})}}">Modifier</a>
 {% endblock %}
