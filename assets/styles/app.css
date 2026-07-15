@@ -1,16 +1,8 @@
-.btn-large {
-    --bs-btn-padding-x: 3rem;
-}
-
-a.ariane {
-
-    color: #e8e8e8;
-
-}
-
-a.ariane:hover {
-    text-decoration: none;
-}
+@import "theme.css";
+@import "ariane.css";
+@import "tables.css";
+@import "images.css";
+@import "footer.css";
 
 
 .form-control-auto {
@@ -18,21 +10,6 @@ a.ariane:hover {
     resize: none !important;
 }
 
-/* Conteneur des images en mode run */
-.image-container {
-    text-align: center;
-}
-
-.image-container img {
-    max-width: 100%;
-    /* Ne dépasse jamais la largeur du parent */
-    height: auto;
-}
-
-/* Couleur du nom de la Faq */
-.darkred {
-    color: darkred;
-}
 
 .hidden {
     display: none;
@@ -65,56 +42,6 @@ a.ariane:hover {
     padding: 0;
 }
 
-/* Survol des liens et previsualisation des images */
-/* Le conteneur de l'aperçu */
-
-.preview-link {
-    width: 50px;
-    display: inline-block;
-    padding: 0.2em;
-    margin: 0.1em;
-    text-decoration: none;
-    background-color: rgb(188, 188, 247);
-}
-
-.image-preview-overlay {
-    position: fixed;
-    /* Fixé par rapport à l'écran */
-    top: 0;
-    left: 0;
-    width: 100vw;
-    /* Toute la largeur */
-    height: 100vh;
-    /* Toute la hauteur */
-    background-color: rgba(0, 0, 0, 0.7);
-    /* Fond semi-transparent */
-    z-index: 9999;
-    /* Au-dessus de tout le contenu */
-
-    /* Centrage parfait avec Flexbox */
-    display: none;
-    /* Caché par défaut (géré par le JS) */
-    justify-content: center;
-    /* Centrage horizontal */
-    align-items: center;
-    /* Centrage vertical */
-
-    pointer-events: none;
-    /* Important : pour que le survol traverse l'overlay et ne bloque pas la souris */
-}
-
-/* L'image elle-même */
-.image-preview-overlay img {
-    max-width: 80%;
-    /* Ne dépasse pas 80% de la largeur de l'écran */
-    max-height: 80%;
-    /* Ne dépasse pas 80% de la hauteur de l'écran */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    border: 4px solid white;
-    border-radius: 4px;
-    object-fit: contain;
-    /* Garde les proportions de l'image */
-}
 
 /* Pour les boutons liés aux faqs sur la page d'accueil */
 .btn-responsive {
@@ -139,73 +66,4 @@ a.ariane:hover {
         width: 50%;
         max-width: 400px;
     }
-}
-
-body {
-    background: #1e1f22;
-    color: #e8e8e8;
-}
-
-.card {
-    background: #2b2d31;
-    border: 1px solid #3c3f44;
-    border-radius: 12px;
-
-
-}
-
-.card-header {
-    background: #34373c;
-    border-bottom: 1px solid #444;
-    color: #e8e8e8;
-}
-
-.form-control {
-    background: #1f2124;
-    border: 1px solid #555;
-    color: #fff;
-}
-
-.form-control:focus {
-    background: #26282c;
-    color: #fff;
-}
-
-.form-label {
-    color: #ddd;
-}
-
-.col-form-label,
-.form-check-label {
-    color: #ddd;
-}
-
-.footer {
-    background: #2b2d31;
-    border-top: 1px solid #3c3f44;
-    color: #adb5bd;
-}
-
-.footer i {
-    color: #6ea8fe;
-}
-
-.footer a {
-    color: #adb5bd;
-    text-decoration: none;
-}
-
-.footer a:hover {
-    color: #ffffff;
-}
-
-.table {
-    color: #e8e8e8;
-    --bs-table-bg: transparent;
-    --bs-table-border-color: #444;
-}
-
-.table-hover tbody tr:hover {
-    --bs-table-hover-bg: #34373c;
-    color: white;
 }

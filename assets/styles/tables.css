@@ -1,0 +1,10 @@
+.table {
+    color: #e8e8e8;
+    --bs-table-bg: transparent;
+    --bs-table-border-color: #444;
+}
+
+.table-hover tbody tr:hover {
+    --bs-table-hover-bg: #34373c;
+    color: white;
+}

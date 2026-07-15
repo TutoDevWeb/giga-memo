@@ -1,0 +1,53 @@
+body {
+    background: #1e1f22;
+    color: #e8e8e8;
+}
+
+/* Surcharge de la couleur des btn-primary de bootstrap */
+.btn-primary {
+    background-color: #6366f1 !important;
+    /* Indigo moderne */
+    border-color: #6366f1 !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: #4f46e5 !important;
+    border-color: #4f46e5 !important;
+}
+
+.card {
+    background: #2b2d31;
+    border: 1px solid #3c3f44;
+    border-radius: 12px;
+
+
+}
+
+.card-header {
+    background: #34373c;
+    border-bottom: 1px solid #444;
+    color: #e8e8e8;
+}
+
+.form-control {
+    background: #1f2124;
+    border: 1px solid #555;
+    color: #fff;
+}
+
+.form-control:focus {
+    background: #26282c;
+    color: #fff;
+}
+
+.form-label {
+    color: #ddd;
+}
+
+.col-form-label,
+.form-check-label {
+    color: #ddd;
+}
