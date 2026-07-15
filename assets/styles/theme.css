@@ -1,53 +1,102 @@
-body {
-    background: #1e1f22;
-    color: #e8e8e8;
+:root {
+    /* ==========================================================================
+       1. LA PALETTE PRIMAIRE (L'identité visuelle de ton application)
+       Ces variables définissent les couleurs signatures. En les modifiant ici,
+       toute l'application s'adapte instantanément sans devoir faire de 
+       "Rechercher/Remplacer" dans tout ton projet.
+       ========================================================================== */
+    --primary: #4f46e5;
+    /* Indigo : Couleur principale (boutons d'action, liens clés, focus) */
+    --primary-hover: #4338ca;
+    /* Indigo foncé : Utilisé lors du survol (:hover) des éléments primaires */
+    --secondary: #0f172a;
+    /* Slate 900 : Couleur secondaire sombre, parfaite pour des en-têtes ou des zones d'accent */
+    --accent: #06b6d4;
+    /* Cyan : Touche de couleur vive pour attirer l'attention sur des éléments spécifiques */
+
+    /* ==========================================================================
+       2. LES COULEURS DE FEEDBACK (La sémantique et les alertes)
+       Couleurs utilitaires pour les messages flash de Symfony, les badges de statut
+       ou les validations/erreurs de formulaires. Elles restent indépendantes du thème.
+       ========================================================================== */
+    --success: #10b981;
+    /* Vert : Opérations réussies, validations, statuts actifs */
+    --danger: #ef4444;
+    /* Rouge : Erreurs de formulaires, alertes critiques, suppressions */
+    --warning: #f59e0b;
+    /* Orange : Messages d'avertissement, actions nécessitant de l'attention */
+    --info: #3b82f6;
+    /* Bleu : Messages d'information générale ou d'aide */
+
+    /* ==========================================================================
+       3. LES NEUTRES (La structure et la lisibilité)
+       Basés sur la palette 'Slate'. On évite le noir pur (#000000) et le blanc trop 
+       agressif pour le fond général afin de donner un aspect "SaaS moderne" et pro.
+       Permet aussi de basculer facilement en Mode Sombre en ne modifiant que ces variables.
+       ========================================================================== */
+    --bg-app: #f8fafc;
+    /* Slate 50 : Fond de page gris très clair, doux pour les yeux */
+    --bg-card: #ffffff;
+    /* Blanc pur : Fond des cartes (cards), formulaires et tableaux pour ressortir du fond */
+    --text-main: #1e293b;
+    /* Slate 800 : Couleur du texte principal (très lisible, moins agressif que le noir pur) */
+    --text-muted: #64748b;
+    /* Slate 500 : Couleur du texte secondaire, légendes et informations d'arrière-plan */
+    --border-color: #e2e8f0;
+    /* Slate 200 : Gris très clair pour les bordures fines des tableaux, cartes et séparateurs */
+
+    /* ==========================================================================
+       4. L'ESTHÉTIQUE (Arrondis, Transitions et Ombres)
+       Garantit une cohérence visuelle parfaite sur l'ensemble de l'interface.
+       ========================================================================== */
+    /* Coins arrondis harmonisés */
+    --radius-sm: 6px;
+    /* Pour les petits éléments (badges, petits boutons, inputs) */
+    --radius-md: 10px;
+    /* Pour les éléments moyens (boutons principaux, fenêtres d'options) */
+    --radius-lg: 16px;
+    /* Pour les grands conteneurs (cartes de dashboard, formulaires, tableaux) */
+
+    /* Animation globale et fluide */
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Effet d'accélération physique naturelle au survol (boutons, lignes de tableau, liens) */
+
+    /* Ombres réalistes pour donner du relief (effet de profondeur) */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* Élévation minimale (utilisée par défaut sur les cartes) */
+
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* Élévation intermédiaire (parfaite lors du survol d'une carte ou d'un bouton) */
+
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    /* Forte élévation (idéale pour des fenêtres modales ou des éléments volants) */
 }
 
-/* Surcharge de la couleur des btn-primary de bootstrap */
-.btn-primary {
-    background-color: #6366f1 !important;
-    /* Indigo moderne */
-    border-color: #6366f1 !important;
-    color: #ffffff !important;
-}
+/* ==========================================================================
+   SUPPORT DU MODE SOMBRE AUTOMATIQUE (Optionnel)
+   Cette règle média détecte automatiquement si le système de l'utilisateur 
+   (Windows, macOS, Linux, Android, iOS) est configuré en mode sombre.
+   
+   Si c'est le cas, elle vient surcharger uniquement nos variables "Neutres" 
+   définies plus haut. Le reste du CSS (boutons, cartes, tableaux) s'adapte 
+   automatiquement sans aucun autre changement de code !
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-app: #0b0f19;
+        /* --bg-app: #081433; */
+        /* Slate 950 : Un bleu-noir très profond pour le fond général, beaucoup plus doux la nuit */
 
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary:active {
-    background-color: #4f46e5 !important;
-    border-color: #4f46e5 !important;
-}
+        --bg-card: #151f32;
+        /* Slate 900 : Un bleu sombre légèrement plus clair que le fond pour détacher les cartes et formulaires */
 
-.card {
-    background: #2b2d31;
-    border: 1px solid #3c3f44;
-    border-radius: 12px;
+        --text-main: #f1f5f9;
+        /* Slate 100 : Un gris presque blanc qui offre un contraste parfait et repose les yeux sans éblouir */
 
+        --text-muted: #94a3b8;
+        /* Slate 400 : Un gris moyen pour les textes secondaires et légendes, évitant l'effet de surcharge visuelle */
 
-}
-
-.card-header {
-    background: #34373c;
-    border-bottom: 1px solid #444;
-    color: #e8e8e8;
-}
-
-.form-control {
-    background: #1f2124;
-    border: 1px solid #555;
-    color: #fff;
-}
-
-.form-control:focus {
-    background: #26282c;
-    color: #fff;
-}
-
-.form-label {
-    color: #ddd;
-}
-
-.col-form-label,
-.form-check-label {
-    color: #ddd;
+        --border-color: #1e293b;
+        /* Slate 800 : Une bordure sombre très subtile pour délimiter les éléments sans créer de lignes blanches agressives */
+    }
 }

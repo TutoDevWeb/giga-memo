@@ -49,9 +49,11 @@
 
 {% endif %}
 
-<button class="btn btn-primary mt-4">
-	<i class="bi bi-{{ button_icon|default('check-circle') }} me-2"></i>
-	{{ button_label|default('Default') }}
-</button>
+<div class="text-end">
+	<button class="btn btn-primary mt-4">
+		<i class="bi bi-{{ button_icon|default('check-circle') }} me-2"></i>
+		{{ button_label|default('Default') }}
+	</button>
+</div>
 
 {{ form_end(form) }}

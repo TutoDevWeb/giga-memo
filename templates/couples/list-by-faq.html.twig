@@ -13,54 +13,56 @@
 
 	<div class="container">
 		{% if (faq.couples|length) != 0 %}
-			<table class="table table-dark table-hover text-center">
-				<thead>
-					<tr>
-						<th>Id</th>
-						<th>Position</th>
-						<th>Question</th>
-						<th>Réponse</th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for couple in faq.couples %}
+			<div class="table-responsive">
+				<table class="table table-dark table-hover text-center">
+					<thead>
 						<tr>
-							<td class='idTable'>(*&nbsp;{{couple.id}})</td>
-							<td>{{ couple.num }}</td>
-							<td>{{ couple.question }}</td>
-							<td>
-
-								{% if couple.reponse != '' %}
-									<p>{{ couple.reponse }}</p>
-								{% endif %}
-
-								{% for image in couple.images %}
-									<a href="#" class="preview-link" data-image-preview-url="{{ asset(image.name,'images_directory') }}" data-action="mouseenter->image-preview#show mouseleave->image-preview#hide">
-										{{ image.id }}
-									</a>
-								{% endfor %}
-
-							</td>
-							<td>{{ couple.regle }}</td>
-							<td>
-								{% for rule in couple.rules %}
-									{{ rule.name }}
-								{% endfor %}
-							</td>
-							<td>
-								<a href="{{ path('app_couples_update', { 'from' : 'list','id_faq' : faq.id, 'id_couple': couple.id }) }}" class="btn btn-primary">Modifier le QR</a>
-							</td>
-							<td>
-								{% include "couples/_delete_form.html.twig" %}
-							</td>
+							<th>Id</th>
+							<th>Position</th>
+							<th>Question</th>
+							<th>Réponse</th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
 						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{% for couple in faq.couples %}
+							<tr>
+								<td class='idTable'>(*&nbsp;{{couple.id}})</td>
+								<td>{{ couple.num }}</td>
+								<td>{{ couple.question }}</td>
+								<td>
+
+									{% if couple.reponse != '' %}
+										<p>{{ couple.reponse }}</p>
+									{% endif %}
+
+									{% for image in couple.images %}
+										<a href="#" class="preview-link" data-image-preview-url="{{ asset(image.name,'images_directory') }}" data-action="mouseenter->image-preview#show mouseleave->image-preview#hide">
+											{{ image.id }}
+										</a>
+									{% endfor %}
+
+								</td>
+								<td>{{ couple.regle }}</td>
+								<td>
+									{% for rule in couple.rules %}
+										{{ rule.name }}
+									{% endfor %}
+								</td>
+								<td>
+									<a href="{{ path('app_couples_update', { 'from' : 'list','id_faq' : faq.id, 'id_couple': couple.id }) }}" class="btn btn-primary">Modifier le QR</a>
+								</td>
+								<td>
+									{% include "couples/_delete_form.html.twig" %}
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
 		{% else %}
 			<p>Il n'y a pas de couple question/réponse dans cette Faq</p>
 		{% endif %}
