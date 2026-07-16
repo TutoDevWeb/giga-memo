@@ -1,0 +1,34 @@
+/* Style spécifique pour les titres à l'intérieur des cartes */
+.card h1,
+.card h2,
+.card h3,
+.form_card h1,
+.form_card h2,
+.form_card h3 {
+    color: var(--text-main);
+    /* border-bottom: 1px solid var(--border-color); */
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+/* Cartes (Dashboard, Formulaires, FAQ) */
+.card,
+.form_card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: var(--transition);
+
+    /* ─── AJOUT DE SÉCURITÉ ICI ─── */
+    max-width: 100%;
+    /* Empêche la carte de dépasser de l'écran */
+    overflow: hidden;
+    /* Coupe tout ce qui dépasse sauvagement de la carte */
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
