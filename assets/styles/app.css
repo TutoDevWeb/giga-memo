@@ -35,7 +35,7 @@ body {
 
 
 /* Le style des id en database */
-.idTable {
+.id-record {
     text-align: center;
     font-style: italic;
     font-size: 0.7em;
