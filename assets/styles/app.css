@@ -1,8 +1,10 @@
 @import 'theme.css';
 @import 'ariane.css';
+@import 'titles.css';
 @import 'cards.css';
 @import 'tables.css';
 @import 'images.css';
+@import 'buttons.css';
 @import 'footer.css';
 
 /* Reset & Base */
@@ -21,68 +23,20 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Container Principal */
-.app-container {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
+/* Pour cacher la réponse */
+.hidden {
+    display: none;
 }
-
-/* Boutons Modernes */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1.25rem;
-    font-size: 0.95rem;
-    font-weight: 500;
-    border-radius: var(--radius-md);
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none;
-}
-
-.btn-primary {
-    background-color: var(--primary);
-    color: #ffffff;
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background-color: transparent;
-    border-color: var(--border-color);
-    color: var(--text-main);
-}
-
-.btn-secondary:hover {
-    background-color: var(--border-color);
-}
-
-
-/* forces la couleur des titres à suivre les variables de notre thème */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    color: var(--text-main);
-    margin-top: 0;
-    /* Évite les décalages de marge en haut de carte */
-    margin-bottom: 1rem;
-    font-weight: 600;
-    line-height: 1.25;
-}
-
-
 
 .form-control-auto {
     field-sizing: content !important;
     resize: none !important;
+}
+
+
+/* Le style des id en database */
+.idTable {
+    text-align: center;
+    font-style: italic;
+    font-size: 0.7em;
 }

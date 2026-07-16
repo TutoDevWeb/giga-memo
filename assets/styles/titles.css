@@ -1,0 +1,14 @@
+/* forces la couleur des titres à suivre les variables de notre thème */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text-main);
+    margin-top: 0;
+    /* Évite les décalages de marge en haut de carte */
+    margin-bottom: 1rem;
+    font-weight: 600;
+    line-height: 1.25;
+}
