@@ -148,7 +148,7 @@ class CouplesController extends AbstractController
             }
         }
 
-        return $this->render('couples/update.html.twig', [
+        return $this->render('couples/edit.html.twig', [
             'ariane' => ['index' => true, 'edit' => true, 'update' => 'couple'],
             'form' => $form,
             'couple' => $couple,

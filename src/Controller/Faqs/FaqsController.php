@@ -80,7 +80,7 @@ class FaqsController extends AbstractController
             return $this->redirectToRoute('app_main_index', ['id_faq' => $faq->getId()]);
         }
 
-        return $this->render('faqs/update.html.twig', [
+        return $this->render('faqs/edit.html.twig', [
             'ariane' => ['index' => true, 'edit' => true, 'update' => 'faq'],
             'form' => $form,
             'faq' => $faq,
