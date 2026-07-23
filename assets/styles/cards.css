@@ -31,3 +31,7 @@
 .card:hover {
     box-shadow: var(--shadow-md);
 }
+
+.card-body {
+    color: var(--text-main);
+}

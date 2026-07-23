@@ -17,7 +17,8 @@
 		<tbody>
 			{% for category in categories %}
 				<tr>
-					<td>{{ category.id }}</td>
+					<td class='id-record'>(*
+						{{ category.id }})</td>
 					<td>{{ category.name }}</td>
 					<td>
 						<a class='btn btn-primary' href="{{ path('app_categories_edit', {'id': category.id}) }}">Modifier</a>
@@ -38,7 +39,7 @@
 
 {% block actions %}
 
-	<a class="btn btn-primary" href="{{ path('app_categories_new') }}">
+	<a class="btn btn-primary mt-4" href="{{ path('app_categories_new') }}">
 
 		<i class="bi bi-plus-circle me-2"></i>
 

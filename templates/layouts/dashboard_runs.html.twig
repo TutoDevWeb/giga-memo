@@ -9,28 +9,27 @@
 
 			<div class="col-12 col-md-11 col-lg-10">
 
-				<div class="card shadow-sm border-secondary-subtle">
+				<div class="card shadow-sm">
 
-					<div class="card-header">
+					<div class="card-header border-secondary-subtle">
 
 						<h1 class="h3 text-center mb-0">
 							{{ run_type_title }}
 						</h1>
 
-						<h2 class='text-center h5'>{{ faq.name }}</h2>
-						{% if faq.duration is not null %}
-							<h3 class='text-center h6'>{{ faq.duration.format('%i minutes') }}</h3>
-						{% endif %}
-
 					</div>
 
-					<div class="card-body">
+					<div class="card-body text-center">
+
+						<h2 class='h5'>{{ faq.name }}</h2>
+						{% if faq.duration is not null %}
+							<h3 class='h6'>{{ faq.duration.format('%i minutes') }}</h3>
+						{% endif %}
 
 						{% if couple is defined and couple is null %}
 							<div class="container mt-4">
 								<p>Il n'y a plus de questions / réponses</p>
 							</div>
-							<hr>
 						{% else %}
 
 							{% include "_partials/_layers.html.twig" %}
@@ -39,32 +38,33 @@
 							<div
 								class="row justify-content-center text-center">
 								{# Bouton Voir la réponse #}
-								<div class="col-12 col-md-4 p-4"> {% block bouton_reponse %}{% endblock %}
-									</div>
-									{# Bouton Suivant #}
-									<div class="col-12 col-md-4 p-4"> {% block bouton_suivant %}{% endblock %}
-										</div>
-										{# Bouton A Revoir #}
-										<div class="col-12 col-md-4 p-4"> {% block bouton_revoir %}{% endblock %}
-											</div>
-										</div>
-
-										{# Bouton Modifier #}
-										<div class="text-center mt-4"> {% block bouton_modifier %}{% endblock %}
-											</div>
-
-											<div class="text-center id-record mt-4">(*&nbsp;{{ couple.id}})</div>
-
-										{% endif %}
-
-									</div>
-									{# card-body #}
+								<div class="col-12 col-md-4 p-4">
+									{% block bouton_reponse %}
+										{#  #}
+									{% endblock %}
 								</div>
-								{# card #}
+								{# Bouton Suivant #}
+								<div class="col-12 col-md-4 p-4"> {% block bouton_suivant %}{% endblock %}
+									</div>
+									{# Bouton A Revoir #}
+									<div class="col-12 col-md-4 p-4"> {% block bouton_revoir %}{% endblock %}
+										</div>
+									</div>
+									{# Bouton Modifier #}
+									<div class="text-center mt-4"> {% block bouton_modifier %}{% endblock %}
+										</div>
+
+										<div class="text-center id-record mt-4">(*&nbsp;{{ couple.id}})</div>
+
+									{% endif %}
+								</div>
+								{# card-body #}
 							</div>
-							{# col #}
+							{# card #}
 						</div>
-						{# row #}
+						{# col #}
 					</div>
-					{# container #}
-				{% endblock %}
+					{# row #}
+				</div>
+				{# container #}
+			{% endblock %}

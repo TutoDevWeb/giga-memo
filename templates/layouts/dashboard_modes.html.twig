@@ -21,17 +21,14 @@
 							{{ dashboard_title }}
 						</h1>
 
-						{% block dashboard_subtitle %}{% endblock %}
-
 					</div>
 
-					<div
-						class="card-body">
+					<div class="card-body text-center"> {% block dashboard_subtitle %}{% endblock %}
 
 						{# Liste des actions lorsqu'une Faq est sélectionner #}
 						{% if faq != null %}
 
-							<div class="row g-4 text-center text-white">
+							<div class="row g-4">
 								<div class="col-12 col-md-6">
 									<div class='p-5 h-100 d-flex flex-column gap-2'> {% block dashboard_content_left %}{% endblock %}
 										</div>

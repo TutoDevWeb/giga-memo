@@ -140,6 +140,30 @@ class FaqsController extends AbstractController
         ]);
     }
 
+    #[Route('/faqs/next-run/{id_faq<\d+>}', name: 'app_faqs_next_run')]
+    #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
+    public function nextRun(
+        CouplesRepository $repo,
+        EntityManagerInterface $em,
+        #[MapEntity(id: 'id_faq')] Faqs $faq,
+    ): Response {
+        $couple = $repo->findNextSelectRun($faq);
+
+        // Si c'est null c'est qu'il n'y a plus de couple à traiter.
+        // On a fini la faq.
+        if (null === $couple) {
+            // On réinitialise
+            $repo->restartTodoRun($faq);
+        } else {
+            $couple->setTodoRun(false);
+        }
+        $em->flush();
+
+        // On redirige
+        return $this->redirectToRoute('app_faqs_run', ['id_faq' => $faq->getId()]);
+    }
+
+
     /**
      * Ce contrôleur a pour but de dérouler la liste des QRs qui sont A Revoir.
      * Pour ça l'utilisateur appuie sur le bouton Run Review du Mode-Run
@@ -167,29 +191,6 @@ class FaqsController extends AbstractController
             'nbSelectRun' => $nbSelectRun,
             'nbSelectReview' => $nbSelectReview,
         ]);
-    }
-
-    #[Route('/faqs/next-run/{id_faq<\d+>}', name: 'app_faqs_next_run')]
-    #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
-    public function nextRun(
-        CouplesRepository $repo,
-        EntityManagerInterface $em,
-        #[MapEntity(id: 'id_faq')] Faqs $faq,
-    ): Response {
-        $couple = $repo->findNextSelectRun($faq);
-
-        // Si c'est null c'est qu'il n'y a plus de couple à traiter.
-        // On a fini la faq.
-        if (null === $couple) {
-            // On réinitialise
-            $repo->restartTodoRun($faq);
-        } else {
-            $couple->setTodoRun(false);
-        }
-        $em->flush();
-
-        // On redirige
-        return $this->redirectToRoute('app_faqs_run', ['id_faq' => $faq->getId()]);
     }
 
     #[Route('/faqs/next-review/{id_faq<\d+>}', name: 'app_faqs_next_review')]
