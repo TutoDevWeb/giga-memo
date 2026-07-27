@@ -112,9 +112,8 @@ class FaqsController extends AbstractController
     }
 
     /**
-     * Ce contrôleur a pour but de dérouler la liste de tous les QRs qui sont dans une Faq.
-     * Pour ça l'utilisateur appuie sur le bouton Run du Mode-Run
-     * Ensuite il appuie sur le bouton Suivant.
+     * Ce controlleur affiche un couple question réponse.
+     * Avec les boutons Voir la réponse / Suivant / A revoir.
      */
     #[Route('/faqs/run/{id_faq<\d+>}', name: 'app_faqs_run')]
     #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
@@ -122,6 +121,9 @@ class FaqsController extends AbstractController
         CouplesRepository $repo,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
+
+        // findNextSelectRun va chercher le couple à afficher
+        // findNextSelectRun renvoie le premier couple qui a le flag todoRun à true.
         $couple = $repo->findNextSelectRun($faq);
 
         $nbTodoRun = $repo->countTodoRun($faq);
@@ -140,6 +142,10 @@ class FaqsController extends AbstractController
         ]);
     }
 
+    /** 
+     * Ce controlleur est appelé après appui sur le bouton suivant
+     * Il marque le couple qui est en cours d'affichage comme fait.
+     */
     #[Route('/faqs/next-run/{id_faq<\d+>}', name: 'app_faqs_next_run')]
     #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
     public function nextRun(
@@ -147,27 +153,29 @@ class FaqsController extends AbstractController
         EntityManagerInterface $em,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
+
+        // On récupère le couple en cours d'affichage
         $couple = $repo->findNextSelectRun($faq);
 
-        // Si c'est null c'est qu'il n'y a plus de couple à traiter.
-        // On a fini la faq.
-        if (null === $couple) {
-            // On réinitialise
-            $repo->restartTodoRun($faq);
-        } else {
-            $couple->setTodoRun(false);
-        }
-        $em->flush();
 
-        // On redirige
+        // Si c'est null c'est qu'il n'y a plus de couple à traiter.
+        // Théoriquement, ce cas ne se présente jamais car dans ce cas,
+        // l'affichage dans faqs/run.html.twig n'affiche plus le bouton suivant.
+        if ($couple !== null) {
+
+            // On positionne le flag todoRun à false.
+            // Ce qui marque le fait que le couple a été fait.
+            $couple->setTodoRun(false);
+            $em->flush();
+        }
+
+        // On redirige pour afficher un nouveau couple
         return $this->redirectToRoute('app_faqs_run', ['id_faq' => $faq->getId()]);
     }
 
 
     /**
-     * Ce contrôleur a pour but de dérouler la liste des QRs qui sont A Revoir.
-     * Pour ça l'utilisateur appuie sur le bouton Run Review du Mode-Run
-     * Ensuite il appuie sur le bouton Suivant.
+     * Pareil  que run mais sur la liste des QRs à revoir
      */
     #[Route('/faqs/review/{id_faq<\d+>}', name: 'app_faqs_review')]
     #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
@@ -193,6 +201,10 @@ class FaqsController extends AbstractController
         ]);
     }
 
+    /**
+     * Pareil que next-run mais sur la liste des QRs à revoir
+     * Sauf qu'ici lorsque la faq est finie on la réinitialise.
+     */
     #[Route('/faqs/next-review/{id_faq<\d+>}', name: 'app_faqs_next_review')]
     #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
     public function nextReview(
@@ -238,15 +250,15 @@ class FaqsController extends AbstractController
             $repo->restartTodoReview($faq);
 
             // Faire les comptes et retourner les valeurs des indicateurs pour maj affichage
-            $nbTodoRun = $repo->countTodoRun($faq);
-            $nbTodoReview = $repo->countTodoReview($faq);
-            $nbSelectRun = $repo->countSelectRun($faq);
+            $nbTodoRun      = $repo->countTodoRun($faq);
+            $nbTodoReview   = $repo->countTodoReview($faq);
+            $nbSelectRun    = $repo->countSelectRun($faq);
             $nbSelectReview = $repo->countSelectReview($faq);
 
             return new JsonResponse([
-                'nbTodoRun' => $nbTodoRun,
-                'nbTodoReview' => $nbTodoReview,
-                'nbSelectRun' => $nbSelectRun,
+                'nbTodoRun'      => $nbTodoRun,
+                'nbTodoReview'   => $nbTodoReview,
+                'nbSelectRun'    => $nbSelectRun,
                 'nbSelectReview' => $nbSelectReview,
             ]);
         }

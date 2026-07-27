@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Couples;
+use App\Entity\Faqs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,7 +17,7 @@ class CouplesRepository extends ServiceEntityRepository
         parent::__construct($registry, Couples::class);
     }
 
-    public function findNextSelectRun($faq): ?Couples
+    public function findNextSelectRun(Faqs $faq): ?Couples
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.todoRun = :todoRun')
@@ -29,7 +30,7 @@ class CouplesRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findNextSelectReview($faq): ?Couples
+    public function findNextSelectReview(Faqs $faq): ?Couples
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.todoReview = :todoReview')
@@ -44,7 +45,7 @@ class CouplesRepository extends ServiceEntityRepository
         ;
     }
 
-    public function restartTodoRun($faq): void
+    public function restartTodoRun(Faqs $faq): void
     {
         $this->createQueryBuilder('c')
             ->update('App\Entity\Couples', 'c')
@@ -60,7 +61,7 @@ class CouplesRepository extends ServiceEntityRepository
      * On positionne le todoReview à true de tous les couples qui sont
      * dans la sélection Review (A revoir) cad qui ont le selectReview à true.
      */
-    public function restartTodoReview($faq): void
+    public function restartTodoReview(Faqs $faq): void
     {
         $this->createQueryBuilder('c')
             ->update('App\Entity\Couples', 'c')
@@ -80,7 +81,7 @@ class CouplesRepository extends ServiceEntityRepository
      * Du coup ils ne sont plus à faire
      * Pour ça on met le todoReview à false.
      */
-    public function resetSelectReview($faq): void
+    public function resetSelectReview(Faqs $faq): void
     {
         $this->createQueryBuilder('c')
             ->update('App\Entity\Couples', 'c')
@@ -94,7 +95,7 @@ class CouplesRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function countTodoRun($faq): int
+    public function countTodoRun(Faqs $faq): int
     {
         $result = $this->createQueryBuilder('f')
             ->where('f.todoRun = :todoRun')
@@ -107,7 +108,7 @@ class CouplesRepository extends ServiceEntityRepository
         return count($result);
     }
 
-    public function countTodoReview($faq): int
+    public function countTodoReview(Faqs $faq): int
     {
         $result = $this->createQueryBuilder('f')
             ->where('f.todoReview = :todoReview')
@@ -135,7 +136,7 @@ class CouplesRepository extends ServiceEntityRepository
         return count($result);
     }
 
-    public function countSelectRun($faq): int
+    public function countSelectRun(Faqs $faq): int
     {
         $result = $this->createQueryBuilder('f')
             ->where('f.faq = :faq')
@@ -145,29 +146,4 @@ class CouplesRepository extends ServiceEntityRepository
 
         return count($result);
     }
-
-    //    /**
-    //     * @return Couples[] Returns an array of Couples objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Couples
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }
