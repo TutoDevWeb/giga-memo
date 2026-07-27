@@ -17,19 +17,19 @@
 
 {% block dashboard_content_left %}
 	<p>Run en mode normal</p>
-	<a class='btn btn-primary' title='Run de toute la Faq' href="{{path('app_faqs_run',{'id_faq' : faq.id})}}">Run
+	<a class='btn btn-primary' href="{{path('app_faqs_run',{'id_faq' : faq.id})}}">Run
 		{# #}
-		(<span id='nbSelectRun'>{{nbSelectRun}}</span>/<span id='nbTodoRun'>{{nbTodoRun}}</span>)</a>
-	<button id="{{'restart_' ~ faq.id}}" title='Restart de toute la Faq' class='btn btn-primary btn-restart' data-token={{ csrf_token('restart' ~ faq.id)}}>Reprendre au début</button>
+		(<span title='Nombre total de questions' id='nbSelectRun'>{{nbSelectRun}}</span>/<span title='Nombre restant de questions' id='nbTodoRun'>{{nbTodoRun}}</span>)</a>
+	<button id="{{'restart_' ~ faq.id}}" class='btn btn-primary btn-restart' data-token={{ csrf_token('restart' ~ faq.id)}}>Reprendre le run au début</button>
 {% endblock %}
 
 {% block dashboard_content_right %}
 	<p>Run en mode révision</p>
-	<a class='btn btn-primary' title='Run de ce qui est à revoir' href="{{path('app_faqs_review',{'id_faq' : faq.id})}}">Run
+	<a class='btn btn-primary' href="{{path('app_faqs_review',{'id_faq' : faq.id})}}">Run
 		{# #}
-		(<span id='nbSelectReview'>{{nbSelectReview}}</span>/<span id='nbTodoReview'>{{nbTodoReview}}</span>)
+		(<span title='Nombre total de questions à revoir' id='nbSelectReview'>{{nbSelectReview}}</span>/<span title='Nombre restant de questions à revoir' id='nbTodoReview'>{{nbTodoReview}}</span>)
 	</a>
-	<button id="{{'reset_review_' ~ faq.id}}" title='Reset des review de la Faq' class='btn btn-primary btn-reset-review' data-token={{ csrf_token('reset-review' ~ faq.id)}}>Vider la liste de révision
+	<button id="{{'reset_review_' ~ faq.id}}" class='btn btn-primary btn-reset-review' data-token={{ csrf_token('reset-review' ~ faq.id)}}>Vider la liste de révision
 		{# #}
 	</button>
 {% endblock %}

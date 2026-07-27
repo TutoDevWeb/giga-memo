@@ -13,7 +13,7 @@
 {% block bouton_suivant %}
 	<a class='btn btn-primary' href="{{ path('app_faqs_next_review',{ id_faq : faq.id})}}">Suivant
 		{# #}
-		(<span id='nbSelectReview'>{{nbSelectReview}}</span>/<span id='nbTodoReview'>{{ nbTodoReview - 1}}</span>)
+		(<span title='Nombre total de questions à revoir' id='nbSelectReview'>{{nbSelectReview}}</span>/<span title='Nombre restant de questions à revoir' id='nbTodoReview'>{{ nbTodoReview}}</span>)
 	</a>
 {% endblock %}
 
