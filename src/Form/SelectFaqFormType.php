@@ -42,7 +42,7 @@ class SelectFaqFormType extends AbstractType
                     'class' => Faqs::class,
                     'choices' => [], // Vide au départ
                     'placeholder' => 'Choisissez une catégorie d\'abord',
-                    'label' => 'Liste des Faqs',
+                    'label' => 'Liste des FAQs',
                     'mapped' => false,
                     'attr' => ['data-dynamic-select-target' => 'faqSelect'], // Cible Stimulus
                 ]

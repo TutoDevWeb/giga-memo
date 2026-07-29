@@ -1,9 +1,9 @@
 {% extends 'layouts/dashboard_modes.html.twig' %}
 
-{% block title %}Accueil du mode Run
+{% block title %}Accueil des modes d'exécution de la FAQ
 {% endblock %}
 
-{% set dashboard_title = 'Accueil des modes Run de la faq' %}
+{% set dashboard_title = 'Accueil des modes d\'exécution de la FAQ' %}
 
 {% block dashboard_subtitle %}
 
@@ -16,16 +16,16 @@
 {% endblock %}
 
 {% block dashboard_content_left %}
-	<p>Run en mode normal</p>
-	<a class='btn btn-primary' href="{{path('app_faqs_run',{'id_faq' : faq.id})}}">Run
+	<p>Exécuter en mode normal</p>
+	<a class='btn btn-primary' href="{{path('app_faqs_run',{'id_faq' : faq.id})}}">Normal
 		{# #}
 		(<span title='Nombre total de questions' id='nbSelectRun'>{{nbSelectRun}}</span>/<span title='Nombre restant de questions' id='nbTodoRun'>{{nbTodoRun}}</span>)</a>
-	<button id="{{'restart_' ~ faq.id}}" class='btn btn-primary btn-restart' data-token={{ csrf_token('restart' ~ faq.id)}}>Reprendre le run au début</button>
+	<button id="{{'restart_' ~ faq.id}}" class='btn btn-primary btn-restart' data-token={{ csrf_token('restart' ~ faq.id)}}>Reprendre l'exécution au début</button>
 {% endblock %}
 
 {% block dashboard_content_right %}
-	<p>Run en mode révision</p>
-	<a class='btn btn-primary' href="{{path('app_faqs_review',{'id_faq' : faq.id})}}">Run
+	<p>Exécuter en mode révision</p>
+	<a class='btn btn-primary' href="{{path('app_faqs_review',{'id_faq' : faq.id})}}">Révision
 		{# #}
 		(<span title='Nombre total de questions à revoir' id='nbSelectReview'>{{nbSelectReview}}</span>/<span title='Nombre restant de questions à revoir' id='nbTodoReview'>{{nbTodoReview}}</span>)
 	</a>

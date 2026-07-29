@@ -1,10 +1,10 @@
 {# /templates/main/index.html.twig #}
 {% extends 'layouts/dashboard_index.html.twig' %}
 
-{% block title %}Index
+{% block title %}Tableau de bord principal
 {% endblock %}
 
-{% set dashboard_title = 'Accueil' %}
+{% set dashboard_title = 'Tableau de bord principal' %}
 
 {% block dashboard_content %}
 
@@ -26,7 +26,7 @@
 					{{ form_widget(form.category) }}
 
 
-					{{ form_label(form.faq, null, { 'label': 'Choisir la faq','label_attr': {'class':'mt-4'}}) }}
+					{{ form_label(form.faq, null, { 'label': 'Choisir la FAQ','label_attr': {'class':'mt-4'}}) }}
 					{{ form_errors(form.faq) }}
 					{{ form_widget(form.faq) }}
 
@@ -52,7 +52,7 @@
 		<div class="row my-4 text-center">
 
 			<div class="col-12">
-				{{ form_widget(form.run,{ 'label': 'Accéder aux modes run de la FAQ' ,'attr': {'class': 'btn-primary mt-4'}}) }}
+				{{ form_widget(form.run,{ 'label': 'Exécuter la FAQ' ,'attr': {'class': 'btn-primary mt-4'}}) }}
 			</div>
 
 		</div>
