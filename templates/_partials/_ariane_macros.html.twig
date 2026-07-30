@@ -1,0 +1,110 @@
+{# 
+Déclaration de la macro mainIndex
+Je suis obligé de passer la variable faq car elle n'est pas vue dans la macro.
+Le problème c'est qu'il arrive que cette variable ne soit pas définie alors que le script est inclu.
+Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(null)) 
+#}
+{% macro mainIndex(link,faq) %}
+
+	Vous êtes ici ::&nbsp;&nbsp;
+
+	{% if link == true %}
+
+		{% if faq is not null and faq.id is defined %}
+			<a class="ariane" href="{{path('app_main_index',{id_faq: faq.id})}}">Tableau de bord principal</a>
+		{% else %}
+			<a class="ariane" href="{{path('app_main_index')}}">Tableau de bord principal</a>
+		{% endif %}
+
+	{% else %}
+		Tableau de bord principal
+	{% endif %}
+
+{% endmacro %}
+
+
+{% macro categoriesList(link) %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
+	{% if link == true %}
+		<a class="ariane" href="{{path('app_categories_list')}}">Gérer des catégories</a>
+	{% else %}
+		Gérer des catégories
+	{% endif %}
+{% endmacro %}
+
+{% macro categoriesEdit() %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une catégorie
+{% endmacro %}
+
+
+{% macro categoriesNew() %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer une catégorie
+{% endmacro %}
+
+{% macro mainEdit(link,faq = null) %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
+	{% if link == true and faq is not null  %}
+		<a class="ariane" href="{{path('app_main_edit',{id_faq: faq.id})}}">Editer FAQ</a>
+	{% else %}
+		Editer FAQ
+	{% endif %}
+{% endmacro %}
+
+{% macro faqsUpdate() %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une FAQ
+{% endmacro %}
+
+{% macro couplesListByFaq(link,faq) %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
+	{% if link == true and faq is not null  %}
+		<a class="ariane" href="{{path('app_couples_list_by_faq',{id_faq: faq.id})}}">Liste des couples</a>
+	{% else %}
+		Liste des couples
+	{% endif %}
+{% endmacro %}
+
+{% macro couplesUpdate() %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier un QR
+{% endmacro %}
+
+{% macro couplesNew() %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer un nouveau QR
+{% endmacro %}
+
+{% macro faqsNew() %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer une nouvelle FAQ
+{% endmacro %}
+
+{% macro rulesListByFaq(link,faq) %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
+	{% if link == true and faq is not null  %}
+		<a class="ariane" href="{{path('app_rules_list_by_faq',{id_faq: faq.id})}}">Liste des règles</a>
+	{% else %}
+		Liste des règles
+	{% endif %}
+{% endmacro %}
+
+{% macro rulesNew() %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer une nouvelle règle
+{% endmacro %}
+
+{% macro rulesEdit() %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une règle
+{% endmacro %}
+
+{% macro mainRun(link,faq) %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
+	{% if link == true and faq is not null  %}
+		<a class="ariane" href="{{path('app_main_run',{id_faq: faq.id})}}">Exécuter la FAQ</a>
+	{% else %}
+		Exécuter la FAQ
+	{% endif %}
+{% endmacro %}
+
+{% macro faqsRun() %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Normal
+{% endmacro %}
+
+{% macro faqsReview() %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Révision
+{% endmacro %}
