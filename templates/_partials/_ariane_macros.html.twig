@@ -1,17 +1,16 @@
-{# 
-Déclaration de la macro mainIndex
+{# ########################## #}
+{# Déclaration de la macro mainIndex
 Je suis obligé de passer la variable faq car elle n'est pas vue dans la macro.
 Le problème c'est qu'il arrive que cette variable ne soit pas définie alors que le script est inclu.
-Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(null)) 
-#}
-{% macro mainIndex(link,faq) %}
+Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(null)) #}
+	{% macro mainIndex(link,faq) %}
 
 	Vous êtes ici ::&nbsp;&nbsp;
 
-	{% if link == true %}
+		{% if link == true %}
 
-		{% if faq is not null and faq.id is defined %}
-			<a class="ariane" href="{{path('app_main_index',{id_faq: faq.id})}}">Tableau de bord principal</a>
+			{% if faq is not null and faq.id is defined %}
+				<a class="ariane" href="{{path('app_main_index',{id_faq: faq.id})}}"> Tableau de bord principal</a>
 		{% else %}
 			<a class="ariane" href="{{path('app_main_index')}}">Tableau de bord principal</a>
 		{% endif %}
@@ -22,7 +21,20 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 
 {% endmacro %}
 
+{% macro mainStartCreateCategorie() %}
 
+	Vous êtes ici ::&nbsp;&nbsp;Création de la première catégorie
+
+{% endmacro %}
+
+{% macro mainStartCreateFaq() %}
+
+	Vous êtes ici ::&nbsp;&nbsp;Création de la première FAQ
+
+{% endmacro %}
+
+{# ########################## #}
+{# Macro liées aux catégories #}
 {% macro categoriesList(link) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
 	{% if link == true %}
@@ -41,6 +53,9 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer une catégorie
 {% endmacro %}
 
+{# ########################## #}
+{# Macro liées aux FAQs #}
+
 {% macro mainEdit(link,faq = null) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
 	{% if link == true and faq is not null  %}
@@ -50,10 +65,16 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 	{% endif %}
 {% endmacro %}
 
+{% macro faqsNew() %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer une nouvelle FAQ
+{% endmacro %}
+
 {% macro faqsUpdate() %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une FAQ
 {% endmacro %}
 
+{# ########################## #}
+{# Macro liées aux Couples #}
 {% macro couplesListByFaq(link,faq) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
 	{% if link == true and faq is not null  %}
@@ -71,10 +92,8 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer un nouveau QR
 {% endmacro %}
 
-{% macro faqsNew() %}
-	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer une nouvelle FAQ
-{% endmacro %}
-
+{# ########################## #}
+{# Macro liées aux Règles #}
 {% macro rulesListByFaq(link,faq) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
 	{% if link == true and faq is not null  %}
@@ -92,6 +111,8 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une règle
 {% endmacro %}
 
+{# ########################## #}
+{# Macro liées à l'excécution #}
 {% macro mainRun(link,faq) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
 	{% if link == true and faq is not null  %}
