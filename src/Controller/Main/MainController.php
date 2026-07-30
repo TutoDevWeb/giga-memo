@@ -69,7 +69,6 @@ class MainController extends AbstractController
         }
 
         return $this->render('main/index.html.twig', [
-            'ariane' => ['index' => true],
             'form' => $form,
         ]);
     }
@@ -86,7 +85,6 @@ class MainController extends AbstractController
         $nbSelectReview = $repo->countSelectReview($faq);
 
         return $this->render('main/mode-run.html.twig', [
-            'ariane' => ['index' => true, 'run' => true],
             'faq' => $faq,
             'nbTodoRun' => $nbTodoRun,
             'nbTodoReview' => $nbTodoReview,
@@ -102,7 +100,6 @@ class MainController extends AbstractController
     ): Response {
 
         return $this->render('main/mode-edit.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true],
             'faq' => $faq,
         ]);
     }

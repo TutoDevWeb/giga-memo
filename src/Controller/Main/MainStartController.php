@@ -47,7 +47,6 @@ class MainStartController extends AbstractController
 
             // On affiche le formulaire de création de catégorie
             return $this->render('main/index_start_create_category.html.twig', [
-                'ariane' => ['index' => true],
                 'form' => $form
             ]);
         } else {
@@ -90,7 +89,6 @@ class MainStartController extends AbstractController
 
             // On affiche le formulaire de création de catégorie
             return $this->render('main/index_start_create_faq.html.twig', [
-                'ariane' => ['index' => true],
                 'form' => $form
             ]);
         } else {

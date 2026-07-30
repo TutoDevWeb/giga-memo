@@ -30,7 +30,6 @@ class CouplesController extends AbstractController
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
         return $this->render('couples/list-by-faq.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true, 'list_by_faq' => 'couple'],
             'faq' => $faq,
         ]);
     }
@@ -87,7 +86,6 @@ class CouplesController extends AbstractController
         }
 
         return $this->render('couples/new.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true],
             'form' => $form,
             'faq' => $faq,
             'formType' => 'new',
@@ -149,7 +147,6 @@ class CouplesController extends AbstractController
         }
 
         return $this->render('couples/edit.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true, 'update' => 'couple'],
             'form' => $form,
             'couple' => $couple,
             'faq' => $faq,

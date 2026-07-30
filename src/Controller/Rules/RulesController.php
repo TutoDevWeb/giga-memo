@@ -23,7 +23,6 @@ final class RulesController extends AbstractController
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
         return $this->render('rules/list-by-faq.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true, 'list_by_faq' => 'rule'],
             'faq' => $faq,
         ]);
     }
@@ -56,7 +55,6 @@ final class RulesController extends AbstractController
         }
 
         return $this->render('rules/new.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true],
             'rule' => $rule,
             'form' => $form,
             'faq' => $faq,
@@ -86,7 +84,6 @@ final class RulesController extends AbstractController
         }
 
         return $this->render('rules/edit.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true, 'update' => 'rule'],
             'rule' => $rule,
             'form' => $form,
             'faq' => $faq,

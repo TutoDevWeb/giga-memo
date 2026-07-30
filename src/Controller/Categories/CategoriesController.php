@@ -30,7 +30,6 @@ final class CategoriesController extends AbstractController
         }
 
         return $this->render('categories/list.html.twig', [
-            'ariane' => ['index' => true, 'category' => true],
             'categories' => $categoriesRepository->findBy(['user' => $user]),
         ]);
     }
@@ -56,7 +55,6 @@ final class CategoriesController extends AbstractController
         }
 
         return $this->render('categories/new.html.twig', [
-            'ariane' => ['index' => true, 'category' => true, 'create' => 'category'],
             'category' => $category,
             'form' => $form,
         ]);
@@ -80,7 +78,6 @@ final class CategoriesController extends AbstractController
         }
 
         return $this->render('categories/edit.html.twig', [
-            'ariane' => ['index' => true, 'category' => true, 'update' => 'category'],
             'category' => $category,
             'form' => $form,
         ]);

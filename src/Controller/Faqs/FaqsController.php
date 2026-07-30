@@ -48,7 +48,6 @@ class FaqsController extends AbstractController
         }
 
         return $this->render('faqs/new.html.twig', [
-            'ariane' => ['index' => true, 'faq' => true, 'create' => true],
             'form' => $form,
         ]);
     }
@@ -81,7 +80,6 @@ class FaqsController extends AbstractController
         }
 
         return $this->render('faqs/edit.html.twig', [
-            'ariane' => ['index' => true, 'edit' => true, 'update' => 'faq'],
             'form' => $form,
             'faq' => $faq,
         ]);
@@ -132,7 +130,6 @@ class FaqsController extends AbstractController
         $nbSelectReview = $repo->countSelectReview($faq);
 
         return $this->render('faqs/run.html.twig', [
-            'ariane' => ['index' => true, 'run' => true, 'mode_run' => 'normal'],
             'faq' => $faq,
             'couple' => $couple,
             'nbTodoRun' => $nbTodoRun,
@@ -191,7 +188,6 @@ class FaqsController extends AbstractController
         $nbSelectReview = $repo->countSelectReview($faq);
 
         return $this->render('faqs/review.html.twig', [
-            'ariane' => ['index' => true, 'run' => true, 'mode_run' => 'review'],
             'faq' => $faq,
             'couple' => $couple,
             'nbTodoRun' => $nbTodoRun,
