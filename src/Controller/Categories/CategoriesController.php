@@ -24,7 +24,7 @@ final class CategoriesController extends AbstractController
         // On récupère l'utilisateur connecté
         $user = $this->getUser();
 
-        // Sécurité optionnelle : si tu veux bloquer l'accès aux utilisateurs anonymes
+        // Sécurité optionnelle : pour bloquer l'accès aux utilisateurs anonymes
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à vos catégories.');
         }
@@ -42,6 +42,7 @@ final class CategoriesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             /** @var Users $user */
             $user = $this->getUser();
 

@@ -53,7 +53,7 @@
 									{% endfor %}
 								</td>
 								<td>
-									<a href="{{ path('app_couples_update', { 'from' : 'list','id_faq' : faq.id, 'id_couple': couple.id }) }}" class="btn btn-primary">Modifier le QR</a>
+									<a href="{{ path('app_couples_update', { 'from' : 'list','id_faq' : faq.id, 'id_couple': couple.id }) }}" class="btn btn-primary">Modifier la QR</a>
 								</td>
 								<td>
 									{% include "couples/_delete_form.html.twig" %}
@@ -64,7 +64,7 @@
 				</table>
 			</div>
 		{% else %}
-			<p>Il n'y a pas de couple question/réponse dans cette Faq</p>
+			<p>Il n'y a pas de QR dans cette Faq</p>
 		{% endif %}
 	</div>
 
@@ -74,7 +74,7 @@
 
 	<a class="btn btn-primary mt-4" href="{{ path('app_couples_new', { 'id_faq': faq.id }) }}">
 		<i class="bi bi-plus-circle me-2"></i>
-		Créer un nouveau couple QR
+		Créer une nouvelle QR
 	</a>
 
 {% endblock %}

@@ -78,18 +78,18 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 {% macro couplesListByFaq(link,faq) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
 	{% if link == true and faq is not null  %}
-		<a class="ariane" href="{{path('app_couples_list_by_faq',{id_faq: faq.id})}}">Liste des couples</a>
+		<a class="ariane" href="{{path('app_couples_list_by_faq',{id_faq: faq.id})}}">Liste des QRs</a>
 	{% else %}
-		Liste des couples
+		Liste des QRs
 	{% endif %}
 {% endmacro %}
 
 {% macro couplesUpdate() %}
-	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier un QR
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Modifier une QR
 {% endmacro %}
 
 {% macro couplesNew() %}
-	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer un nouveau QR
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Créer une nouvelle QR
 {% endmacro %}
 
 {# ########################## #}

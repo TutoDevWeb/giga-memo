@@ -49,17 +49,13 @@ class FaqFormType extends AbstractType
                 ]
             )
             ->add('duration', DateIntervalType::class, [
-                'label' => 'Durée prévue',
+                'label' => 'Durée d\'exécution en minutes',
                 // On choisit les unités à afficher
                 'with_years' => false,
                 'with_months' => false,
                 'with_days' => false,
                 'with_hours' => false,
                 'with_minutes' => true,
-                // Le format d'affichage dans le formulaire
-                'labels' => [
-                    'minutes' => 'Minutes',
-                ],
             ]);
     }
 

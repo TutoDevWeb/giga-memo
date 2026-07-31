@@ -5,9 +5,17 @@
 {% endblock %}
 
 
-{% set dashboard_title = 'Démarer : Créer la première catégorie' %}
+{% set dashboard_title = 'Démarrer : Créer la première catégorie' %}
 
 {% block dashboard_content %}
+
+	<p>Ce site propose un outil d'entraînement de la mémoire. Il va vous permettre de créer des listes de questions. Pour chaque question, vous devez essayer de retrouver la réponse dans votre mémoire. Ensuite, vous pouvez afficher la réponse afin de vérifier si vous l'aviez bien mémorisée ou non.</p>
+
+	<p>Si la réponse n'a pas été correctement mémorisée, vous pouvez placer la question dans une liste de révision afin d'y revenir ultérieurement.</p>
+
+	<p>Les questions sont regroupées dans des listes appelées des FAQs.</p>
+
+	<p>Les FAQs sont organisées par catégories. Nous allons commencer par créer une première catégorie.</p>
 
 	{{ form_start(form) }}
 	<div class="row">
