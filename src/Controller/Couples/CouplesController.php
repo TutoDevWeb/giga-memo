@@ -51,7 +51,7 @@ class CouplesController extends AbstractController
         $couple->setFaq($faq);
         $couple->setNum($nbCouple + 1);
 
-        $form = $this->createForm(CoupleFormType::class, $couple, ['layerType' => $couple->getFaq()->getLayerType(), 'faq' => $faq]);
+        $form = $this->createForm(CoupleFormType::class, $couple, ['faq' => $faq]);
 
         $form->handleRequest($request);
 
@@ -108,7 +108,6 @@ class CouplesController extends AbstractController
     ): Response {
 
         $form = $this->createForm(CoupleFormType::class, $couple, [
-            'layerType' => $faq->getLayerType(),
             'from' => $from,
             'faq' => $faq,
         ]);

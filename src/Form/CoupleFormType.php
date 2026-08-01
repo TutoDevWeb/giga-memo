@@ -5,7 +5,6 @@ namespace App\Form;
 use App\Entity\Couples;
 use App\Entity\Faqs;
 use App\Entity\Rules;
-use App\Model\LayerTypeEnum;
 use App\Repository\RulesRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -54,17 +53,12 @@ class CoupleFormType extends AbstractType
                 'mapped' => false,
             ])
         ;
-
-        if (LayerTypeEnum::LAYER_ONE == $options['layerType']) {
-            $builder->add('regle');
-        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Couples::class,
-            'layerType' => LayerTypeEnum::LAYER_ONE,
             'from' => 'run',
         ]);
 

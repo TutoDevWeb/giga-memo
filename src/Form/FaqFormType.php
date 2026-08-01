@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Categories;
 use App\Entity\Faqs;
-use App\Model\LayerTypeEnum;
 use Doctrine\ORM\EntityRepository; // Ne pas oublier cet import pour le query_builder
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -41,13 +40,6 @@ class FaqFormType extends AbstractType
                         ->orderBy('c.name', 'ASC'); // Trié par ordre alphabétique
                 },
             ])
-            ->add(
-                'layerType',
-                EnumType::class,
-                [
-                    'class' => LayerTypeEnum::class,
-                ]
-            )
             ->add('duration', DateIntervalType::class, [
                 'label' => 'Durée d\'exécution en minutes',
                 // On choisit les unités à afficher

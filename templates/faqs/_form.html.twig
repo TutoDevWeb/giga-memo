@@ -14,10 +14,6 @@
 {{ form_errors(form.category) }}
 {{ form_widget(form.category) }}
 
-{# Choix du layer_type #}
-{{ form_label(form.layerType, null, { 'label': 'Choisir le type de Layer', 'label_attr': {'class': 'mt-4'} }) }}
-{{ form_widget(form.layerType) }}
-
 {# Champ duré #}
 {{ form_label(form.duration, null, { 'label': 'Durée d\'exécution en minutes', 'label_attr': {'class': 'mt-4'} }) }}
 {{ form_widget(form.duration.minutes) }}

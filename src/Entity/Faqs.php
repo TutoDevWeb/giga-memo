@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Entity\Trait\HasUserTrait;
-use App\Model\LayerTypeEnum;
 use App\Repository\FaqsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -32,9 +31,6 @@ class Faqs
      */
     #[ORM\OneToMany(targetEntity: Couples::class, mappedBy: 'faq', orphanRemoval: true)]
     private Collection $couples;
-
-    #[ORM\Column(enumType: LayerTypeEnum::class, options: ['default' => LayerTypeEnum::LAYER_ONE->value])]
-    private ?LayerTypeEnum $layerType = LayerTypeEnum::LAYER_ONE;
 
     #[ORM\Column(nullable: true)]
     private ?\DateInterval $duration = null;
@@ -110,18 +106,6 @@ class Faqs
                 $couple->setFaq(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getLayerType(): ?LayerTypeEnum
-    {
-        return $this->layerType;
-    }
-
-    public function setLayerType(LayerTypeEnum $layerType): static
-    {
-        $this->layerType = $layerType;
 
         return $this;
     }
