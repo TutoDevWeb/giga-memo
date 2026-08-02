@@ -44,6 +44,8 @@ class FaqsController extends AbstractController
             $entityManager->persist($faq);
             $entityManager->flush();
 
+            $this->addFlash('success', 'La FAQ "' . $faq->getName() . '" a été créée avec succès !');
+
             return $this->redirectToRoute('app_main_index');
         }
 
@@ -76,6 +78,8 @@ class FaqsController extends AbstractController
             $entityManager->persist($faq);
             $entityManager->flush();
 
+            $this->addFlash('success', 'La FAQ "' . $faq->getName() . '" a été modifiée avec succès !');
+
             return $this->redirectToRoute('app_main_index', ['id_faq' => $faq->getId()]);
         }
 
@@ -104,6 +108,8 @@ class FaqsController extends AbstractController
             // => couples => (images et rules)
             $entityManager->remove($faq);
             $entityManager->flush();
+
+            $this->addFlash('success', 'La FAQ "' . $faq->getName() . '" a été supprimée avec succès !');
         }
 
         return $this->redirectToRoute('app_main_index');

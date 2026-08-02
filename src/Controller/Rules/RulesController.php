@@ -51,6 +51,8 @@ final class RulesController extends AbstractController
             $entityManager->persist($rule);
             $entityManager->flush();
 
+            $this->addFlash('success', 'La règle "' . $rule->getName() . '" a été créée avec succès !');
+
             return $this->redirectToRoute('app_rules_list_by_faq', ['id_faq' => $faq->getId()]);
         }
 
@@ -80,6 +82,8 @@ final class RulesController extends AbstractController
             $rule = $form->getData();
             $entityManager->flush();
 
+            $this->addFlash('success', 'La règle "' . $rule->getName() . '" a été modifiée avec succès !');
+
             return $this->redirectToRoute('app_rules_list_by_faq', ['id_faq' => $faq->getId()]);
         }
 
@@ -103,6 +107,8 @@ final class RulesController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $rule->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($rule);
             $entityManager->flush();
+
+            $this->addFlash('success', 'La règle "' . $rule->getName() . '" a été supprimée avec succès !');
         }
 
         return $this->redirectToRoute('app_rules_list_by_faq', ['id_faq' => $faq->getId()]);

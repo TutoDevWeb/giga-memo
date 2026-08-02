@@ -82,6 +82,8 @@ class CouplesController extends AbstractController
             // On les passe au service
             $pictureService->upload($entityManager, $couple, $images, $user);
 
+            $this->addFlash('success', 'La QR a été créée avec succès !');
+
             return $this->redirectToRoute('app_couples_list_by_faq', ['id_faq' => $faq->getId()]);
         }
 
@@ -132,6 +134,8 @@ class CouplesController extends AbstractController
 
             $id_faq = $faq->getId();
 
+            $this->addFlash('success', 'La QR a été modifiée avec succès !');
+
             if ('review' == $from) {
                 return $this->redirectToRoute('app_faqs_review', ['id_faq' => $id_faq]);
             }
@@ -171,6 +175,8 @@ class CouplesController extends AbstractController
             // remove du couple => remove des images car orphanremoval => suppression physique sur eventListener
             $entityManager->remove($couple);
             $entityManager->flush();
+
+            $this->addFlash('success', 'La QR a été supprimée avec succès !');
         }
 
         return $this->redirectToRoute('app_couples_list_by_faq', ['id_faq' => $faq->getId()]);

@@ -42,6 +42,8 @@ class MainStartController extends AbstractController
 
                 $entityManager->flush();
 
+                $this->addFlash('success', 'La catégorie "' . $cat->getName() . '" a été créée avec succès !');
+
                 return $this->redirectToRoute('app_main_index');
             }
 
@@ -83,6 +85,8 @@ class MainStartController extends AbstractController
                 $entityManager->persist($faq);
 
                 $entityManager->flush();
+
+                $this->addFlash('success', 'La FAQ "' . $faq->getName() . '" a été créée avec succès !');
 
                 return $this->redirectToRoute('app_main_index');
             }
