@@ -1,4 +1,4 @@
-<form method="post" action="{{ path('app_rules_delete', {'id_faq': faq.id,'id_rule': rule.id}) }}" onsubmit="return confirm('Etes vous sûr de vouloir supprimer ?');">
-	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rule.id) }}">
-	<button class="btn btn-primary">Supprimer la règle</button>
-</form>
+<button type="button" class="btn btn-delete-trigger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-action="{{ path('app_rules_delete', {'id_faq': faq.id,'id_rule': rule.id}) }}" data-token="{{ csrf_token('delete' ~ rule.id) }}">
+	Supprimer la règle
+</button>
+{% include "_partials/_delete_modal.html.twig" %}

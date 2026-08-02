@@ -32,3 +32,58 @@
 .btn-secondary:hover {
     background-color: var(--border-color);
 }
+
+:root {
+    --delete-red-muted: #c45b5b;
+    /* Rouge terne (repos) */
+    --delete-red-dark: #8f3232;
+    /* Rouge sombre (survol / accents forts) */
+    --delete-red-darker: #732424;
+    /* Rouge très sombre (clic / active) */
+}
+
+/* 1. Bouton déclencheur dans la liste */
+.btn-delete-trigger {
+    background-color: var(--delete-red-muted);
+    border-color: var(--delete-red-muted);
+    color: #ffffff;
+}
+
+.btn-delete-trigger:hover,
+.btn-delete-trigger:focus {
+    background-color: var(--delete-red-dark);
+    border-color: var(--delete-red-dark);
+    color: #ffffff;
+}
+
+/* 2. En-tête de la modale de suppression */
+.modal-header-delete {
+    background-color: var(--delete-red-dark);
+    color: #ffffff;
+}
+
+/* 3. Bouton "Supprimer définitivement" dans la modale */
+.btn-delete-confirm {
+    background-color: var(--delete-red-dark);
+    border-color: var(--delete-red-dark);
+    color: #ffffff;
+}
+
+.btn-delete-confirm:hover,
+.btn-delete-confirm:focus {
+    background-color: var(--delete-red-darker);
+    border-color: var(--delete-red-darker);
+    color: #ffffff;
+}
+
+.btn-cancel-modal {
+    background-color: transparent !important;
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+}
+
+.btn-cancel-modal:hover {
+    background-color: #e2e6ea !important;
+    /* Léger gris au survol */
+    color: #000000 !important;
+}

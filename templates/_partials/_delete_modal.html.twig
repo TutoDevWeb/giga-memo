@@ -1,0 +1,26 @@
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-controller="confirm-modal" data-action="show.bs.modal->confirm-modal#open">
+
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header modal-header-delete">
+				<h5 class="modal-title" id="deleteConfirmModalLabel">Confirmation de suppression</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+			</div>
+
+			<div class="modal-body">
+				Êtes-vous sûr de vouloir supprimer cette élément ? Cette action est irréversible.
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">Annuler</button>
+
+
+				<!-- Formulaire avec les targets Stimulus -->
+				<form method="post" action="" data-confirm-modal-target="form">
+					<input type="hidden" name="_token" value="" data-confirm-modal-target="token">
+					<button type="submit" class="btn btn-delete-confirm">Supprimer définitivement</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
