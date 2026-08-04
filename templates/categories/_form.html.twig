@@ -2,7 +2,7 @@
 
 {{ form_errors(form) }}
 
-{{ form_label(form.name, null, { 'label': 'Nom de la catégorie','label_attr': {'class': 'mt-4'}}) }}
+{{ form_label(form.name, 'Nom de la catégorie', { 'label_attr': { 'class': 'mt-4' } }) }}
 {{ form_errors(form.name) }}
 {{ form_widget(form.name) }}
 

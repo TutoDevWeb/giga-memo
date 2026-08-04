@@ -19,6 +19,10 @@ class Categories
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Length(
+        max: 70,
+        maxMessage: 'maxLength'
+    )]
     #[Assert\NotBlank(message: 'notBlank')]
     #[ORM\Column(length: 255)]
     private ?string $name = null;

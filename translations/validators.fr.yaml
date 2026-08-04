@@ -1,2 +1,4 @@
 notNull: 'Cette valeur ne doit pas être nulle.'
 notBlank: 'Ce champ doit être renseigné.'
+
+maxLength: 'Le nom ne doit pas dépasser {{ limit }} caractères.'

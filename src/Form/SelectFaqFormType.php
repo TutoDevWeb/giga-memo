@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Categories;
 use App\Entity\Faqs;
-// À adapter selon ton namespace User
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -13,6 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class SelectFaqFormType extends AbstractType
 {
@@ -72,6 +72,19 @@ class SelectFaqFormType extends AbstractType
                         },
                         'attr' => ['data-dynamic-select-target' => 'faqSelect'],
                     ]);
+                } else {
+                    // Si AUCUNE catégorie n'a été choisie, on redéfinit impérativement le champ 'faq'
+                    // avec 'choices' => [] pour que Symfony accepte la valeur vide sans erreur de transformation
+                    $form->add('faq', EntityType::class, [
+                        'class' => Faqs::class,
+                        'choices' => [],
+                        'placeholder' => 'Choisissez une catégorie d\'abord',
+                        'mapped' => false,
+                        'constraints' => [
+                            new Assert\NotBlank(['message' => 'notBlank']),
+                        ],
+                        'attr' => ['data-dynamic-select-target' => 'faqSelect'],
+                    ]);
                 }
             }
         );
@@ -102,6 +115,9 @@ class SelectFaqFormType extends AbstractType
                             ->setParameter('user', $user);
                     },
                     'attr' => ['data-action' => 'change->dynamic-select#updateFaqs'],
+                    'constraints' => [
+                        new Assert\NotBlank(['message' => 'notBlank']),
+                    ],
                 ]);
 
                 // On traite le select faq
@@ -117,6 +133,9 @@ class SelectFaqFormType extends AbstractType
                             ->setParameter('user', $user);
                     },
                     'attr' => ['data-dynamic-select-target' => 'faqSelect'],
+                    'constraints' => [
+                        new Assert\NotBlank(['message' => 'notBlank']),
+                    ],
                 ]);
             }
         );
@@ -127,6 +146,8 @@ class SelectFaqFormType extends AbstractType
         $resolver->setDefaults([
             'faq' => null,
             'user' => null, // On définit la nouvelle option par défaut
+            // 'attr' => ['novalidate' => 'novalidate'],
+
         ]);
 
         $resolver->setAllowedTypes('faq', ['null', 'App\Entity\Faqs']);

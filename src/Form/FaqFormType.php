@@ -56,6 +56,8 @@ class FaqFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Faqs::class,
             'user' => null, // On définit l'option par défaut
+            // 'attr' => ['novalidate' => 'novalidate'],
+
         ]);
 
         // On rend l'option 'user' obligatoire pour ce formulaire

@@ -60,6 +60,7 @@ class CoupleFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Couples::class,
             'from' => 'run',
+            'attr' => ['novalidate' => 'novalidate'],
         ]);
 
         // On définit l'option comme obligatoire

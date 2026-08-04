@@ -19,6 +19,10 @@ class Faqs
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Length(
+        max: 70,
+        maxMessage: 'maxLength'
+    )]
     #[Assert\NotBlank(message: 'notBlank')]
     #[ORM\Column(length: 100)]
     private ?string $name = null;
@@ -41,6 +45,8 @@ class Faqs
     #[ORM\OneToMany(targetEntity: Rules::class, mappedBy: 'faq', orphanRemoval: true)]
     private Collection $rules;
 
+    #[ORM\JoinColumn(nullable: false)] // La BDD interdit toujours le NULL
+    #[Assert\NotNull(message: 'notNull')]
     #[ORM\ManyToOne(inversedBy: 'faqs')]
     private ?Categories $category = null;
 
