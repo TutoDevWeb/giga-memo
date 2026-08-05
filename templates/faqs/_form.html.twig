@@ -1,21 +1,19 @@
-{# {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }} #}
-
 {{ form_start(form) }}
 
 {{ form_errors(form) }}
 
 {# Champ Texte du Nom #}
-{{ form_label(form.name, null, { 'label': 'Nom de la FAQ', 'label_attr': {'class': 'mt-4'} }) }}
+{{ form_label(form.name, 'Nom de la FAQ', { 'label_attr': {'class': 'mt-4'} }) }}
 {{ form_errors(form.name) }}
 {{ form_widget(form.name) }}
 
 {# Champ Category #}
-{{ form_label(form.category, null, { 'label': 'Catégorie', 'label_attr': {'class': 'mt-4'} }) }}
+{{ form_label(form.category, 'Catégorie', { 'label_attr': {'class': 'mt-4'} }) }}
 {{ form_errors(form.category) }}
 {{ form_widget(form.category) }}
 
 {# Champ duré #}
-{{ form_label(form.duration, null, { 'label': 'Durée d\'exécution en minutes', 'label_attr': {'class': 'mt-4'} }) }}
+{{ form_label(form.duration, 'Durée d\'exécution en minutes', { 'label_attr': {'class': 'mt-4'} }) }}
 {{ form_widget(form.duration.minutes) }}
 
 <button class="btn btn-primary mt-4">

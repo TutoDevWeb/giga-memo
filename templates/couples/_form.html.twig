@@ -3,29 +3,29 @@
 {{ form_errors(form) }}
 
 {# Champ num #}
-{{ form_label(form.num, null, { 'label': 'Position','label_attr': {'class': 'mt-4'}}) }}
+{{ form_label(form.num, 'Position', { 'label_attr': {'class': 'mt-4'} }) }}
 {{ form_errors(form.num) }}
 {{ form_widget(form.num) }}
 
-{{ form_label(form.faq, null, { 'label': 'Sélectionner la Faq','label_attr': {'class': 'mt-4'}}) }}
-{{ form_widget(form.faq, {'attr': {'disabled': 'disabled'}}) }}
+{{ form_label(form.faq, 'Sélectionner la Faq', { 'label_attr': {'class': 'mt-4'} }) }}
+{{ form_widget(form.faq, {'attr': {'disabled': 'disabled'} }) }}
 
 {# Champ rules #}
-{{ form_label(form.rules, null, { 'label': 'Règles','label_attr': {'class': 'mt-4'}}) }}
+{{ form_label(form.rules, 'Règles', { 'label_attr': {'class': 'mt-4'} }) }}
 {{ form_errors(form.rules) }}
-{{ form_widget(form.rules, { 'attr': {'class': 'mt-4'}}) }}
+{{ form_widget(form.rules, { 'attr': {'class': 'mt-4'} }) }}
 
 {# Champ question #}
-{{ form_label(form.question, null, { 'label': 'Question','label_attr': {'class': 'mt-4'}}) }}
+{{ form_label(form.question, 'Question', { 'label_attr': { 'class': 'mt-4' } }) }}
 {{ form_errors(form.question) }}
-{{ form_widget(form.question, { 'attr': {'class': 'form-control-auto'}}) }}
+{{ form_widget(form.question, { 'attr': {'class': 'form-control-auto'} }) }}
 
 {# Champ réponse #}
-{{ form_label(form.reponse, null, { 'label': 'Réponse','label_attr': {'class': 'mt-4'}}) }}
+{{ form_label(form.reponse, 'Réponse', { 'label_attr': {'class': 'mt-4'} }) }}
 {{ form_errors(form.reponse) }}
-{{ form_widget(form.reponse, { 'attr': {'class': 'form-control-auto'}}) }}
+{{ form_widget(form.reponse, { 'attr': {'class': 'form-control-auto'} }) }}
 
-{{ form_label(form.images, null, { 'label': 'Ajouter les images','label_attr': {'class': 'mt-4'}}) }}
+{{ form_label(form.images, 'Ajouter les images', { 'label_attr': {'class': 'mt-4'} }) }}
 {{ form_errors(form.images) }}
 {{ form_widget(form.images) }}
 
