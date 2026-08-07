@@ -1,5 +1,26 @@
 import { Controller } from '@hotwired/stimulus';
 
+// Ce controleur intervient dans l'affichage des listes de QRs au niveau de la route : app_couples_list_by_faq 
+// Pour des raisons de place sur l'écran, les photos de la QR ne sont pas affichées directement.
+// A la place, un lien est affiché. Au survol de ce lien la photo apparait en superposition, un peu comme une modale.
+// Le controleur preview est implanté au niveau du body dans base.html.twig
+// <body class="d-flex flex-column min-vh-100" data-controller="answer image-preview">
+//
+// L'action stimulus est implanté sur le lien
+// <a href="#" class="preview-link" 
+//             data-image-preview-url="{{ asset(image.name,'images_directory') }}" 
+//             data-action="mouseenter->image-preview#show mouseleave->image-preview#hide">
+// 
+// Les cibles cad l'image et l'overlay
+// 	<div class="image-preview-overlay" data-image-preview-target="container">
+//    <img src="" alt="Aperçu" data-image-preview-target="image">
+//  </div>
+// Par défaut l'overlay est en display none grace à la classe class="image-preview-overlay" 
+//
+// Dans ce controleur, on récupère l'Url de l'image en passant par le mécanisme natif dataset.
+// au niveau du lien via l'attribut data-image-preview-url
+
+
 /* stimulusFetch: 'lazy' */
 export default class extends Controller {
 
@@ -21,7 +42,10 @@ export default class extends Controller {
         if (!this.hasContainerTarget) return;
 
         // 1. Récupérer l'URL de l'image stockée dans le data-attribute du lien
+        // data-image-preview-url="{{ asset(image.name,'images_directory') }}"
         const imageUrl = event.currentTarget.dataset.imagePreviewUrl;
+
+        console.log('show => ', imageUrl);
 
         if (!imageUrl) return;
 
