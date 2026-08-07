@@ -1,14 +1,18 @@
 import { Controller } from '@hotwired/stimulus';
 
-// Ce controleur intervient dans l'affichage d'une boite modale bootstrap utilisée pour confirmer les actions supprimer
-// Les boutons qui déclenchent la boite modale sont dans les fichiers _delete_form.twig.html de chaque CRUD
-// La boite modale est dans le fichier _partials/_delete_modal.twig.html
-// Sur le bouton sont implantés le 
-// data-action="{{ path('app_couples_delete', {'id_faq': faq.id, 'id_couple': couple.id}) }}" 
-// et le 
+// Ce controleur intervient dans l'affichage d'une modale bootstrap utilisée pour confirmer les actions supprimer
+// Les boutons qui déclenchent la modale sont dans les fichiers _delete_form.twig.html de chaque CRUD
+// La modale est dans le fichier _partials/_delete_modal.twig.html
+// La modale est une modale boostrap. 
+// C'est bootstrap qui déclenche l'affichage de la modale lorsque l'utilisateur appui sur un bouton.
+// Il faut donc implanter sur le bouton les info nécessaires à l'action de suppression depuis la modale.
+// A cette fin, sur le bouton sont implantés le 
+// La route du controleur de suppression data-action="{{ path('app_couples_delete', {'id_faq': faq.id, 'id_couple': couple.id}) }}" 
+// et le token 
 // data-token="{{ csrf_token('delete' ~ couple.id) }}"
 //
 // Ensuite action et token sont passer au formulaire contenu dans la modale
+// Dans la modale le bouton a été remplacer par un form.
 // <form method="post" action="" data-confirm-modal-target="form">
 // 	<input type="hidden" name="_token" value="" data-confirm-modal-target="token">
 // 	<button type="submit" class="btn btn-delete-confirm">Supprimer définitivement</button>
@@ -31,7 +35,7 @@ export default class extends Controller {
         console.log('action => ', action);
         console.log('token => ', token);
 
-        // Mise à jour du formulaire de la modale
+        // On passe ici action et token à la modale
         if (action && this.hasFormTarget) {
             this.formTarget.action = action;
         }
