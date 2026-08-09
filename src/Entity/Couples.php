@@ -41,9 +41,6 @@ class Couples
     #[ORM\Column(options: ['default' => true])]
     private ?bool $todoReview = true;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $regle = null;
-
     #[ORM\Column(options: ['default' => false])]
     private ?bool $selectReview = null;
 
@@ -151,18 +148,6 @@ class Couples
     public function setTodoReview(bool $todoReview): static
     {
         $this->todoReview = $todoReview;
-
-        return $this;
-    }
-
-    public function getRegle(): ?string
-    {
-        return $this->regle;
-    }
-
-    public function setRegle(?string $regle): static
-    {
-        $this->regle = $regle;
 
         return $this;
     }
