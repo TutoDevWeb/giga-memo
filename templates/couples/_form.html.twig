@@ -35,8 +35,13 @@
 	{% for image in couple.images %}
 
 		<div class="mt-5 ms-4">
+
 			<img src="{{ asset(image.name,'images_directory')}}" alt="mes images" width="250">
-			<a href="{{ path('couple_delete_image',{id:image.id})}}" class="btn btn-primary m-4" data-delete data-token={{ csrf_token('delete' ~ image.id)}}>Supprimer</a>
+
+			<a href="{{ path('couple_delete_image',{id:image.id})}}" class="btn btn-delete-trigger btn-sm" data-bs-toggle="modal" data-token="{{ csrf_token('delete' ~ image.id)}}" data-bs-target="#ModalImage">
+				Supprimer l'image
+			</a>
+
 		</div>
 
 	{% endfor %}
@@ -49,3 +54,5 @@
 </button>
 
 {{ form_end(form) }}
+
+{% include "_partials/_delete_modal_image.html.twig" %}
