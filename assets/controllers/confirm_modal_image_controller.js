@@ -1,21 +1,23 @@
 import { Controller } from '@hotwired/stimulus';
 
-
+// Ce controleur intervient dans l'affichage d'une modale bootstrap utilisée pour confirmer la suppression des photos.
+// 
 export default class extends Controller {
 
     // S'exécute automatiquement quand la modale Bootstrap déclenche l'événement "show.bs.modal"
+    // donc quand la modale s'ouvre
     open(event) {
 
         // Le lien qui a ouvert la modale
         const link = event.relatedTarget;
 
-        // On garde les élements pour supprimer l'image dans la classe sous forme de propriétés.
-        // le div parent
+        // On a besoin de garder l'adresse du div dans lequel on affiche l'image et le bouton supprimer
+        // On garde cette addresse dans la classe sous forme de propriétés.
         this.elementToRemove = link.closest('div');
 
         if (!link) return;
 
-        // Récupération des données présentes sur le bouton qui ouvre la modale
+        // Récupération des données présentes sur le lien supprimer qui ouvre la modale
         this.elementAction = link.getAttribute('href');
         this.elementToken = link.dataset.token;
 
@@ -25,11 +27,14 @@ export default class extends Controller {
 
     }
 
+    // Lorque l'on clique sur le bouton "supprimer définitivement" de la modale
     delete(event) {
 
-        //event.preventDefault();
         console.log('delete');
 
+        // On envoie la requête ajax avec les éléments que l'on a récupéré dans le open
+        // this.elementAction
+        // this.elementToken
         fetch(
 
             this.elementAction, {
@@ -45,6 +50,7 @@ export default class extends Controller {
                 console.log(data);
             })
 
+        // On supprime le div qui contient l'image et son lien supprimer.    
         if (this.elementToRemove)
             this.elementToRemove.remove();
 

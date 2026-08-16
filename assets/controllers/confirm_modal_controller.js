@@ -6,7 +6,7 @@ import { Controller } from '@hotwired/stimulus';
 // Il lui passe l'action et le token.
 // Les boutons qui déclenchent la modale sont dans les fichiers _delete_form.twig.html de chaque CRUD
 // La modale est dans le fichier _partials/_delete_modal.twig.html
-// La modale est une modale boostrap. 
+// La modale étant une modale boostrap. 
 // C'est bootstrap qui déclenche l'affichage de la modale lorsque l'utilisateur appui sur un bouton.
 
 // <form method="post" action="" data-confirm-modal-target="form">
