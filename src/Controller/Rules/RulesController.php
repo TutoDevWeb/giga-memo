@@ -45,7 +45,6 @@ final class RulesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $rule = $form->getData();
             $rule->setFaq($faq);
 
             $entityManager->persist($rule);
