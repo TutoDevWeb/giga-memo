@@ -38,16 +38,17 @@ final class CategoriesController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $category = new Categories();
+
+        /** @var Users $user */
+        $user = $this->getUser();
+
+        $category->setUser($user);
+
+
         $form = $this->createForm(CategoriesType::class, $category);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            /** @var Users $user */
-            $user = $this->getUser();
-
-            // Maintenant PHPStan sait à 100% que $user est une instance de Users
-            $category->setUser($user);
 
             $entityManager->persist($category);
             $entityManager->flush();

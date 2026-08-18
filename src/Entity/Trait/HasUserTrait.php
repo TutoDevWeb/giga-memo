@@ -12,6 +12,7 @@ trait HasUserTrait
 {
     #[ORM\ManyToOne(targetEntity: Users::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'needUser')]
     private ?Users $user = null;
 
     public function getUser(): ?Users

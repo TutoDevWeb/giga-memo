@@ -28,15 +28,13 @@ class MainStartController extends AbstractController
         if ($categoriesRepository->findNbCategory($this->getUser()) === 0) {
 
             $cat = new Categories;
+            $cat->setUser($this->getUser());
 
-            $form = $this->createForm(CategoriesType::class);
+            $form = $this->createForm(CategoriesType::class, $cat);
 
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-
-                $cat = $form->getData();
-                $cat->setUser($this->getUser());
 
                 $entityManager->persist($cat);
 
@@ -66,18 +64,16 @@ class MainStartController extends AbstractController
         // Si on est ici, on vérifie que le user connecté n'a pas de faqs
         if ($faqsRepository->findNbFaq($this->getUser()) === 0) {
 
-            $form = $this->createForm(FaqFormType::class, null, [
+            $faq = new Faqs;
+            $faq->setUser($this->getUser());
+
+            $form = $this->createForm(FaqFormType::class, $faq, [
                 'user' => $this->getUser()
             ]);
-
-            $faq = new Faqs;
 
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-
-                $faq = $form->getData();
-                $faq->setUser($this->getUser());
 
                 // On vérifie que la catégorie parente appartient bien à l'utilisateur connecté.
                 $this->denyAccessUnlessGranted(ResourceOwnerVoter::NEW, $faq->getCategory());

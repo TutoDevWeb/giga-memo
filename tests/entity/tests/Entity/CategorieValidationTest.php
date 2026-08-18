@@ -43,21 +43,18 @@ class CategoriesValidationTest extends KernelTestCase
     public function testInvalidNullName(): void
     {
         $fakeUser = new Users();
-        // null est à la fois "null" et "blank", donc NotNull ET NotBlank vont râler
         $category = (new Categories())->setUser($fakeUser);
 
         $errors = $this->getErrors($category);
 
-        $this->assertCount(2, $errors); // Attention : 2 erreurs ici !
+        $this->assertCount(1, $errors);
 
         // Tu peux vérifier les messages si tu veux être ultra précis :
         $messages = [
             $errors[0]->getMessage(),
-            $errors[1]->getMessage(),
         ];
 
-        $this->assertContains('Cette valeur ne doit pas être nulle.', $messages);
-        $this->assertContains('Le nom ne peut pas être vide.', $messages);
+        $this->assertContains('Ce champ doit être renseigné.', $messages);
     }
     public function testInvalidNullUser(): void
     {

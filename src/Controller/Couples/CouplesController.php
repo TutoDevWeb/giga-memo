@@ -50,6 +50,12 @@ class CouplesController extends AbstractController
         $couple = new Couples();
         $couple->setFaq($faq);
         $couple->setNum($nbCouple + 1);
+        /** @var Users $user */
+        $user = $this->getUser();
+
+        // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité
+        $couple->setUser($user);
+
 
         $form = $this->createForm(CoupleFormType::class, $couple, ['faq' => $faq]);
 
@@ -57,18 +63,9 @@ class CouplesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            /** @var Users $user */
-            $user = $this->getUser();
-
-            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité
-            $couple->setUser($user);
-
-            /*
-             * Il faut refaire le set de la Faq car le champ faq est disabled dans le formulaire
-             * Du coup on perd la valeur dans le $form->handleRequest()
-             */
+            // Il faut le ré assigner car il est perdu car disabled
             $couple->setFaq($faq);
-            $couple = $form->getData();
+
             $couple->setTodoRun(true);
             $couple->setTodoReview(true);
             $couple->setSelectReview(false);

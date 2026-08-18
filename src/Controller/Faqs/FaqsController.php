@@ -26,6 +26,10 @@ class FaqsController extends AbstractController
     {
         $faq = new Faqs();
 
+        // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité
+        $faq->setUser($this->getUser());
+
+
         $form = $this->createForm(FaqFormType::class, $faq, [
             'user' => $this->getUser(),
         ]);
@@ -34,9 +38,6 @@ class FaqsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $faq = $form->getData();
-
-            // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité
-            $faq->setUser($this->getUser());
 
             // On vérifie que la catégorie parente appartient bien à l'utilisateur connecté.
             $this->denyAccessUnlessGranted(ResourceOwnerVoter::NEW, $faq->getCategory());
