@@ -37,7 +37,6 @@ class FaqsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $faq = $form->getData();
 
             // On vérifie que la catégorie parente appartient bien à l'utilisateur connecté.
             $this->denyAccessUnlessGranted(ResourceOwnerVoter::NEW, $faq->getCategory());
