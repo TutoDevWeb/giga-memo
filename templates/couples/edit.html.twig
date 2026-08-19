@@ -3,11 +3,6 @@
 {% set page_title = 'Modifier un QR' %}
 {% set page_icon = 'bi-patch-question' %}
 
-{% block javascripts %}
-	{{ parent() }}
-	<script defer src="{{ asset('assets/js/images.js') }}"></script>
-{% endblock %}
-
 {% block form %}
 
 	{{ include('couples/_form.html.twig', {
