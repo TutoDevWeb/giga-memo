@@ -10,7 +10,7 @@ use App\Entity\Rules;
 use App\Entity\Users;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class DeleteCategoryTest extends WebTestCase
+class DeleteCascadeCategoryTest extends WebTestCase
 {
     public function testDeleteCategoryCascade(): void
     {
