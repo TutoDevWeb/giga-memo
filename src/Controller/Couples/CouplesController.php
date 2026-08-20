@@ -207,16 +207,13 @@ class CouplesController extends AbstractController
             $entityManager->flush();
 
             // Faire les comptes et retourner les valeurs des indicateurs pour maj affichage
-            $nbTodoRun = $repo->countTodoRun($couple->getFaq());
-            $nbTodoReview = $repo->countTodoReview($couple->getFaq());
-            $nbSelectRun = $repo->countSelectRun($couple->getFaq());
-            $nbSelectReview = $repo->countSelectReview($couple->getFaq());
+            $counters = $repo->countAll($couple->getFaq());
 
             return new JsonResponse([
-                'nbTodoRun' => $nbTodoRun,
-                'nbTodoReview' => $nbTodoReview,
-                'nbSelectRun' => $nbSelectRun,
-                'nbSelectReview' => $nbSelectReview,
+                'nbTodoRun' => $counters->todoRun,
+                'nbTodoReview' => $counters->todoReview,
+                'nbSelectRun' => $counters->selectRun,
+                'nbSelectReview' => $counters->selectReview,
             ]);
         }
 
@@ -249,16 +246,13 @@ class CouplesController extends AbstractController
             $entityManager->flush();
 
             // Faire les comptes et retourner les valeurs des indicateurs pour maj affichage
-            $nbTodoRun = $repo->countTodoRun($couple->getFaq());
-            $nbTodoReview = $repo->countTodoReview($couple->getFaq());
-            $nbSelectRun = $repo->countSelectRun($couple->getFaq());
-            $nbSelectReview = $repo->countSelectReview($couple->getFaq());
+            $counters = $repo->countAll($couple->getFaq());
 
             return new JsonResponse([
-                'nbTodoRun' => $nbTodoRun,
-                'nbTodoReview' => $nbTodoReview,
-                'nbSelectRun' => $nbSelectRun,
-                'nbSelectReview' => $nbSelectReview,
+                'nbTodoRun' => $counters->todoRun,
+                'nbTodoReview' => $counters->todoReview,
+                'nbSelectRun' => $counters->selectRun,
+                'nbSelectReview' => $counters->selectReview,
             ]);
         }
 

@@ -162,48 +162,58 @@ class CouplesRepositoryTest extends KernelTestCase
         $this->assertSame($expected->getId(), $result->getId());
     }
 
-    public function testCountTodoRun(): void
+    public function testCountAllTodoRun(): void
     {
         $this->createCouple(1, true, true, false);
         $this->createCouple(2, true, true, false);
         $this->createCouple(3, false, true, false);
         $this->em->flush();
 
-        $this->assertSame(2, $this->repository->countTodoRun($this->faq));
+        $this->assertSame(2, $this->repository->countAll($this->faq)->todoRun);
     }
 
-    public function testCountTodoReviewRequiresSelectReviewToo(): void
+    public function testCountAllTodoReviewRequiresSelectReviewToo(): void
     {
         $this->createCouple(1, true, true, true);
         $this->createCouple(2, true, true, false);
         $this->em->flush();
 
-        $this->assertSame(1, $this->repository->countTodoReview($this->faq));
+        $this->assertSame(1, $this->repository->countAll($this->faq)->todoReview);
     }
 
-    public function testCountSelectReview(): void
+    public function testCountAllSelectReview(): void
     {
         $this->createCouple(1, true, true, true);
         $this->createCouple(2, true, false, true);
         $this->createCouple(3, true, true, false);
         $this->em->flush();
 
-        $this->assertSame(2, $this->repository->countSelectReview($this->faq));
+        $this->assertSame(2, $this->repository->countAll($this->faq)->selectReview);
     }
 
     /**
-     * Malgré son nom, countSelectRun() ne filtre sur aucun flag "selectRun"
-     * (qui n'existe pas sur l'entité Couples) : elle compte tous les couples
-     * de la FAQ. Ce test documente le comportement actuel (cf. AUDIT.md,
-     * section "Qualité du code") plutôt que de le corriger.
+     * Malgré son nom, selectRun ne filtre sur aucun flag "selectRun" (qui
+     * n'existe pas sur l'entité Couples) : il compte tous les couples de la
+     * FAQ. Ce test documente le comportement actuel (cf. AUDIT.md, section
+     * "Qualité du code") plutôt que de le corriger.
      */
-    public function testCountSelectRunActuallyCountsAllCouplesOfFaq(): void
+    public function testCountAllSelectRunActuallyCountsAllCouplesOfFaq(): void
     {
         $this->createCouple(1, true, true, false);
         $this->createCouple(2, false, false, false);
         $this->em->flush();
 
-        $this->assertSame(2, $this->repository->countSelectRun($this->faq));
+        $this->assertSame(2, $this->repository->countAll($this->faq)->selectRun);
+    }
+
+    public function testCountAllReturnsZeroesWhenFaqHasNoCouples(): void
+    {
+        $counters = $this->repository->countAll($this->faq);
+
+        $this->assertSame(0, $counters->todoRun);
+        $this->assertSame(0, $counters->todoReview);
+        $this->assertSame(0, $counters->selectRun);
+        $this->assertSame(0, $counters->selectReview);
     }
 
     public function testRestartTodoRunSetsTodoRunTrueForAllCouplesOfFaq(): void

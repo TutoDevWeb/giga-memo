@@ -24,11 +24,11 @@ Audit réalisé sur l'intégralité de `/src` (32 fichiers), `/templates` (44 fi
 **Problèmes N+1 identifiés**
 - `templates/couples/list-by-faq.html.twig` (lignes 30-52) itère `faq.couples`, puis pour chaque couple boucle sur `couple.images` et `couple.rules` — sans `JOIN FETCH` en amont, Doctrine émet 1 requête pour charger les couples + N requêtes pour les images + N requêtes pour les règles. Sur une FAQ à 50 couples, c'est ~100 requêtes SQL pour une seule page.
 - Aucun repository ne définit de méthode `findByFaqWithImagesAndRules()` utilisant `leftJoin()->addSelect()` — toutes les collections `OneToMany`/`ManyToMany` sont chargées en lazy loading pur.
-- `CouplesRepository` fait **4 requêtes séparées** (`countTodoRun`, `countTodoReview`, `countSelectRun`, `countSelectReview`) à chaque affichage de `run`/`review`/`restart`/`reset-review` — regroupable en une seule requête avec des agrégats conditionnels (`SUM(CASE WHEN ...)`).
-- `countSelectRun()` (CouplesRepository.php, lignes 139-148) ne filtre même pas sur `selectRun` malgré son nom — il compte tous les couples de la FAQ, ce qui est trompeur (bug de nommage, cf. section qualité).
+- ~~`CouplesRepository` fait 4 requêtes séparées (`countTodoRun`, `countTodoReview`, `countSelectRun`, `countSelectReview`) à chaque affichage de `run`/`review`/`restart`/`reset-review`~~ **Corrigé** : fusionnées en une seule méthode `CouplesRepository::countAll()` avec des agrégats conditionnels (`SUM(CASE WHEN ...)`), qui renvoie un DTO `App\Dto\CouplesCounters`, réutilisée dans les 8 endroits qui en avaient besoin (`FaqsController`, `MainController`, `CouplesController`).
+- `countAll()->selectRun` (ex-`countSelectRun()`, CouplesRepository.php) ne filtre toujours pas sur un flag `selectRun` malgré son nom — il compte tous les couples de la FAQ, ce qui reste trompeur (bug de nommage conservé volontairement pour l'instant, cf. section qualité, point 10).
 
 **Cache**
-- `cache.yaml` est laissé en configuration par défaut (filesystem, pas de pool dédié) — acceptable pour la taille actuelle, mais aucun cache de requêtes/résultats n'est mis en place explicitement en dehors du `when@prod` de `doctrine.yaml` (pools `cache.app`/`cache.system` corrects mais uniquement pour proxy/metadata, pas de result cache appliqué aux requêtes répétitives comme `countTodoRun`).
+- `cache.yaml` est laissé en configuration par défaut (filesystem, pas de pool dédié) — acceptable pour la taille actuelle, mais aucun cache de requêtes/résultats n'est mis en place explicitement en dehors du `when@prod` de `doctrine.yaml` (pools `cache.app`/`cache.system` corrects mais uniquement pour proxy/metadata, pas de result cache appliqué aux requêtes répétitives comme `countAll`).
 - Pas d'utilisation de HTTP cache (`Cache-Control`, ESI) — non critique pour une appli authentifiée par utilisateur, donc acceptable ici.
 
 **AssetMapper / Turbo / Stimulus**
@@ -64,7 +64,7 @@ Audit réalisé sur l'intégralité de `/src` (32 fichiers), `/templates` (44 fi
 **Points à améliorer**
 - **Couverture de tests très faible** : seulement 3 fichiers de test pour 32 classes PHP (~9%). Aucun test sur les contrôleurs métier principaux (`FaqsController`, `CouplesController` avec leur logique run/review), ni sur `PictureService`, ni sur les repositories `CouplesRepository` (logique de comptage/reset qui mériterait des tests vu sa complexité).
 - **Nommage trompeur** : `CouplesRepository::countSelectRun()` ne filtre pas réellement sur un flag `selectRun` (qui n'existe même pas sur l'entité) — nom hérité d'un renommage incomplet, source de confusion pour la maintenance.
-- Duplication notable du bloc "récupérer les 4 compteurs" (`nbTodoRun`, `nbTodoReview`, `nbSelectRun`, `nbSelectReview`) répété **7 fois** à l'identique dans `FaqsController` et `CouplesController` — candidat naturel pour une méthode `CouplesRepository::getCounters(Faqs $faq): array` unique, réduisant aussi le nombre de requêtes (cf. section performance).
+- ~~Duplication notable du bloc "récupérer les 4 compteurs" répété 7 fois à l'identique dans `FaqsController` et `CouplesController`~~ **Corrigé** via `CouplesRepository::countAll()` (cf. section performance).
 - Incohérence de nommage entre `getCreateAt()` (Faqs) et `getCreatedAt()` (Couples) pour le même concept — faute de frappe qui casse la cohérence de l'API.
 - Emojis et commentaires "journal de bord" laissés dans le code de prod (`// 🔒 On récupère l'utilisateur...`, `// J'ai ajouté à la main le cascade persist`, `// Le onDelete: 'CASCADE' a été ajouté à la main`) — traces de développement utiles en cours de dev mais à nettoyer avant une base "propre" (ou au moins reformuler sans référence au geste de modification, cf. bonnes pratiques de commentaires).
 - `console.log` de debug laissés dans `scripts.js` et `image_preview_controller.js` (visibles en prod dans la console navigateur).
@@ -80,7 +80,7 @@ Audit réalisé sur l'intégralité de `/src` (32 fichiers), `/templates` (44 fi
 4. **Corriger les fixtures cassées** (`AppFixtures` sans `Users` associé) pour qu'elles soient exécutables avec le schéma actuel.
 
 ### Priorité Moyenne
-5. **Résoudre les N+1 Doctrine** : ajouter des méthodes de repository avec `leftJoin()->addSelect()` pour charger couples+images+rules en une requête sur les pages de liste ; fusionner les 4 requêtes de comptage (`countTodoRun`/`countTodoReview`/`countSelectRun`/`countSelectReview`) en une seule via agrégats conditionnels, exposée par une méthode unique et réutilisée dans les 7 endroits dupliqués.
+5. ~~**Résoudre les N+1 Doctrine**~~ **Fait** : `findByFaqWithImagesAndRules()` (leftJoin+addSelect) pour couples+images+rules, et `countAll()` (agrégats conditionnels) pour fusionner les 4 requêtes de comptage en une seule méthode réutilisée dans les 8 endroits dupliqués.
 6. **Unifier la couche JavaScript** : migrer `public/assets/js/scripts.js` vers un contrôleur Stimulus dans `assets/controllers/`, cohérent avec le reste du projet (bénéfice : testabilité, fingerprinting AssetMapper, suppression du script hors-importmap).
 7. **Rapatrier Bootstrap dans l'importmap** au lieu du CDN, pour cohérence avec l'architecture AssetMapper choisie.
 8. **Étoffer la couverture de tests** sur `FaqsController`/`CouplesController` (logique run/review, qui est le cœur métier de l'appli) et `PictureService`.

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Dto\CouplesCounters;
 use App\Entity\Couples;
 use App\Entity\Faqs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -115,55 +116,37 @@ class CouplesRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function countTodoRun(Faqs $faq): int
+    /**
+     * Calcule en une seule requête les 4 compteurs affichés sur les écrans
+     * run/review d'une FAQ (todoRun, todoReview, selectRun, selectReview),
+     * via des agrégats conditionnels (SUM(CASE WHEN ...)), au lieu des 4
+     * requêtes séparées countTodoRun/countTodoReview/countSelectRun/
+     * countSelectReview (cf. AUDIT.md, section performance).
+     *
+     * Note : selectRun ne filtre sur aucun flag "selectRun" (qui n'existe pas
+     * sur l'entité Couples), il compte tous les couples de la FAQ. Ce nom
+     * hérité est conservé tel quel pour l'instant (cf. AUDIT.md, section
+     * "Qualité du code").
+     */
+    public function countAll(Faqs $faq): CouplesCounters
     {
-        $result = $this->createQueryBuilder('f')
-            ->where('f.todoRun = :todoRun')
-            ->setParameter('todoRun', true)
-            ->andWhere('f.faq = :faq')
+        $result = $this->createQueryBuilder('c')
+            ->select(
+                'COALESCE(SUM(CASE WHEN c.todoRun = true THEN 1 ELSE 0 END), 0) AS todoRun',
+                'COALESCE(SUM(CASE WHEN c.todoReview = true AND c.selectReview = true THEN 1 ELSE 0 END), 0) AS todoReview',
+                'COUNT(c.id) AS selectRun',
+                'COALESCE(SUM(CASE WHEN c.selectReview = true THEN 1 ELSE 0 END), 0) AS selectReview',
+            )
+            ->andWhere('c.faq = :faq')
             ->setParameter('faq', $faq)
             ->getQuery()
-            ->execute();
+            ->getSingleResult();
 
-        return count($result);
-    }
-
-    public function countTodoReview(Faqs $faq): int
-    {
-        $result = $this->createQueryBuilder('f')
-            ->where('f.todoReview = :todoReview')
-            ->setParameter('todoReview', true)
-            ->andWhere('f.selectReview = :selectReview')
-            ->setParameter('selectReview', true)
-            ->andWhere('f.faq = :faq')
-            ->setParameter('faq', $faq)
-            ->getQuery()
-            ->execute();
-
-        return count($result);
-    }
-
-    public function countSelectReview(Faqs $faq): int
-    {
-        $result = $this->createQueryBuilder('f')
-            ->where('f.selectReview = :selectReview')
-            ->setParameter('selectReview', true)
-            ->andWhere('f.faq = :faq')
-            ->setParameter('faq', $faq)
-            ->getQuery()
-            ->execute();
-
-        return count($result);
-    }
-
-    public function countSelectRun(Faqs $faq): int
-    {
-        $result = $this->createQueryBuilder('f')
-            ->where('f.faq = :faq')
-            ->setParameter('faq', $faq)
-            ->getQuery()
-            ->execute();
-
-        return count($result);
+        return new CouplesCounters(
+            todoRun: (int) $result['todoRun'],
+            todoReview: (int) $result['todoReview'],
+            selectRun: (int) $result['selectRun'],
+            selectReview: (int) $result['selectReview'],
+        );
     }
 }

@@ -130,18 +130,15 @@ class FaqsController extends AbstractController
         // findNextSelectRun renvoie le premier couple qui a le flag todoRun à true.
         $couple = $repo->findNextSelectRun($faq);
 
-        $nbTodoRun = $repo->countTodoRun($faq);
-        $nbTodoReview = $repo->countTodoReview($faq);
-        $nbSelectRun = $repo->countSelectRun($faq);
-        $nbSelectReview = $repo->countSelectReview($faq);
+        $counters = $repo->countAll($faq);
 
         return $this->render('faqs/run.html.twig', [
             'faq' => $faq,
             'couple' => $couple,
-            'nbTodoRun' => $nbTodoRun,
-            'nbTodoReview' => $nbTodoReview,
-            'nbSelectRun' => $nbSelectRun,
-            'nbSelectReview' => $nbSelectReview,
+            'nbTodoRun' => $counters->todoRun,
+            'nbTodoReview' => $counters->todoReview,
+            'nbSelectRun' => $counters->selectRun,
+            'nbSelectReview' => $counters->selectReview,
         ]);
     }
 
@@ -188,18 +185,15 @@ class FaqsController extends AbstractController
     ): Response {
         $couple = $repo->findNextSelectReview($faq);
 
-        $nbTodoRun = $repo->countTodoRun($faq);
-        $nbTodoReview = $repo->countTodoReview($faq);
-        $nbSelectRun = $repo->countSelectRun($faq);
-        $nbSelectReview = $repo->countSelectReview($faq);
+        $counters = $repo->countAll($faq);
 
         return $this->render('faqs/review.html.twig', [
             'faq' => $faq,
             'couple' => $couple,
-            'nbTodoRun' => $nbTodoRun,
-            'nbTodoReview' => $nbTodoReview,
-            'nbSelectRun' => $nbSelectRun,
-            'nbSelectReview' => $nbSelectReview,
+            'nbTodoRun' => $counters->todoRun,
+            'nbTodoReview' => $counters->todoReview,
+            'nbSelectRun' => $counters->selectRun,
+            'nbSelectReview' => $counters->selectReview,
         ]);
     }
 
@@ -222,7 +216,7 @@ class FaqsController extends AbstractController
         }
 
         // On a fini la faq.
-        if (0 == $repo->countTodoReview($faq)) {
+        if (0 == $repo->countAll($faq)->todoReview) {
             $repo->restartTodoReview($faq);
         }
         $em->flush();
@@ -252,16 +246,13 @@ class FaqsController extends AbstractController
             $repo->restartTodoReview($faq);
 
             // Faire les comptes et retourner les valeurs des indicateurs pour maj affichage
-            $nbTodoRun      = $repo->countTodoRun($faq);
-            $nbTodoReview   = $repo->countTodoReview($faq);
-            $nbSelectRun    = $repo->countSelectRun($faq);
-            $nbSelectReview = $repo->countSelectReview($faq);
+            $counters = $repo->countAll($faq);
 
             return new JsonResponse([
-                'nbTodoRun'      => $nbTodoRun,
-                'nbTodoReview'   => $nbTodoReview,
-                'nbSelectRun'    => $nbSelectRun,
-                'nbSelectReview' => $nbSelectReview,
+                'nbTodoRun'      => $counters->todoRun,
+                'nbTodoReview'   => $counters->todoReview,
+                'nbSelectRun'    => $counters->selectRun,
+                'nbSelectReview' => $counters->selectReview,
             ]);
         }
 
@@ -292,16 +283,13 @@ class FaqsController extends AbstractController
             $repo->restartTodoReview($faq);
 
             // Faire les comptes et retourner les valeurs des indicateurs pour maj affichage
-            $nbTodoRun = $repo->countTodoRun($faq);
-            $nbTodoReview = $repo->countTodoReview($faq);
-            $nbSelectRun = $repo->countSelectRun($faq);
-            $nbSelectReview = $repo->countSelectReview($faq);
+            $counters = $repo->countAll($faq);
 
             return new JsonResponse([
-                'nbTodoRun' => $nbTodoRun,
-                'nbTodoReview' => $nbTodoReview,
-                'nbSelectRun' => $nbSelectRun,
-                'nbSelectReview' => $nbSelectReview,
+                'nbTodoRun' => $counters->todoRun,
+                'nbTodoReview' => $counters->todoReview,
+                'nbSelectRun' => $counters->selectRun,
+                'nbSelectReview' => $counters->selectReview,
             ]);
         }
 
