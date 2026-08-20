@@ -143,7 +143,7 @@ class CouplesRepository extends ServiceEntityRepository
         return count($result);
     }
 
-    public function countSelectReview($faq): int
+    public function countSelectReview(Faqs $faq): int
     {
         $result = $this->createQueryBuilder('f')
             ->where('f.selectReview = :selectReview')
