@@ -17,6 +17,26 @@ class CouplesRepository extends ServiceEntityRepository
         parent::__construct($registry, Couples::class);
     }
 
+    /**
+     * Charge tous les couples d'une FAQ avec leurs images et leurs règles en une
+     * seule requête (leftJoin + addSelect), pour éviter le problème N+1 constaté
+     * sur templates/couples/list-by-faq.html.twig (voir AUDIT.md, section performance).
+     *
+     * @return Couples[]
+     */
+    public function findByFaqWithImagesAndRules(Faqs $faq): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.images', 'i')->addSelect('i')
+            ->leftJoin('c.rules', 'r')->addSelect('r')
+            ->andWhere('c.faq = :faq')
+            ->setParameter('faq', $faq)
+            ->orderBy('c.num', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findNextSelectRun(Faqs $faq): ?Couples
     {
         return $this->createQueryBuilder('c')

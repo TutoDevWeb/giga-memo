@@ -5,6 +5,8 @@ namespace App\Tests\Repository;
 use App\Entity\Categories;
 use App\Entity\Couples;
 use App\Entity\Faqs;
+use App\Entity\Images;
+use App\Entity\Rules;
 use App\Entity\Users;
 use App\Repository\CouplesRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -87,6 +89,44 @@ class CouplesRepositoryTest extends KernelTestCase
         $this->em->persist($couple);
 
         return $couple;
+    }
+
+    public function testFindByFaqWithImagesAndRulesLoadsCollectionsInOneQuery(): void
+    {
+        $rule = new Rules();
+        $rule->setName('Règle de test');
+        $rule->setContent('Contenu');
+        $rule->setFaq($this->faq);
+        $rule->setUser($this->user);
+        $this->em->persist($rule);
+
+        $withExtras = $this->createCouple(1, true, true, false);
+        $withExtras->addRule($rule);
+
+        $image = new Images();
+        $image->setName('test.png');
+        $image->setUser($this->user);
+        $withExtras->addImage($image);
+
+        $this->createCouple(2, true, true, false);
+
+        $this->em->flush();
+        $this->em->clear();
+
+        $refreshedFaq = $this->em->find(Faqs::class, $this->faq->getId());
+        $result = $this->repository->findByFaqWithImagesAndRules($refreshedFaq);
+
+        $this->assertCount(2, $result);
+
+        $this->assertSame(1, $result[0]->getNum());
+        $this->assertCount(1, $result[0]->getImages());
+        $this->assertSame('test.png', $result[0]->getImages()->first()->getName());
+        $this->assertCount(1, $result[0]->getRules());
+        $this->assertSame('Règle de test', $result[0]->getRules()->first()->getName());
+
+        $this->assertSame(2, $result[1]->getNum());
+        $this->assertCount(0, $result[1]->getImages());
+        $this->assertCount(0, $result[1]->getRules());
     }
 
     public function testFindNextSelectRunReturnsFirstCoupleWithTodoRunTrue(): void
