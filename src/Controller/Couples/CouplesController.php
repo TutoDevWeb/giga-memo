@@ -28,9 +28,11 @@ class CouplesController extends AbstractController
     #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
     public function list_by_faq(
         #[MapEntity(id: 'id_faq')] Faqs $faq,
+        CouplesRepository $couplesRepository,
     ): Response {
         return $this->render('couples/list-by-faq.html.twig', [
             'faq' => $faq,
+            'couples' => $couplesRepository->findByFaqWithImagesAndRules($faq),
         ]);
     }
 
