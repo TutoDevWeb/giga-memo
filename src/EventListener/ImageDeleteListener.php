@@ -11,11 +11,8 @@ use Doctrine\ORM\Events;
 #[AsEntityListener(event: Events::preRemove, method: 'preRemove', entity: Images::class)]
 class ImageDeleteListener
 {
-    private PictureService $pictureService;
-
-    public function __construct(PictureService $pictureService)
+    public function __construct(private readonly PictureService $pictureService)
     {
-        $this->pictureService = $pictureService;
     }
 
     public function preRemove(Images $image, PreRemoveEventArgs $event): void
