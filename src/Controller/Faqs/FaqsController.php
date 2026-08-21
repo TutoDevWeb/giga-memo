@@ -135,10 +135,7 @@ class FaqsController extends AbstractController
         return $this->render('faqs/run.html.twig', [
             'faq' => $faq,
             'couple' => $couple,
-            'nbTodoRun' => $counters->todoRun,
-            'nbTodoReview' => $counters->todoReview,
-            'nbSelectRun' => $counters->selectRun,
-            'nbSelectReview' => $counters->selectReview,
+            'counters' => $counters,
         ]);
     }
 
@@ -190,10 +187,7 @@ class FaqsController extends AbstractController
         return $this->render('faqs/review.html.twig', [
             'faq' => $faq,
             'couple' => $couple,
-            'nbTodoRun' => $counters->todoRun,
-            'nbTodoReview' => $counters->todoReview,
-            'nbSelectRun' => $counters->selectRun,
-            'nbSelectReview' => $counters->selectReview,
+            'counters' => $counters,
         ]);
     }
 

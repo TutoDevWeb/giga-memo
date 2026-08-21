@@ -13,7 +13,7 @@
 {% block bouton_suivant %}
 	<a class='btn btn-primary' href="{{ path('app_faqs_next_run',{ id_faq : faq.id})}}">Suivant
 		{#  #}
-		(<span title='Nombre total de questions' data-counter-action-target='selectRun'>{{nbSelectRun}}</span>/<span title='Nombre restant de questions' data-counter-action-target='todoRun'>{{nbTodoRun}}</span>)
+		(<span title='Nombre total de questions' data-counter-action-target='selectRun'>{{counters.selectRun}}</span>/<span title='Nombre restant de questions' data-counter-action-target='todoRun'>{{counters.todoRun}}</span>)
 	</a>
 {% endblock %}
 
@@ -25,7 +25,7 @@
 		data-token="{{ csrf_token('set-one-review' ~ couple.id) }}"
 	>A Revoir
 		{#  #}
-		(<span title='Nombre de questions à revoir' data-counter-action-target='selectReview'>{{nbSelectReview}}</span>)
+		(<span title='Nombre de questions à revoir' data-counter-action-target='selectReview'>{{counters.selectReview}}</span>)
 	</button>
 {% endblock %}
 

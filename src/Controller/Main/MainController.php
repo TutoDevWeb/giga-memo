@@ -79,14 +79,12 @@ class MainController extends AbstractController
         CouplesRepository $repo,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
+
         $counters = $repo->countAll($faq);
 
         return $this->render('main/mode-run.html.twig', [
             'faq' => $faq,
-            'nbTodoRun' => $counters->todoRun,
-            'nbTodoReview' => $counters->todoReview,
-            'nbSelectRun' => $counters->selectRun,
-            'nbSelectReview' => $counters->selectReview,
+            'counters' => $counters,
         ]);
     }
 
