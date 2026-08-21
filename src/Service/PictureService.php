@@ -10,12 +10,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class PictureService
 {
-    private $params;
 
-    public function __construct(ParameterBagInterface $params)
-    {
-        $this->params = $params;
-    }
+    public function __construct(private readonly ParameterBagInterface $params) {}
 
     public function upload(
         EntityManagerInterface $entityManager,
