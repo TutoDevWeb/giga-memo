@@ -7,6 +7,7 @@ use App\Entity\Users;
 use App\Security\Voter\ResourceOwnerVoter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class ResourceOwnerVoterTest extends TestCase
@@ -59,6 +60,40 @@ class ResourceOwnerVoterTest extends TestCase
         $vote = $voter->vote($token, $invalidSubject, [ResourceOwnerVoter::EDIT]);
 
         // On affirme que le voter s'abstient "ACCESS_ABSTAIN" (0)
+        $this->assertEquals(VoterInterface::ACCESS_ABSTAIN, $vote);
+    }
+
+    // CAS 4 : Le token ne porte aucun utilisateur (non connecté) -> REFUSÉ
+    public function testVoteReturnsAccessDeniedIfUserIsNotLoggedIn(): void
+    {
+        $voter = new ResourceOwnerVoter();
+
+        $owner = new Users();
+        $category = new Categories();
+        $category->setUser($owner);
+
+        // Un token dont getUser() renvoie null : le voter doit refuser plutôt
+        // que de tenter une comparaison avec un utilisateur inexistant.
+        $token = $this->createMock(TokenInterface::class);
+        $token->method('getUser')->willReturn(null);
+
+        $vote = $voter->vote($token, $category, [ResourceOwnerVoter::EDIT]);
+
+        $this->assertEquals(VoterInterface::ACCESS_DENIED, $vote);
+    }
+
+    // CAS 5 : L'attribut demandé n'est pas géré par ce voter -> ABSTENTION
+    public function testVoteAbstainsIfAttributeIsNotSupported(): void
+    {
+        $voter = new ResourceOwnerVoter();
+
+        $owner = new Users();
+        $category = new Categories();
+        $category->setUser($owner);
+
+        $token = new UsernamePasswordToken($owner, 'main', ['ROLE_USER']);
+        $vote = $voter->vote($token, $category, ['SOME_UNRELATED_ATTRIBUTE']);
+
         $this->assertEquals(VoterInterface::ACCESS_ABSTAIN, $vote);
     }
 }
