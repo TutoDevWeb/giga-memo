@@ -21,7 +21,7 @@ class FaqsTest extends TestCase
         $this->assertNull($faq->getCategory());
         $this->assertNull($faq->getUser());
 
-        $this->assertInstanceOf(\DateTimeImmutable::class, $faq->getCreateAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $faq->getCreatedAt());
         $this->assertCount(0, $faq->getCouples());
         $this->assertCount(0, $faq->getRules());
     }
@@ -46,8 +46,8 @@ class FaqsTest extends TestCase
         $this->assertSame($user, $faq->getUser());
 
         $now = new \DateTimeImmutable();
-        $faq->setCreateAt($now);
-        $this->assertSame($now, $faq->getCreateAt());
+        $faq->setCreatedAt($now);
+        $this->assertSame($now, $faq->getCreatedAt());
     }
 
     public function testAddAndRemoveCouple(): void

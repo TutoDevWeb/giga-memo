@@ -81,7 +81,7 @@ class SelectFaqFormType extends AbstractType
                         'placeholder' => 'Choisissez une catégorie d\'abord',
                         'mapped' => false,
                         'constraints' => [
-                            new Assert\NotBlank(['message' => 'notBlank']),
+                            new Assert\NotBlank(message: 'notBlank'),
                         ],
                         'attr' => ['data-dynamic-select-target' => 'faqSelect'],
                     ]);
@@ -116,7 +116,7 @@ class SelectFaqFormType extends AbstractType
                     },
                     'attr' => ['data-action' => 'change->dynamic-select#updateFaqs'],
                     'constraints' => [
-                        new Assert\NotBlank(['message' => 'notBlank']),
+                        new Assert\NotBlank(message: 'notBlank'),
                     ],
                 ]);
 
@@ -134,7 +134,7 @@ class SelectFaqFormType extends AbstractType
                     },
                     'attr' => ['data-dynamic-select-target' => 'faqSelect'],
                     'constraints' => [
-                        new Assert\NotBlank(['message' => 'notBlank']),
+                        new Assert\NotBlank(message: 'notBlank'),
                     ],
                 ]);
             }
