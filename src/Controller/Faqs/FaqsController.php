@@ -2,6 +2,7 @@
 
 namespace App\Controller\Faqs;
 
+use App\Controller\Trait\JsonCsrfTokenTrait;
 use App\Entity\Faqs;
 use App\Form\FaqFormType;
 use App\Repository\CouplesRepository;
@@ -17,6 +18,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class FaqsController extends AbstractController
 {
+    use JsonCsrfTokenTrait;
+
     /**
      * Ce controleur a pour but de créer une nouvelle Faq
      * Il est appelé lorsqu'un utilisateur clique sur le bouton Créer une Faq du Mode-Edit.
@@ -230,8 +233,7 @@ class FaqsController extends AbstractController
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         Request $request,
     ): Response {
-        $data = json_decode($request->getContent(), true);
-        $token = $data['_token'];
+        $token = $this->getCsrfTokenFromJson($request);
 
         // On teste pour savoir si le token est valide.
         if ($this->isCsrfTokenValid('restart' . $faq->getId(), $token)) {
@@ -265,8 +267,7 @@ class FaqsController extends AbstractController
         Request $request,
     ): Response {
         // On récupère le jeton CSRF
-        $data = json_decode($request->getContent(), true);
-        $token = $data['_token'];
+        $token = $this->getCsrfTokenFromJson($request);
 
         // On teste pour savoir si le token est valide.
         if ($this->isCsrfTokenValid('reset-review' . $faq->getId(), $token)) {

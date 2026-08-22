@@ -165,6 +165,24 @@ class FaqsAjaxActionsTest extends WebTestCase
         $this->assertFalse($couple->isTodoReview());
     }
 
+    public function testRestartWithMalformedBodyReturnsBadRequest(): void
+    {
+        $client = $this->client;
+        $client->loginUser($this->owner);
+
+        $client->request(
+            'POST',
+            '/faqs/restart/'.$this->faq->getId(),
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: 'ceci-nest-pas-du-json'
+        );
+
+        $this->assertResponseStatusCodeSame(400);
+
+        $this->em->refresh($this->couple);
+        $this->assertFalse($this->couple->isTodoRun());
+    }
+
     public function testRestartIsDeniedForNonOwner(): void
     {
         $client = $this->client;

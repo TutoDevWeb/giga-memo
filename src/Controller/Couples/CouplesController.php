@@ -2,6 +2,7 @@
 
 namespace App\Controller\Couples;
 
+use App\Controller\Trait\JsonCsrfTokenTrait;
 use App\Entity\Couples;
 use App\Entity\Faqs;
 use App\Entity\Users;
@@ -21,6 +22,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CouplesController extends AbstractController
 {
+    use JsonCsrfTokenTrait;
+
     /**
      * Ce contrôleur sert à afficher la liste des couples qr d'une faq.
      */
@@ -193,8 +196,7 @@ class CouplesController extends AbstractController
         #[MapEntity(id: 'id_couple')] Couples $couple,
         Request $request,
     ): Response {
-        $data = json_decode($request->getContent(), true);
-        $token = $data['_token'];
+        $token = $this->getCsrfTokenFromJson($request);
 
         // On teste pour savoir si le token est valide.
         if ($this->isCsrfTokenValid('set-one-review' . $couple->getId(), $token)) {
@@ -232,8 +234,7 @@ class CouplesController extends AbstractController
         #[MapEntity(id: 'id_couple')] Couples $couple,
         Request $request,
     ): Response {
-        $data = json_decode($request->getContent(), true);
-        $token = $data['_token'];
+        $token = $this->getCsrfTokenFromJson($request);
 
         // On teste pour savoir si le token est valide.
         if ($this->isCsrfTokenValid('cancel-one-review' . $couple->getId(), $token)) {

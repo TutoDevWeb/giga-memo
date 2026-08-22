@@ -2,6 +2,7 @@
 
 namespace App\Controller\Images;
 
+use App\Controller\Trait\JsonCsrfTokenTrait;
 use App\Entity\Images;
 use App\Security\Voter\ResourceOwnerVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,6 +15,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class DeleteImageController extends AbstractController
 {
+    use JsonCsrfTokenTrait;
+
     #[Route('/couple/suppression-image/{id<\d+>}', name: 'couple_delete_image', methods: ['DELETE'])]
     #[IsGranted(ResourceOwnerVoter::DELETE, subject: 'image')]
     public function deleteImage(
@@ -22,8 +25,7 @@ final class DeleteImageController extends AbstractController
         Request $request,
     ): JsonResponse {
 
-        $data = json_decode($request->getContent(), true);
-        $token = $data['_token'];
+        $token = $this->getCsrfTokenFromJson($request);
 
         // On teste pour savoir si le token est valide.
         if ($this->isCsrfTokenValid('delete' . $image->getId(), $token)) {

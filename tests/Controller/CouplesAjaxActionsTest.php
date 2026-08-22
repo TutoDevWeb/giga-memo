@@ -164,6 +164,24 @@ class CouplesAjaxActionsTest extends WebTestCase
         $this->assertFalse($this->couple->isSelectReview());
     }
 
+    public function testSetOneReviewWithMalformedBodyReturnsBadRequest(): void
+    {
+        $client = $this->client;
+        $client->loginUser($this->owner);
+
+        $client->request(
+            'POST',
+            '/couples/set-one-review/'.$this->couple->getId(),
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: 'ceci-nest-pas-du-json'
+        );
+
+        $this->assertResponseStatusCodeSame(400);
+
+        $this->em->refresh($this->couple);
+        $this->assertFalse($this->couple->isSelectReview());
+    }
+
     public function testSetOneReviewIsDeniedForNonOwner(): void
     {
         $client = $this->client;
