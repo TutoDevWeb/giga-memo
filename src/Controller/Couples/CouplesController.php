@@ -55,12 +55,11 @@ class CouplesController extends AbstractController
         $couple = new Couples();
         $couple->setFaq($faq);
         $couple->setNum($nbCouple + 1);
+
+        // On récupère l'utilisateur connecté et on l'injecte dans l'entité
         /** @var Users $user */
         $user = $this->getUser();
-
-        // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité
         $couple->setUser($user);
-
 
         $form = $this->createForm(CoupleFormType::class, $couple, ['faq' => $faq]);
 

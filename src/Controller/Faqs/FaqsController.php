@@ -29,7 +29,7 @@ class FaqsController extends AbstractController
     {
         $faq = new Faqs();
 
-        // 🔒 On récupère l'utilisateur connecté et on l'injecte dans l'entité
+        // On récupère l'utilisateur connecté et on l'injecte dans l'entité
         $faq->setUser($this->getUser());
 
 
