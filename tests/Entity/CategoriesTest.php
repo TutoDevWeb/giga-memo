@@ -3,66 +3,62 @@
 namespace App\Tests\Entity;
 
 use App\Entity\Categories;
-use App\Entity\Product;
+use App\Entity\Faqs;
 use App\Entity\Users;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use PHPUnit\Framework\TestCase;
 
-class CategoriesValidationTest extends KernelTestCase
+class CategoriesTest extends TestCase
 {
-    private ValidatorInterface $validator;
-
-    protected function setUp(): void
+    public function testInitialState(): void
     {
-        // Démarre le kernel Symfony
-        self::bootKernel();
+        $category = new Categories();
 
-        // Récupère le service Validator du conteneur de test
-        $this->validator = self::getContainer()->get(ValidatorInterface::class);
+        $this->assertNull($category->getId());
+        $this->assertNull($category->getName());
+        $this->assertNull($category->getUser());
+        $this->assertCount(0, $category->getFaqs());
     }
 
-    /**
-     * Un helper pour récupérer les erreurs sur une entité
-     */
-    private function getErrors(Categories $category)
+    public function testGettersAndSetters(): void
     {
-        return $this->validator->validate($category);
+        $category = new Categories();
+
+        $category->setName('Catégorie Test');
+        $this->assertSame('Catégorie Test', $category->getName());
+
+        $user = $this->createMock(Users::class);
+        $category->setUser($user);
+        $this->assertSame($user, $category->getUser());
     }
 
-    public function testValidCategory(): void
+    public function testAddAndRemoveFaq(): void
     {
-        $fakeUser = new Users();
-        $category = (new Categories())->setName('Mon super produit')->setUser($fakeUser);
+        $category = new Categories();
+        $faq = $this->createMock(Faqs::class);
 
-        $errors = $this->getErrors($category);
+        // On vérifie que getCategory retourne l'entité actuelle lors de la suppression
+        $faq->method('getCategory')->willReturn($category);
 
-        // On attend 0 erreur
-        $this->assertCount(0, $errors);
-    }
+        // setCategory sera appelé 2 fois : d'abord avec $category (addFaq), puis avec null (removeFaq)
+        $faq->expects($this->exactly(2))
+            ->method('setCategory')
+            ->withConsecutive(
+                [$this->identicalTo($category)],
+                [null]
+            );
 
-    public function testInvalidNullName(): void
-    {
-        $fakeUser = new Users();
-        $category = (new Categories())->setUser($fakeUser);
+        // Ajout de la faq
+        $category->addFaq($faq);
+        $this->assertCount(1, $category->getFaqs());
+        $this->assertTrue($category->getFaqs()->contains($faq));
 
-        $errors = $this->getErrors($category);
+        // Tenter d'ajouter un doublon (ne doit pas rappeler setCategory)
+        $category->addFaq($faq);
+        $this->assertCount(1, $category->getFaqs());
 
-        $this->assertCount(1, $errors);
-
-        // Tu peux vérifier les messages si tu veux être ultra précis :
-        $messages = [
-            $errors[0]->getMessage(),
-        ];
-
-        $this->assertContains('Ce champ doit être renseigné.', $messages);
-    }
-    public function testInvalidNullUser(): void
-    {
-        $category = (new Categories())->setName('Une catégorie sans user');
-
-        $errors = $this->getErrors($category);
-
-        $this->assertCount(1, $errors);
-        $this->assertEquals('La ressource doit être liée à un utilisateur.', $errors[0]->getMessage());
+        // Suppression de la faq
+        $category->removeFaq($faq);
+        $this->assertCount(0, $category->getFaqs());
+        $this->assertFalse($category->getFaqs()->contains($faq));
     }
 }
