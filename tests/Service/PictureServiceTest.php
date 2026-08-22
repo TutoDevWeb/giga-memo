@@ -7,6 +7,7 @@ use App\Entity\Couples;
 use App\Entity\Faqs;
 use App\Entity\Images;
 use App\Entity\Users;
+use App\Repository\ImagesRepository;
 use App\Service\PictureService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -36,7 +37,9 @@ class PictureServiceTest extends KernelTestCase
         $this->imagesDir = sys_get_temp_dir().'/giga-memo-test-images-'.uniqid().'/';
         $this->filesystem->mkdir($this->imagesDir);
 
-        $this->pictureService = new PictureService(new ParameterBag(['images_directory' => $this->imagesDir]));
+        // Quota volontairement large : les tests dédiés au quota le redéfinissent
+        // eux-mêmes via createPictureServiceWithQuota().
+        $this->pictureService = $this->createPictureServiceWithQuota(1000);
 
         $this->user = new Users();
         $this->user->setEmail('picture-service-test-'.uniqid().'@example.com');
@@ -90,6 +93,17 @@ class PictureServiceTest extends KernelTestCase
         $this->filesystem->remove($this->imagesDir);
 
         parent::tearDown();
+    }
+
+    private function createPictureServiceWithQuota(int $maxImagesPerUser): PictureService
+    {
+        return new PictureService(
+            new ParameterBag([
+                'images_directory' => $this->imagesDir,
+                'images_max_per_user' => $maxImagesPerUser,
+            ]),
+            self::getContainer()->get(ImagesRepository::class),
+        );
     }
 
     private function makeUploadedImageFile(int $type, string $originalName): UploadedFile
@@ -172,5 +186,79 @@ class PictureServiceTest extends KernelTestCase
         $result = $this->pictureService->delete($image);
 
         $this->assertFalse($result);
+    }
+
+    public function testUploadStopsAtQuotaAndReturnsNumberOfSkippedFiles(): void
+    {
+        $pictureService = $this->createPictureServiceWithQuota(2);
+        $files = [
+            $this->makeUploadedImageFile(\IMAGETYPE_PNG, 'photo-1.png'),
+            $this->makeUploadedImageFile(\IMAGETYPE_PNG, 'photo-2.png'),
+            $this->makeUploadedImageFile(\IMAGETYPE_PNG, 'photo-3.png'),
+        ];
+
+        $skipped = $pictureService->upload($this->em, $this->couple, $files, $this->user);
+
+        $this->em->refresh($this->couple);
+        $this->assertCount(2, $this->couple->getImages());
+        $this->assertSame(1, $skipped);
+    }
+
+    public function testUploadSkipsEverythingWhenQuotaAlreadyReached(): void
+    {
+        $pictureService = $this->createPictureServiceWithQuota(1);
+        $firstFile = $this->makeUploadedImageFile(\IMAGETYPE_PNG, 'photo-1.png');
+        $pictureService->upload($this->em, $this->couple, [$firstFile], $this->user);
+
+        $secondFile = $this->makeUploadedImageFile(\IMAGETYPE_PNG, 'photo-2.png');
+        $skipped = $pictureService->upload($this->em, $this->couple, [$secondFile], $this->user);
+
+        $this->em->refresh($this->couple);
+        $this->assertCount(1, $this->couple->getImages());
+        $this->assertSame(1, $skipped);
+    }
+
+    public function testUploadQuotaIsSharedAcrossCouplesOfTheSameUser(): void
+    {
+        // Reproduit le cas testé manuellement : le quota s'applique à
+        // l'utilisateur, pas à un couple en particulier.
+        $secondCouple = new Couples();
+        $secondCouple->setNum(2);
+        $secondCouple->setFaq($this->faq);
+        $secondCouple->setUser($this->user);
+        $secondCouple->setQuestion('Autre question');
+        $secondCouple->setSelectReview(false);
+        $this->em->persist($secondCouple);
+        $this->em->flush();
+
+        $pictureService = $this->createPictureServiceWithQuota(3);
+
+        $skippedOnFirstCouple = $pictureService->upload(
+            $this->em,
+            $this->couple,
+            [
+                $this->makeUploadedImageFile(\IMAGETYPE_PNG, 'photo-1.png'),
+                $this->makeUploadedImageFile(\IMAGETYPE_PNG, 'photo-2.png'),
+            ],
+            $this->user,
+        );
+
+        $skippedOnSecondCouple = $pictureService->upload(
+            $this->em,
+            $secondCouple,
+            [
+                $this->makeUploadedImageFile(\IMAGETYPE_PNG, 'photo-3.png'),
+                $this->makeUploadedImageFile(\IMAGETYPE_PNG, 'photo-4.png'),
+            ],
+            $this->user,
+        );
+
+        $this->em->refresh($this->couple);
+        $this->em->refresh($secondCouple);
+
+        $this->assertSame(0, $skippedOnFirstCouple);
+        $this->assertSame(1, $skippedOnSecondCouple);
+        $this->assertCount(2, $this->couple->getImages());
+        $this->assertCount(1, $secondCouple->getImages());
     }
 }

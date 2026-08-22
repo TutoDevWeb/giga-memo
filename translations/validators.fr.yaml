@@ -3,3 +3,6 @@ notBlank: 'Ce champ doit être renseigné.'
 needUser: 'La ressource doit être liée à un utilisateur.'
 
 maxLength: 'Le nom ne doit pas dépasser {{ limit }} caractères.'
+
+imageMaxSize: 'Le fichier {{ name }} est trop volumineux ({{ size }} {{ suffix }}). La taille maximale autorisée est {{ limit }} {{ suffix }}.'
+imageMimeType: 'Merci de ne déposer que des images au format PNG.'

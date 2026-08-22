@@ -54,18 +54,18 @@ class CoupleFormType extends AbstractType
                     'accept' => '.png',
                 ],
                 'constraints' => [
-                    new All([
-                        'constraints' => [
-                            new File([
-                                'maxSize' => '2M',
-                                'mimeTypes' => [
+                    new All(
+                        constraints: [
+                            new File(
+                                maxSize: '2M',
+                                mimeTypes: [
                                     'image/png',
                                 ],
-                                'maxSizeMessage' => 'Le fichier {{ name }} est trop volumineux ({{ size }} {{ suffix }}). La taille maximale autorisée est {{ limit }} {{ suffix }}.',
-                                'mimeTypesMessage' => 'Merci de ne déposer que des images au format PNG.',
-                            ]),
+                                maxSizeMessage: 'imageMaxSize',
+                                mimeTypesMessage: 'imageMimeType',
+                            ),
                         ],
-                    ]),
+                    ),
                 ],
             ])
             ->add('from', HiddenType::class, [
