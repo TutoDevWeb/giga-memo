@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints\File;
 
 class CoupleFormType extends AbstractType
 {
@@ -48,6 +50,23 @@ class CoupleFormType extends AbstractType
                 'mapped' => false,
                 'multiple' => true,
                 'required' => false,
+                'attr' => [
+                    'accept' => '.png',
+                ],
+                'constraints' => [
+                    new All([
+                        'constraints' => [
+                            new File([
+                                'maxSize' => '2M',
+                                'mimeTypes' => [
+                                    'image/png',
+                                ],
+                                'maxSizeMessage' => 'Le fichier {{ name }} est trop volumineux ({{ size }} {{ suffix }}). La taille maximale autorisée est {{ limit }} {{ suffix }}.',
+                                'mimeTypesMessage' => 'Merci de ne déposer que des images au format PNG.',
+                            ]),
+                        ],
+                    ]),
+                ],
             ])
             ->add('from', HiddenType::class, [
                 'mapped' => false,

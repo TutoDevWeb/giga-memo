@@ -5,24 +5,40 @@ namespace App\Service;
 use App\Entity\Couples;
 use App\Entity\Images;
 use App\Entity\Users;
+use App\Repository\ImagesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class PictureService
 {
 
-    public function __construct(private readonly ParameterBagInterface $params) {}
+    public function __construct(
+        private readonly ParameterBagInterface $params,
+        private readonly ImagesRepository $imagesRepository,
+    ) {}
 
+    /**
+     * @return int Le nombre de fichiers ignorés car le quota de l'utilisateur était atteint
+     */
     public function upload(
         EntityManagerInterface $entityManager,
         Couples $couple,
         array $uploadedFiles,
         Users $user,
-    ): void {
+    ): int {
         $idc = $couple->getId();
         $hasNewImages = false; // Petit flag pour savoir si on doit flush à la fin
 
+        $maxImagesPerUser = (int) $this->params->get('images_max_per_user');
+        $remainingSlots = max(0, $maxImagesPerUser - $this->imagesRepository->countByUser($user));
+        $skippedForQuota = 0;
+
         foreach ($uploadedFiles as $uploadedFile) {
+            if ($remainingSlots <= 0) {
+                ++$skippedForQuota;
+                continue;
+            }
+
             $mime = getimagesize($uploadedFile);
 
             if (false !== $mime && 'image/png' === $mime['mime']) {
@@ -38,6 +54,7 @@ class PictureService
 
                     $entityManager->persist($couple);
                     $hasNewImages = true; // On a au moins une image valide
+                    --$remainingSlots;
                 }
             }
         }
@@ -46,6 +63,8 @@ class PictureService
         if ($hasNewImages) {
             $entityManager->flush();
         }
+
+        return $skippedForQuota;
     }
 
     public function delete(

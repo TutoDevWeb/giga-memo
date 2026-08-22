@@ -82,7 +82,11 @@ class CouplesController extends AbstractController
             $images = $form->get('images')->getData();
 
             // On les passe au service
-            $pictureService->upload($entityManager, $couple, $images, $user);
+            $skippedForQuota = $pictureService->upload($entityManager, $couple, $images, $user);
+
+            if ($skippedForQuota > 0) {
+                $this->addFlash('warning', sprintf('%d image(s) n\'ont pas été ajoutées : quota d\'images atteint pour votre compte.', $skippedForQuota));
+            }
 
             $this->addFlash('success', 'La QR a été créée avec succès !');
 
@@ -132,7 +136,11 @@ class CouplesController extends AbstractController
             $user = $this->getUser();
 
             // On les passe au service
-            $pictureService->upload($entityManager, $couple, $images, $user);
+            $skippedForQuota = $pictureService->upload($entityManager, $couple, $images, $user);
+
+            if ($skippedForQuota > 0) {
+                $this->addFlash('warning', sprintf('%d image(s) n\'ont pas été ajoutées : quota d\'images atteint pour votre compte.', $skippedForQuota));
+            }
 
             $id_faq = $faq->getId();
 
