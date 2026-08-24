@@ -129,34 +129,34 @@ class CouplesRepositoryTest extends KernelTestCase
         $this->assertCount(0, $result[1]->getRules());
     }
 
-    public function testFindNextSelectRunReturnsFirstCoupleWithPendingForRunTrue(): void
+    public function testFindNextPendingForRunReturnsFirstCoupleWithPendingForRunTrue(): void
     {
         $this->createCouple(1, false, true, false);
         $expected = $this->createCouple(2, true, true, false);
         $this->em->flush();
 
-        $result = $this->repository->findNextSelectRun($this->faq);
+        $result = $this->repository->findNextPendingForRun($this->faq);
 
         $this->assertNotNull($result);
         $this->assertSame($expected->getId(), $result->getId());
     }
 
-    public function testFindNextSelectRunReturnsNullWhenNonePending(): void
+    public function testFindNextPendingForRunReturnsNullWhenNonePending(): void
     {
         $this->createCouple(1, false, true, false);
         $this->em->flush();
 
-        $this->assertNull($this->repository->findNextSelectRun($this->faq));
+        $this->assertNull($this->repository->findNextPendingForRun($this->faq));
     }
 
-    public function testFindNextSelectReviewRequiresBothPendingForReviewAndFlaggedForReview(): void
+    public function testFindNextPendingForReviewRequiresBothPendingForReviewAndFlaggedForReview(): void
     {
         // pendingForReview=true mais flaggedForReview=false : ne doit pas être renvoyé.
         $this->createCouple(1, true, true, false);
         $expected = $this->createCouple(2, true, true, true);
         $this->em->flush();
 
-        $result = $this->repository->findNextSelectReview($this->faq);
+        $result = $this->repository->findNextPendingForReview($this->faq);
 
         $this->assertNotNull($result);
         $this->assertSame($expected->getId(), $result->getId());
@@ -216,13 +216,13 @@ class CouplesRepositoryTest extends KernelTestCase
         $this->assertSame(0, $counters->selectReview);
     }
 
-    public function testRestartTodoRunSetsPendingForRunTrueForAllCouplesOfFaq(): void
+    public function testRestartPendingForRunSetsPendingForRunTrueForAllCouplesOfFaq(): void
     {
         $this->createCouple(1, false, true, false);
         $this->createCouple(2, false, true, false);
         $this->em->flush();
 
-        $this->repository->restartTodoRun($this->faq);
+        $this->repository->restartPendingForRun($this->faq);
         $this->em->clear();
 
         $refreshedFaq = $this->em->find(Faqs::class, $this->faq->getId());
@@ -231,7 +231,7 @@ class CouplesRepositoryTest extends KernelTestCase
         }
     }
 
-    public function testRestartTodoReviewOnlySetsPendingForReviewTrueForSelectedCouples(): void
+    public function testRestartPendingForReviewOnlySetsPendingForReviewTrueForSelectedCouples(): void
     {
         $selected = $this->createCouple(1, true, false, true);
         $notSelected = $this->createCouple(2, true, false, false);
@@ -239,7 +239,7 @@ class CouplesRepositoryTest extends KernelTestCase
         $selectedId = $selected->getId();
         $notSelectedId = $notSelected->getId();
 
-        $this->repository->restartTodoReview($this->faq);
+        $this->repository->restartPendingForReview($this->faq);
         $this->em->clear();
 
         $refreshedSelected = $this->repository->find($selectedId);
@@ -249,7 +249,7 @@ class CouplesRepositoryTest extends KernelTestCase
         $this->assertFalse($refreshedNotSelected->isPendingForReview());
     }
 
-    public function testResetSelectReviewClearsSelectionAndPendingForReviewForAllCouplesOfFaq(): void
+    public function testResetFlaggedForReviewClearsSelectionAndPendingForReviewForAllCouplesOfFaq(): void
     {
         $c1 = $this->createCouple(1, true, true, true);
         $c2 = $this->createCouple(2, true, true, false);
@@ -257,7 +257,7 @@ class CouplesRepositoryTest extends KernelTestCase
         $id1 = $c1->getId();
         $id2 = $c2->getId();
 
-        $this->repository->resetSelectReview($this->faq);
+        $this->repository->resetFlaggedForReview($this->faq);
         $this->em->clear();
 
         foreach ([$id1, $id2] as $id) {
