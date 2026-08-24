@@ -238,7 +238,7 @@ class FaqsController extends AbstractController
         // On teste pour savoir si le token est valide.
         if ($this->isCsrfTokenValid('restart' . $faq->getId(), $token)) {
             // Faire le restart sur les run et les review.
-            $repo->restartTodoRun($faq);
+            $repo->restartPendingForRun($faq);
             $repo->restartPendingForReview($faq);
 
             // Faire les comptes et retourner les valeurs des indicateurs pour maj affichage
