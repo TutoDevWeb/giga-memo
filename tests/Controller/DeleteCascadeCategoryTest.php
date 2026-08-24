@@ -59,9 +59,9 @@ class DeleteCascadeCategoryTest extends WebTestCase
         $couple->setNum(1);
         $couple->setQuestion('Une première question');
         $couple->setReponse('Une première reponse');
-        $couple->setTodoRun(true);
-        $couple->setTodoReview(true);
-        $couple->setSelectReview(true);
+        $couple->setPendingForRun(true);
+        $couple->setPendingForReview(true);
+        $couple->setFlaggedForReview(true);
 
         $couple->setUser($user);
 

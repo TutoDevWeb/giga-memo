@@ -74,7 +74,7 @@ class CouplesRepositoryTest extends KernelTestCase
         parent::tearDown();
     }
 
-    private function createCouple(int $num, bool $todoRun, bool $todoReview, bool $selectReview): Couples
+    private function createCouple(int $num, bool $pendingForRun, bool $pendingForReview, bool $flaggedForReview): Couples
     {
         $couple = new Couples();
         $couple->setNum($num);
@@ -82,9 +82,9 @@ class CouplesRepositoryTest extends KernelTestCase
         $couple->setUser($this->user);
         $couple->setQuestion('Question '.$num);
         $couple->setReponse('Réponse '.$num);
-        $couple->setTodoRun($todoRun);
-        $couple->setTodoReview($todoReview);
-        $couple->setSelectReview($selectReview);
+        $couple->setPendingForRun($pendingForRun);
+        $couple->setPendingForReview($pendingForReview);
+        $couple->setFlaggedForReview($flaggedForReview);
 
         $this->em->persist($couple);
 
@@ -129,7 +129,7 @@ class CouplesRepositoryTest extends KernelTestCase
         $this->assertCount(0, $result[1]->getRules());
     }
 
-    public function testFindNextSelectRunReturnsFirstCoupleWithTodoRunTrue(): void
+    public function testFindNextSelectRunReturnsFirstCoupleWithPendingForRunTrue(): void
     {
         $this->createCouple(1, false, true, false);
         $expected = $this->createCouple(2, true, true, false);
@@ -141,7 +141,7 @@ class CouplesRepositoryTest extends KernelTestCase
         $this->assertSame($expected->getId(), $result->getId());
     }
 
-    public function testFindNextSelectRunReturnsNullWhenNoneTodo(): void
+    public function testFindNextSelectRunReturnsNullWhenNonePending(): void
     {
         $this->createCouple(1, false, true, false);
         $this->em->flush();
@@ -149,9 +149,9 @@ class CouplesRepositoryTest extends KernelTestCase
         $this->assertNull($this->repository->findNextSelectRun($this->faq));
     }
 
-    public function testFindNextSelectReviewRequiresBothTodoReviewAndSelectReview(): void
+    public function testFindNextSelectReviewRequiresBothPendingForReviewAndFlaggedForReview(): void
     {
-        // todoReview=true mais selectReview=false : ne doit pas être renvoyé.
+        // pendingForReview=true mais flaggedForReview=false : ne doit pas être renvoyé.
         $this->createCouple(1, true, true, false);
         $expected = $this->createCouple(2, true, true, true);
         $this->em->flush();
@@ -172,7 +172,7 @@ class CouplesRepositoryTest extends KernelTestCase
         $this->assertSame(2, $this->repository->countAll($this->faq)->todoRun);
     }
 
-    public function testCountAllTodoReviewRequiresSelectReviewToo(): void
+    public function testCountAllTodoReviewRequiresFlaggedForReviewToo(): void
     {
         $this->createCouple(1, true, true, true);
         $this->createCouple(2, true, true, false);
@@ -216,7 +216,7 @@ class CouplesRepositoryTest extends KernelTestCase
         $this->assertSame(0, $counters->selectReview);
     }
 
-    public function testRestartTodoRunSetsTodoRunTrueForAllCouplesOfFaq(): void
+    public function testRestartTodoRunSetsPendingForRunTrueForAllCouplesOfFaq(): void
     {
         $this->createCouple(1, false, true, false);
         $this->createCouple(2, false, true, false);
@@ -227,11 +227,11 @@ class CouplesRepositoryTest extends KernelTestCase
 
         $refreshedFaq = $this->em->find(Faqs::class, $this->faq->getId());
         foreach ($this->repository->findBy(['faq' => $refreshedFaq]) as $couple) {
-            $this->assertTrue($couple->isTodoRun());
+            $this->assertTrue($couple->isPendingForRun());
         }
     }
 
-    public function testRestartTodoReviewOnlySetsTodoReviewTrueForSelectedCouples(): void
+    public function testRestartTodoReviewOnlySetsPendingForReviewTrueForSelectedCouples(): void
     {
         $selected = $this->createCouple(1, true, false, true);
         $notSelected = $this->createCouple(2, true, false, false);
@@ -245,11 +245,11 @@ class CouplesRepositoryTest extends KernelTestCase
         $refreshedSelected = $this->repository->find($selectedId);
         $refreshedNotSelected = $this->repository->find($notSelectedId);
 
-        $this->assertTrue($refreshedSelected->isTodoReview());
-        $this->assertFalse($refreshedNotSelected->isTodoReview());
+        $this->assertTrue($refreshedSelected->isPendingForReview());
+        $this->assertFalse($refreshedNotSelected->isPendingForReview());
     }
 
-    public function testResetSelectReviewClearsSelectionAndTodoReviewForAllCouplesOfFaq(): void
+    public function testResetSelectReviewClearsSelectionAndPendingForReviewForAllCouplesOfFaq(): void
     {
         $c1 = $this->createCouple(1, true, true, true);
         $c2 = $this->createCouple(2, true, true, false);
@@ -262,8 +262,8 @@ class CouplesRepositoryTest extends KernelTestCase
 
         foreach ([$id1, $id2] as $id) {
             $couple = $this->repository->find($id);
-            $this->assertFalse($couple->isSelectReview());
-            $this->assertFalse($couple->isTodoReview());
+            $this->assertFalse($couple->isFlaggedForReview());
+            $this->assertFalse($couple->isPendingForReview());
         }
     }
 }

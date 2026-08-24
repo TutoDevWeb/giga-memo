@@ -55,9 +55,9 @@ class FaqsAjaxActionsTest extends WebTestCase
         $this->couple->setFaq($this->faq);
         $this->couple->setUser($this->owner);
         $this->couple->setQuestion('Question');
-        $this->couple->setTodoRun(false);
-        $this->couple->setTodoReview(false);
-        $this->couple->setSelectReview(true);
+        $this->couple->setPendingForRun(false);
+        $this->couple->setPendingForReview(false);
+        $this->couple->setFlaggedForReview(true);
         $this->em->persist($this->couple);
 
         $this->em->flush();
@@ -119,7 +119,7 @@ class FaqsAjaxActionsTest extends WebTestCase
         return $this->em->find(Couples::class, $this->couple->getId());
     }
 
-    public function testRestartSetsTodoRunTrueForAllCouplesOfFaq(): void
+    public function testRestartSetsPendingForRunTrueForAllCouplesOfFaq(): void
     {
         $client = $this->client;
         $client->loginUser($this->owner);
@@ -138,7 +138,7 @@ class FaqsAjaxActionsTest extends WebTestCase
         $this->assertSame(1, $data['nbTodoRun']);
 
         $couple = $this->reloadCouple();
-        $this->assertTrue($couple->isTodoRun());
+        $this->assertTrue($couple->isPendingForRun());
     }
 
     public function testResetReviewClearsSelectionForAllCouplesOfFaq(): void
@@ -161,8 +161,8 @@ class FaqsAjaxActionsTest extends WebTestCase
         $this->assertSame(0, $data['nbTodoReview']);
 
         $couple = $this->reloadCouple();
-        $this->assertFalse($couple->isSelectReview());
-        $this->assertFalse($couple->isTodoReview());
+        $this->assertFalse($couple->isFlaggedForReview());
+        $this->assertFalse($couple->isPendingForReview());
     }
 
     public function testRestartWithMalformedBodyReturnsBadRequest(): void
@@ -180,7 +180,7 @@ class FaqsAjaxActionsTest extends WebTestCase
         $this->assertResponseStatusCodeSame(400);
 
         $this->em->refresh($this->couple);
-        $this->assertFalse($this->couple->isTodoRun());
+        $this->assertFalse($this->couple->isPendingForRun());
     }
 
     public function testRestartIsDeniedForNonOwner(): void
@@ -200,6 +200,6 @@ class FaqsAjaxActionsTest extends WebTestCase
         $this->assertResponseStatusCodeSame(403);
 
         $this->em->refresh($this->couple);
-        $this->assertFalse($this->couple->isTodoRun());
+        $this->assertFalse($this->couple->isPendingForRun());
     }
 }

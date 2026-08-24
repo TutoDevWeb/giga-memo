@@ -57,9 +57,9 @@ class FaqsControllerCrudTest extends WebTestCase
         $this->couple->setFaq($this->faq);
         $this->couple->setUser($this->owner);
         $this->couple->setQuestion('Question');
-        $this->couple->setTodoRun(true);
-        $this->couple->setTodoReview(true);
-        $this->couple->setSelectReview(true);
+        $this->couple->setPendingForRun(true);
+        $this->couple->setPendingForReview(true);
+        $this->couple->setFlaggedForReview(true);
         $this->em->persist($this->couple);
 
         $this->em->flush();
@@ -226,7 +226,7 @@ class FaqsControllerCrudTest extends WebTestCase
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
         $couple = $this->em->find(Couples::class, $this->couple->getId());
-        $this->assertFalse($couple->isTodoRun());
+        $this->assertFalse($couple->isPendingForRun());
     }
 
     public function testReviewDisplaysNextCoupleToReview(): void
@@ -249,7 +249,7 @@ class FaqsControllerCrudTest extends WebTestCase
 
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
         $couple = $this->em->find(Couples::class, $this->couple->getId());
-        $this->assertFalse($couple->isTodoReview());
+        $this->assertFalse($couple->isPendingForReview());
     }
 
     private function fetchCsrfTokenFromButton(string $pageUrl, string $dataActionNeedle): string

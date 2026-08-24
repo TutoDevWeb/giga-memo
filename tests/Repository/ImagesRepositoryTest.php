@@ -54,7 +54,7 @@ class ImagesRepositoryTest extends KernelTestCase
         $this->couple->setNum(1);
         $this->couple->setFaq($this->faq);
         $this->couple->setUser($this->user);
-        $this->couple->setSelectReview(false);
+        $this->couple->setFlaggedForReview(false);
         $this->em->persist($this->couple);
 
         $this->em->flush();

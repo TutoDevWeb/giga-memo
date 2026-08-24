@@ -23,8 +23,8 @@ class CouplesTest extends TestCase
         $this->assertNull($couple->getUser());
 
         $this->assertInstanceOf(\DateTimeImmutable::class, $couple->getCreatedAt());
-        $this->assertTrue($couple->isTodoRun());
-        $this->assertTrue($couple->isTodoReview());
+        $this->assertTrue($couple->isPendingForRun());
+        $this->assertTrue($couple->isPendingForReview());
         $this->assertCount(0, $couple->getImages());
         $this->assertCount(0, $couple->getRules());
     }
@@ -50,14 +50,14 @@ class CouplesTest extends TestCase
         $couple->setReponse('Réponse.');
         $this->assertSame('Réponse.', $couple->getReponse());
 
-        $couple->setTodoRun(false);
-        $this->assertFalse($couple->isTodoRun());
+        $couple->setPendingForRun(false);
+        $this->assertFalse($couple->isPendingForRun());
 
-        $couple->setTodoReview(false);
-        $this->assertFalse($couple->isTodoReview());
+        $couple->setPendingForReview(false);
+        $this->assertFalse($couple->isPendingForReview());
 
-        $couple->setSelectReview(true);
-        $this->assertTrue($couple->isSelectReview());
+        $couple->setFlaggedForReview(true);
+        $this->assertTrue($couple->isFlaggedForReview());
 
         $user = $this->createMock(Users::class);
         $couple->setUser($user);

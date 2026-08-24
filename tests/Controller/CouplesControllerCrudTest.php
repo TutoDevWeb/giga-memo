@@ -56,9 +56,9 @@ class CouplesControllerCrudTest extends WebTestCase
         $this->couple->setFaq($this->faq);
         $this->couple->setUser($this->owner);
         $this->couple->setQuestion('Question existante');
-        $this->couple->setTodoRun(true);
-        $this->couple->setTodoReview(true);
-        $this->couple->setSelectReview(false);
+        $this->couple->setPendingForRun(true);
+        $this->couple->setPendingForReview(true);
+        $this->couple->setFlaggedForReview(false);
         $this->em->persist($this->couple);
 
         $this->em->flush();
@@ -152,8 +152,8 @@ class CouplesControllerCrudTest extends WebTestCase
         $this->assertNotNull($created);
         $this->assertSame($this->faq->getId(), $created->getFaq()->getId());
         $this->assertSame($this->owner->getId(), $created->getUser()->getId());
-        $this->assertTrue($created->isTodoRun());
-        $this->assertTrue($created->isTodoReview());
+        $this->assertTrue($created->isPendingForRun());
+        $this->assertTrue($created->isPendingForReview());
 
         $this->em->remove($created);
         $this->em->flush();

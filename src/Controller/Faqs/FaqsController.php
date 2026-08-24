@@ -130,7 +130,7 @@ class FaqsController extends AbstractController
     ): Response {
 
         // findNextSelectRun va chercher le couple à afficher
-        // findNextSelectRun renvoie le premier couple qui a le flag todoRun à true.
+        // findNextSelectRun renvoie le premier couple qui a le flag pendingForRun à true.
         $couple = $repo->findNextSelectRun($faq);
 
         $counters = $repo->countAll($faq);
@@ -163,7 +163,7 @@ class FaqsController extends AbstractController
         // l'affichage dans faqs/run.html.twig n'affiche plus le bouton suivant.
         if ($couple !== null) {
 
-            // On positionne le flag todoRun à false.
+            // On positionne le flag pendingForRun à false.
             // Ce qui marque le fait que le couple a été fait.
             $couple->setPendingForRun(false);
             $em->flush();
@@ -224,7 +224,7 @@ class FaqsController extends AbstractController
 
     /**
      * Ce contrôleur est appelé lorsqu'un utilisateur appuie sur le bouton Restart
-     * Il met à 1 tous les booléens todoRun et todoReview de la Faqs passée en argument.
+     * Il met à 1 tous les booléens pendingForRun et pendingForReview de la Faqs passée en argument.
      */
     #[Route('/faqs/restart/{id_faq<\d+>}', name: 'app_faqs_restart')]
     #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]
@@ -257,7 +257,7 @@ class FaqsController extends AbstractController
 
     /**
      * Ce controlleur est appelé losqu'un utilisateur appuie sur le bouton 'Reset Review'
-     * Il met à 0 tous les booléens selectReview des couples qui sont dans la liste des review cad bouton 'A Revoir'.
+     * Il met à 0 tous les booléens flaggedForReview des couples qui sont dans la liste des review cad bouton 'A Revoir'.
      */
     #[Route('/faqs/reset-review/{id_faq<\d+>}', name: 'app_faqs_reset_review')]
     #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]

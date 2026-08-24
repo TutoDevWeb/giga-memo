@@ -56,9 +56,9 @@ class CouplesAjaxActionsTest extends WebTestCase
         $this->couple->setFaq($this->faq);
         $this->couple->setUser($this->owner);
         $this->couple->setQuestion('Question');
-        $this->couple->setTodoRun(true);
-        $this->couple->setTodoReview(true);
-        $this->couple->setSelectReview(false);
+        $this->couple->setPendingForRun(true);
+        $this->couple->setPendingForReview(true);
+        $this->couple->setFlaggedForReview(false);
         $this->em->persist($this->couple);
 
         $this->em->flush();
@@ -140,8 +140,8 @@ class CouplesAjaxActionsTest extends WebTestCase
         $this->assertSame(1, $data['nbTodoReview']);
 
         $couple = $this->reloadCouple();
-        $this->assertTrue($couple->isSelectReview());
-        $this->assertTrue($couple->isTodoReview());
+        $this->assertTrue($couple->isFlaggedForReview());
+        $this->assertTrue($couple->isPendingForReview());
     }
 
     public function testSetOneReviewWithInvalidCsrfTokenDoesNothing(): void
@@ -161,7 +161,7 @@ class CouplesAjaxActionsTest extends WebTestCase
         $this->assertSame(['message' => 'KO'], $data);
 
         $this->em->refresh($this->couple);
-        $this->assertFalse($this->couple->isSelectReview());
+        $this->assertFalse($this->couple->isFlaggedForReview());
     }
 
     public function testSetOneReviewWithMalformedBodyReturnsBadRequest(): void
@@ -179,7 +179,7 @@ class CouplesAjaxActionsTest extends WebTestCase
         $this->assertResponseStatusCodeSame(400);
 
         $this->em->refresh($this->couple);
-        $this->assertFalse($this->couple->isSelectReview());
+        $this->assertFalse($this->couple->isFlaggedForReview());
     }
 
     public function testSetOneReviewIsDeniedForNonOwner(): void
@@ -199,12 +199,12 @@ class CouplesAjaxActionsTest extends WebTestCase
         $this->assertResponseStatusCodeSame(403);
 
         $this->em->refresh($this->couple);
-        $this->assertFalse($this->couple->isSelectReview());
+        $this->assertFalse($this->couple->isFlaggedForReview());
     }
 
     public function testCancelOneReviewClearsSelectionAndReturnsUpdatedCounters(): void
     {
-        $this->couple->setSelectReview(true);
+        $this->couple->setFlaggedForReview(true);
         $this->em->flush();
 
         $client = $this->client;
@@ -225,7 +225,7 @@ class CouplesAjaxActionsTest extends WebTestCase
         $this->assertSame(0, $data['nbTodoReview']);
 
         $couple = $this->reloadCouple();
-        $this->assertFalse($couple->isSelectReview());
-        $this->assertFalse($couple->isTodoReview());
+        $this->assertFalse($couple->isFlaggedForReview());
+        $this->assertFalse($couple->isPendingForReview());
     }
 }

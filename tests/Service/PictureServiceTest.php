@@ -62,7 +62,7 @@ class PictureServiceTest extends KernelTestCase
         $this->couple->setFaq($this->faq);
         $this->couple->setUser($this->user);
         $this->couple->setQuestion('Question');
-        $this->couple->setSelectReview(false);
+        $this->couple->setFlaggedForReview(false);
         $this->em->persist($this->couple);
 
         $this->em->flush();
@@ -227,7 +227,7 @@ class PictureServiceTest extends KernelTestCase
         $secondCouple->setFaq($this->faq);
         $secondCouple->setUser($this->user);
         $secondCouple->setQuestion('Autre question');
-        $secondCouple->setSelectReview(false);
+        $secondCouple->setFlaggedForReview(false);
         $this->em->persist($secondCouple);
         $this->em->flush();
 

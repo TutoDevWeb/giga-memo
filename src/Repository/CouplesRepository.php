@@ -79,8 +79,8 @@ class CouplesRepository extends ServiceEntityRepository
     }
 
     /**
-     * On positionne le todoReview à true de tous les couples qui sont
-     * dans la sélection Review (A revoir) cad qui ont le selectReview à true.
+     * On positionne le pendingForReview à true de tous les couples qui sont
+     * dans la sélection Review (A revoir) cad qui ont le flaggedForReview à true.
      */
     public function restartTodoReview(Faqs $faq): void
     {
@@ -98,9 +98,9 @@ class CouplesRepository extends ServiceEntityRepository
 
     /**
      * On enlève tous les couples de la sélection review (a revoir)
-     * Pour ça on met leur selectReview à false.
+     * Pour ça on met leur flaggedForReview à false.
      * Du coup ils ne sont plus à faire
-     * Pour ça on met le todoReview à false.
+     * Pour ça on met le pendingForReview à false.
      */
     public function resetSelectReview(Faqs $faq): void
     {
