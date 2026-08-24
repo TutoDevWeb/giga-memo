@@ -38,7 +38,7 @@ class CouplesRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findNextSelectRun(Faqs $faq): ?Couples
+    public function findNextPendingForRun(Faqs $faq): ?Couples
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.pendingForRun = :pendingForRun')
@@ -51,7 +51,7 @@ class CouplesRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findNextSelectReview(Faqs $faq): ?Couples
+    public function findNextPendingForReview(Faqs $faq): ?Couples
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.pendingForReview = :pendingForReview')
@@ -66,7 +66,7 @@ class CouplesRepository extends ServiceEntityRepository
         ;
     }
 
-    public function restartTodoRun(Faqs $faq): void
+    public function restartPendingForRun(Faqs $faq): void
     {
         $this->createQueryBuilder('c')
             ->update('App\Entity\Couples', 'c')
@@ -82,7 +82,7 @@ class CouplesRepository extends ServiceEntityRepository
      * On positionne le pendingForReview à true de tous les couples qui sont
      * dans la sélection Review (A revoir) cad qui ont le flaggedForReview à true.
      */
-    public function restartTodoReview(Faqs $faq): void
+    public function restartPendingForReview(Faqs $faq): void
     {
         $this->createQueryBuilder('c')
             ->update('App\Entity\Couples', 'c')
@@ -102,7 +102,7 @@ class CouplesRepository extends ServiceEntityRepository
      * Du coup ils ne sont plus à faire
      * Pour ça on met le pendingForReview à false.
      */
-    public function resetSelectReview(Faqs $faq): void
+    public function resetFlaggedForReview(Faqs $faq): void
     {
         $this->createQueryBuilder('c')
             ->update('App\Entity\Couples', 'c')

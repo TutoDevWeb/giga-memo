@@ -129,9 +129,9 @@ class FaqsController extends AbstractController
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
 
-        // findNextSelectRun va chercher le couple à afficher
-        // findNextSelectRun renvoie le premier couple qui a le flag pendingForRun à true.
-        $couple = $repo->findNextSelectRun($faq);
+        // findNextPendingForRun va chercher le couple à afficher
+        // findNextPendingForRun renvoie le premier couple qui a le flag pendingForRun à true.
+        $couple = $repo->findNextPendingForRun($faq);
 
         $counters = $repo->countAll($faq);
 
@@ -155,7 +155,7 @@ class FaqsController extends AbstractController
     ): Response {
 
         // On récupère le couple en cours d'affichage
-        $couple = $repo->findNextSelectRun($faq);
+        $couple = $repo->findNextPendingForRun($faq);
 
 
         // Si c'est null c'est qu'il n'y a plus de couple à traiter.
@@ -183,7 +183,7 @@ class FaqsController extends AbstractController
         CouplesRepository $repo,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-        $couple = $repo->findNextSelectReview($faq);
+        $couple = $repo->findNextPendingForReview($faq);
 
         $counters = $repo->countAll($faq);
 
@@ -205,7 +205,7 @@ class FaqsController extends AbstractController
         EntityManagerInterface $em,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
     ): Response {
-        $couple = $repo->findNextSelectReview($faq);
+        $couple = $repo->findNextPendingForReview($faq);
 
         if (null !== $couple) {
             $couple->setPendingForReview(false);
@@ -214,7 +214,7 @@ class FaqsController extends AbstractController
 
         // On a fini la faq.
         if (0 == $repo->countAll($faq)->todoReview) {
-            $repo->restartTodoReview($faq);
+            $repo->restartPendingForReview($faq);
         }
         $em->flush();
 
@@ -239,7 +239,7 @@ class FaqsController extends AbstractController
         if ($this->isCsrfTokenValid('restart' . $faq->getId(), $token)) {
             // Faire le restart sur les run et les review.
             $repo->restartTodoRun($faq);
-            $repo->restartTodoReview($faq);
+            $repo->restartPendingForReview($faq);
 
             // Faire les comptes et retourner les valeurs des indicateurs pour maj affichage
             $counters = $repo->countAll($faq);
@@ -272,10 +272,10 @@ class FaqsController extends AbstractController
         // On teste pour savoir si le token est valide.
         if ($this->isCsrfTokenValid('reset-review' . $faq->getId(), $token)) {
             // Faire le reset des review
-            $repo->resetSelectReview($faq);
+            $repo->resetFlaggedForReview($faq);
 
             // Mettre les todo en concordances.
-            $repo->restartTodoReview($faq);
+            $repo->restartPendingForReview($faq);
 
             // Faire les comptes et retourner les valeurs des indicateurs pour maj affichage
             $counters = $repo->countAll($faq);
