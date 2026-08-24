@@ -41,8 +41,8 @@ class CouplesRepository extends ServiceEntityRepository
     public function findNextSelectRun(Faqs $faq): ?Couples
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.todoRun = :todoRun')
-            ->setParameter('todoRun', true)
+            ->andWhere('c.pendingForRun = :pendingForRun')
+            ->setParameter('pendingForRun', true)
             ->andWhere('c.faq = :faq')
             ->setParameter('faq', $faq)
             ->setMaxResults(1)
@@ -54,10 +54,10 @@ class CouplesRepository extends ServiceEntityRepository
     public function findNextSelectReview(Faqs $faq): ?Couples
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.todoReview = :todoReview')
-            ->setParameter('todoReview', true)
-            ->andWhere('c.selectReview = :selectReview')
-            ->setParameter('selectReview', true)
+            ->andWhere('c.pendingForReview = :pendingForReview')
+            ->setParameter('pendingForReview', true)
+            ->andWhere('c.flaggedForReview = :flaggedForReview')
+            ->setParameter('flaggedForReview', true)
             ->andWhere('c.faq = :faq')
             ->setParameter('faq', $faq)
             ->setMaxResults(1)
@@ -70,8 +70,8 @@ class CouplesRepository extends ServiceEntityRepository
     {
         $this->createQueryBuilder('c')
             ->update('App\Entity\Couples', 'c')
-            ->set('c.todoRun', ':todoRun')
-            ->setParameter('todoRun', true)
+            ->set('c.pendingForRun', ':pendingForRun')
+            ->setParameter('pendingForRun', true)
             ->where('c.faq = :faq')
             ->setParameter('faq', $faq)
             ->getQuery()
@@ -86,12 +86,12 @@ class CouplesRepository extends ServiceEntityRepository
     {
         $this->createQueryBuilder('c')
             ->update('App\Entity\Couples', 'c')
-            ->set('c.todoReview', ':todoReview')
-            ->setParameter('todoReview', true)
+            ->set('c.pendingForReview', ':pendingForReview')
+            ->setParameter('pendingForReview', true)
             ->where('c.faq = :faq')
             ->setParameter('faq', $faq)
-            ->andWhere('c.selectReview = :selectReview')
-            ->setParameter('selectReview', true)
+            ->andWhere('c.flaggedForReview = :flaggedForReview')
+            ->setParameter('flaggedForReview', true)
             ->getQuery()
             ->execute();
     }
@@ -106,10 +106,10 @@ class CouplesRepository extends ServiceEntityRepository
     {
         $this->createQueryBuilder('c')
             ->update('App\Entity\Couples', 'c')
-            ->set('c.selectReview', ':selectReview')
-            ->setParameter('selectReview', false)
-            ->set('c.todoReview', ':todoReview')
-            ->setParameter('todoReview', false)
+            ->set('c.flaggedForReview', ':flaggedForReview')
+            ->setParameter('flaggedForReview', false)
+            ->set('c.pendingForReview', ':pendingForReview')
+            ->setParameter('pendingForReview', false)
             ->where('c.faq = :faq')
             ->setParameter('faq', $faq)
             ->getQuery()
@@ -132,10 +132,10 @@ class CouplesRepository extends ServiceEntityRepository
     {
         $result = $this->createQueryBuilder('c')
             ->select(
-                'COALESCE(SUM(CASE WHEN c.todoRun = true THEN 1 ELSE 0 END), 0) AS todoRun',
-                'COALESCE(SUM(CASE WHEN c.todoReview = true AND c.selectReview = true THEN 1 ELSE 0 END), 0) AS todoReview',
+                'COALESCE(SUM(CASE WHEN c.pendingForRun = true THEN 1 ELSE 0 END), 0) AS todoRun',
+                'COALESCE(SUM(CASE WHEN c.pendingForReview = true AND c.flaggedForReview = true THEN 1 ELSE 0 END), 0) AS todoReview',
                 'COUNT(c.id) AS selectRun',
-                'COALESCE(SUM(CASE WHEN c.selectReview = true THEN 1 ELSE 0 END), 0) AS selectReview',
+                'COALESCE(SUM(CASE WHEN c.flaggedForReview = true THEN 1 ELSE 0 END), 0) AS selectReview',
             )
             ->andWhere('c.faq = :faq')
             ->setParameter('faq', $faq)

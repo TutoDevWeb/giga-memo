@@ -165,7 +165,7 @@ class FaqsController extends AbstractController
 
             // On positionne le flag todoRun à false.
             // Ce qui marque le fait que le couple a été fait.
-            $couple->setTodoRun(false);
+            $couple->setPendingForRun(false);
             $em->flush();
         }
 
@@ -208,7 +208,7 @@ class FaqsController extends AbstractController
         $couple = $repo->findNextSelectReview($faq);
 
         if (null !== $couple) {
-            $couple->setTodoReview(false);
+            $couple->setPendingForReview(false);
             $em->flush();
         }
 

@@ -70,9 +70,9 @@ class CouplesController extends AbstractController
             // Il faut le ré assigner car il est perdu car disabled
             $couple->setFaq($faq);
 
-            $couple->setTodoRun(true);
-            $couple->setTodoReview(true);
-            $couple->setSelectReview(false);
+            $couple->setPendingForRun(true);
+            $couple->setPendingForReview(true);
+            $couple->setFlaggedForReview(false);
 
             $entityManager->persist($couple);
             $entityManager->flush();
@@ -208,9 +208,9 @@ class CouplesController extends AbstractController
         // On teste pour savoir si le token est valide.
         if ($this->isCsrfTokenValid('set-one-review' . $couple->getId(), $token)) {
             // On le met dans la sélection
-            $couple->setSelectReview(true);
+            $couple->setFlaggedForReview(true);
             // Du coup il est à faire
-            $couple->setTodoReview(true);
+            $couple->setPendingForReview(true);
 
             $entityManager->persist($couple);
             $entityManager->flush();
@@ -246,10 +246,10 @@ class CouplesController extends AbstractController
         // On teste pour savoir si le token est valide.
         if ($this->isCsrfTokenValid('cancel-one-review' . $couple->getId(), $token)) {
             // On l'enlève de la sélection Review
-            $couple->setSelectReview(false);
+            $couple->setFlaggedForReview(false);
 
             // Du coup il n'est plus à faire
-            $couple->setTodoReview(false);
+            $couple->setPendingForReview(false);
             $entityManager->persist($couple);
             $entityManager->flush();
 

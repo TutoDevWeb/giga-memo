@@ -36,13 +36,13 @@ class Couples
     private ?string $reponse = null;
 
     #[ORM\Column(options: ['default' => true])]
-    private ?bool $todoRun = true;
+    private ?bool $pendingForRun = true;
 
     #[ORM\Column(options: ['default' => true])]
-    private ?bool $todoReview = true;
+    private ?bool $pendingForReview = true;
 
     #[ORM\Column(options: ['default' => false])]
-    private ?bool $selectReview = null;
+    private ?bool $flaggedForReview = null;
 
     /**
      * @var Collection<int, Images>
@@ -128,38 +128,38 @@ class Couples
         return $this;
     }
 
-    public function isTodoRun(): ?bool
+    public function isPendingForRun(): ?bool
     {
-        return $this->todoRun;
+        return $this->pendingForRun;
     }
 
-    public function setTodoRun(bool $todoRun): static
+    public function setPendingForRun(bool $pendingForRun): static
     {
-        $this->todoRun = $todoRun;
+        $this->pendingForRun = $pendingForRun;
 
         return $this;
     }
 
-    public function isTodoReview(): ?bool
+    public function isPendingForReview(): ?bool
     {
-        return $this->todoReview;
+        return $this->pendingForReview;
     }
 
-    public function setTodoReview(bool $todoReview): static
+    public function setPendingForReview(bool $pendingForReview): static
     {
-        $this->todoReview = $todoReview;
+        $this->pendingForReview = $pendingForReview;
 
         return $this;
     }
 
-    public function isSelectReview(): ?bool
+    public function isFlaggedForReview(): ?bool
     {
-        return $this->selectReview;
+        return $this->flaggedForReview;
     }
 
-    public function setSelectReview(bool $selectReview): static
+    public function setFlaggedForReview(bool $flaggedForReview): static
     {
-        $this->selectReview = $selectReview;
+        $this->flaggedForReview = $flaggedForReview;
 
         return $this;
     }
