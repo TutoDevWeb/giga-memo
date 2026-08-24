@@ -19,7 +19,7 @@
 	<p>Exécuter en mode normal</p>
 	<a class='btn btn-primary' href="{{path('app_faqs_run',{'id_faq' : faq.id})}}">Normal
 		{# #}
-		(<span title='Nombre total de questions' data-counter-action-target='selectRun'>{{counters.selectRun}}</span>/<span title='Nombre restant de questions' data-counter-action-target='todoRun'>{{counters.todoRun}}</span>)</a>
+		(<span title='Nombre total de questions' data-counter-action-target='totalToRun'>{{counters.totalToRun}}</span>/<span title='Nombre restant de questions' data-counter-action-target='remainingToRun'>{{counters.remainingToRun}}</span>)</a>
 	<button
 		class='btn btn-primary'
 		data-action="click->counter-action#send"
@@ -32,14 +32,9 @@
 	<p>Exécuter en mode révision</p>
 	<a class='btn btn-primary' href="{{path('app_faqs_review',{'id_faq' : faq.id})}}">Révision
 		{# #}
-		(<span title='Nombre total de questions à revoir' data-counter-action-target='selectReview'>{{counters.selectReview}}</span>/<span title='Nombre restant de questions à revoir' data-counter-action-target='todoReview'>{{counters.todoReview}}</span>)
+		(<span title='Nombre total de questions à revoir' data-counter-action-target='totalToReview'>{{counters.totalToReview}}</span>/<span title='Nombre restant de questions à revoir' data-counter-action-target='remainingToReview'>{{counters.remainingToReview}}</span>)
 	</a>
-	<button
-		class='btn btn-primary'
-		data-action="click->counter-action#send"
-		data-url="{{ path('app_faqs_reset_review', {'id_faq': faq.id}) }}"
-		data-token="{{ csrf_token('reset-review' ~ faq.id) }}"
-	>Vider la liste de révision
+	<button class='btn btn-primary' data-action="click->counter-action#send" data-url="{{ path('app_faqs_reset_review', {'id_faq': faq.id}) }}" data-token="{{ csrf_token('reset-review' ~ faq.id) }}">Vider la liste de révision
 		{# #}
 	</button>
 {% endblock %}

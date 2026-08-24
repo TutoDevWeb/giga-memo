@@ -116,26 +116,14 @@ class CouplesRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    /**
-     * Calcule en une seule requête les 4 compteurs affichés sur les écrans
-     * run/review d'une FAQ (todoRun, todoReview, selectRun, selectReview),
-     * via des agrégats conditionnels (SUM(CASE WHEN ...)), au lieu des 4
-     * requêtes séparées countTodoRun/countTodoReview/countSelectRun/
-     * countSelectReview (cf. AUDIT.md, section performance).
-     *
-     * Note : selectRun ne filtre sur aucun flag "selectRun" (qui n'existe pas
-     * sur l'entité Couples), il compte tous les couples de la FAQ. Ce nom
-     * hérité est conservé tel quel pour l'instant (cf. AUDIT.md, section
-     * "Qualité du code").
-     */
     public function countAll(Faqs $faq): CouplesCounters
     {
         $result = $this->createQueryBuilder('c')
             ->select(
-                'COALESCE(SUM(CASE WHEN c.pendingForRun = true THEN 1 ELSE 0 END), 0) AS todoRun',
-                'COALESCE(SUM(CASE WHEN c.pendingForReview = true AND c.flaggedForReview = true THEN 1 ELSE 0 END), 0) AS todoReview',
-                'COUNT(c.id) AS selectRun',
-                'COALESCE(SUM(CASE WHEN c.flaggedForReview = true THEN 1 ELSE 0 END), 0) AS selectReview',
+                'COALESCE(SUM(CASE WHEN c.pendingForRun = true THEN 1 ELSE 0 END), 0) AS remainingToRun',
+                'COALESCE(SUM(CASE WHEN c.pendingForReview = true AND c.flaggedForReview = true THEN 1 ELSE 0 END), 0) AS remainingToReview',
+                'COUNT(c.id) AS totalToRun',
+                'COALESCE(SUM(CASE WHEN c.flaggedForReview = true THEN 1 ELSE 0 END), 0) AS totalToReview',
             )
             ->andWhere('c.faq = :faq')
             ->setParameter('faq', $faq)
@@ -143,10 +131,10 @@ class CouplesRepository extends ServiceEntityRepository
             ->getSingleResult();
 
         return new CouplesCounters(
-            todoRun: (int) $result['todoRun'],
-            todoReview: (int) $result['todoReview'],
-            selectRun: (int) $result['selectRun'],
-            selectReview: (int) $result['selectReview'],
+            remainingToRun: (int) $result['remainingToRun'],
+            remainingToReview: (int) $result['remainingToReview'],
+            totalToRun: (int) $result['totalToRun'],
+            totalToReview: (int) $result['totalToReview'],
         );
     }
 }

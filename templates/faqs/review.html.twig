@@ -13,17 +13,12 @@
 {% block bouton_suivant %}
 	<a class='btn btn-primary' href="{{ path('app_faqs_next_review',{ id_faq : faq.id})}}">Suivant
 		{# #}
-		(<span title='Nombre total de questions à revoir' data-counter-action-target='selectReview'>{{counters.selectReview}}</span>/<span title='Nombre restant de questions à revoir' data-counter-action-target='todoReview'>{{counters.todoReview}}</span>)
+		(<span title='Nombre total de questions à revoir' data-counter-action-target='totalToReview'>{{counters.totalToReview}}</span>/<span title='Nombre restant de questions à revoir' data-counter-action-target='remainingToReview'>{{counters.remainingToReview}}</span>)
 	</a>
 {% endblock %}
 
 {% block bouton_revoir %}
-	<button
-		class='btn btn-primary'
-		data-action="click->counter-action#send"
-		data-url="{{ path('app_couples_cancel_one_review', {'id_couple': couple.id}) }}"
-		data-token="{{ csrf_token('cancel-one-review' ~ couple.id) }}"
-	>Ne Plus Revoir
+	<button class='btn btn-primary' data-action="click->counter-action#send" data-url="{{ path('app_couples_cancel_one_review', {'id_couple': couple.id}) }}" data-token="{{ csrf_token('cancel-one-review' ~ couple.id) }}">Ne Plus Revoir
 		{# #}
 	</button>
 {% endblock %}

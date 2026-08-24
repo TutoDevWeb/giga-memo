@@ -3,7 +3,7 @@ import { Controller } from '@hotwired/stimulus';
 // Ce contrôleur remplace l'ancien public/assets/js/scripts.js.
 // Il gère les boutons qui déclenchent une action Ajax protégée par un jeton CSRF
 // (A Revoir / Ne plus revoir / Restart / Reset Review) et qui reçoivent en retour
-// les 4 compteurs à jour (nbTodoRun, nbSelectRun, nbTodoReview, nbSelectReview).
+// les 4 compteurs à jour (nbRemainingToRun, nbTotalToRun, nbRemainingToReview, nbTotalToReview).
 //
 // Sur le conteneur commun aux boutons et aux compteurs :
 // data-controller="counter-action"
@@ -14,9 +14,9 @@ import { Controller } from '@hotwired/stimulus';
 // data-token="{{ csrf_token('...') }}"
 //
 // Sur chaque compteur à mettre à jour (une page n'affiche pas forcément les 4) :
-// data-counter-action-target="todoRun|selectRun|todoReview|selectReview"
+// data-counter-action-target="remainingToRun|totalToRun|remainingToReview|totalToReview"
 export default class extends Controller {
-    static targets = ['todoRun', 'selectRun', 'todoReview', 'selectReview'];
+    static targets = ['remainingToRun', 'totalToRun', 'remainingToReview', 'totalToReview'];
 
     async send(event) {
         event.preventDefault();
@@ -48,10 +48,10 @@ export default class extends Controller {
 
         const data = await response.json();
 
-        this.updateCounters(this.todoRunTargets, data.nbTodoRun);
-        this.updateCounters(this.selectRunTargets, data.nbSelectRun);
-        this.updateCounters(this.todoReviewTargets, data.nbTodoReview);
-        this.updateCounters(this.selectReviewTargets, data.nbSelectReview);
+        this.updateCounters(this.remainingToRunTargets, data.nbRemainingToRun);
+        this.updateCounters(this.totalToRunTargets, data.nbTotalToRun);
+        this.updateCounters(this.remainingToReviewTargets, data.nbRemainingToReview);
+        this.updateCounters(this.totalToReviewTargets, data.nbTotalToReview);
     }
 
     updateCounters(targets, value) {

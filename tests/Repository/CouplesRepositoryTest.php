@@ -162,58 +162,52 @@ class CouplesRepositoryTest extends KernelTestCase
         $this->assertSame($expected->getId(), $result->getId());
     }
 
-    public function testCountAllTodoRun(): void
+    public function testCountAllRemainingToRun(): void
     {
         $this->createCouple(1, true, true, false);
         $this->createCouple(2, true, true, false);
         $this->createCouple(3, false, true, false);
         $this->em->flush();
 
-        $this->assertSame(2, $this->repository->countAll($this->faq)->todoRun);
+        $this->assertSame(2, $this->repository->countAll($this->faq)->remainingToRun);
     }
 
-    public function testCountAllTodoReviewRequiresFlaggedForReviewToo(): void
+    public function testCountAllRemainingToReviewRequiresFlaggedForReviewToo(): void
     {
         $this->createCouple(1, true, true, true);
         $this->createCouple(2, true, true, false);
         $this->em->flush();
 
-        $this->assertSame(1, $this->repository->countAll($this->faq)->todoReview);
+        $this->assertSame(1, $this->repository->countAll($this->faq)->remainingToReview);
     }
 
-    public function testCountAllSelectReview(): void
+    public function testCountAllTotalToReview(): void
     {
         $this->createCouple(1, true, true, true);
         $this->createCouple(2, true, false, true);
         $this->createCouple(3, true, true, false);
         $this->em->flush();
 
-        $this->assertSame(2, $this->repository->countAll($this->faq)->selectReview);
+        $this->assertSame(2, $this->repository->countAll($this->faq)->totalToReview);
     }
 
-    /**
-     * Malgré son nom, selectRun ne filtre sur aucun flag "selectRun" (qui
-     * n'existe pas sur l'entité Couples) : il compte tous les couples de la
-     * FAQ. Ce test documente le comportement actuel (cf. AUDIT.md, section
-     * "Qualité du code") plutôt que de le corriger.
-     */
-    public function testCountAllSelectRunActuallyCountsAllCouplesOfFaq(): void
+    public function testCountAllTotalToRunCountsAllCouplesOfFaq(): void
     {
         $this->createCouple(1, true, true, false);
         $this->createCouple(2, false, false, false);
         $this->em->flush();
 
-        $this->assertSame(2, $this->repository->countAll($this->faq)->selectRun);
+        $this->assertSame(2, $this->repository->countAll($this->faq)->totalToRun);
     }
 
     public function testCountAllReturnsZeroesWhenFaqHasNoCouples(): void
     {
         $counters = $this->repository->countAll($this->faq);
 
-        $this->assertSame(0, $counters->todoRun);
-        $this->assertSame(0, $counters->todoReview);
-        $this->assertSame(0, $counters->selectRun);
-        $this->assertSame(0, $counters->selectReview);
+        $this->assertSame(0, $counters->remainingToRun);
+        $this->assertSame(0, $counters->remainingToReview);
+        $this->assertSame(0, $counters->totalToRun);
+        $this->assertSame(0, $counters->totalToReview);
     }
 
     public function testRestartPendingForRunSetsPendingForRunTrueForAllCouplesOfFaq(): void

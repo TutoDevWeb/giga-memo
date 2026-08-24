@@ -135,7 +135,7 @@ class FaqsAjaxActionsTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame(1, $data['nbTodoRun']);
+        $this->assertSame(1, $data['nbRemainingToRun']);
 
         $couple = $this->reloadCouple();
         $this->assertTrue($couple->isPendingForRun());
@@ -157,8 +157,8 @@ class FaqsAjaxActionsTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame(0, $data['nbSelectReview']);
-        $this->assertSame(0, $data['nbTodoReview']);
+        $this->assertSame(0, $data['nbTotalToReview']);
+        $this->assertSame(0, $data['nbRemainingToReview']);
 
         $couple = $this->reloadCouple();
         $this->assertFalse($couple->isFlaggedForReview());

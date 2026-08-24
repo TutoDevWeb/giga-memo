@@ -219,10 +219,10 @@ class CouplesController extends AbstractController
             $counters = $repo->countAll($couple->getFaq());
 
             return new JsonResponse([
-                'nbTodoRun' => $counters->todoRun,
-                'nbTodoReview' => $counters->todoReview,
-                'nbSelectRun' => $counters->selectRun,
-                'nbSelectReview' => $counters->selectReview,
+                'nbRemainingToRun' => $counters->remainingToRun,
+                'nbRemainingToReview' => $counters->remainingToReview,
+                'nbTotalToRun' => $counters->totalToRun,
+                'nbTotalToReview' => $counters->totalToReview,
             ]);
         }
 
@@ -257,10 +257,10 @@ class CouplesController extends AbstractController
             $counters = $repo->countAll($couple->getFaq());
 
             return new JsonResponse([
-                'nbTodoRun' => $counters->todoRun,
-                'nbTodoReview' => $counters->todoReview,
-                'nbSelectRun' => $counters->selectRun,
-                'nbSelectReview' => $counters->selectReview,
+                'nbRemainingToRun' => $counters->remainingToRun,
+                'nbRemainingToReview' => $counters->remainingToReview,
+                'nbTotalToRun' => $counters->totalToRun,
+                'nbTotalToReview' => $counters->totalToReview,
             ]);
         }
 

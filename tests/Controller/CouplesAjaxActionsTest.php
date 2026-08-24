@@ -136,8 +136,8 @@ class CouplesAjaxActionsTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame(1, $data['nbSelectReview']);
-        $this->assertSame(1, $data['nbTodoReview']);
+        $this->assertSame(1, $data['nbTotalToReview']);
+        $this->assertSame(1, $data['nbRemainingToReview']);
 
         $couple = $this->reloadCouple();
         $this->assertTrue($couple->isFlaggedForReview());
@@ -221,8 +221,8 @@ class CouplesAjaxActionsTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertSame(0, $data['nbSelectReview']);
-        $this->assertSame(0, $data['nbTodoReview']);
+        $this->assertSame(0, $data['nbTotalToReview']);
+        $this->assertSame(0, $data['nbRemainingToReview']);
 
         $couple = $this->reloadCouple();
         $this->assertFalse($couple->isFlaggedForReview());

@@ -213,7 +213,7 @@ class FaqsController extends AbstractController
         }
 
         // On a fini la faq.
-        if (0 == $repo->countAll($faq)->todoReview) {
+        if (0 == $repo->countAll($faq)->remainingToReview) {
             $repo->restartPendingForReview($faq);
         }
         $em->flush();
@@ -245,10 +245,10 @@ class FaqsController extends AbstractController
             $counters = $repo->countAll($faq);
 
             return new JsonResponse([
-                'nbTodoRun'      => $counters->todoRun,
-                'nbTodoReview'   => $counters->todoReview,
-                'nbSelectRun'    => $counters->selectRun,
-                'nbSelectReview' => $counters->selectReview,
+                'nbRemainingToRun'      => $counters->remainingToRun,
+                'nbRemainingToReview'   => $counters->remainingToReview,
+                'nbTotalToRun'    => $counters->totalToRun,
+                'nbTotalToReview' => $counters->totalToReview,
             ]);
         }
 
@@ -281,10 +281,10 @@ class FaqsController extends AbstractController
             $counters = $repo->countAll($faq);
 
             return new JsonResponse([
-                'nbTodoRun' => $counters->todoRun,
-                'nbTodoReview' => $counters->todoReview,
-                'nbSelectRun' => $counters->selectRun,
-                'nbSelectReview' => $counters->selectReview,
+                'nbRemainingToRun' => $counters->remainingToRun,
+                'nbRemainingToReview' => $counters->remainingToReview,
+                'nbTotalToRun' => $counters->totalToRun,
+                'nbTotalToReview' => $counters->totalToReview,
             ]);
         }
 
