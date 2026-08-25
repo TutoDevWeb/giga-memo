@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Entity;
 
 use App\Entity\Categories;
 use App\Entity\Couples;

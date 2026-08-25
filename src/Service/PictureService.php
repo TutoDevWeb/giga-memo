@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Couples;
@@ -39,7 +41,7 @@ class PictureService
                 continue;
             }
 
-            $mime = getimagesize($uploadedFile);
+            $mime = getimagesize($uploadedFile->getPathname());
 
             if (false !== $mime && 'image/png' === $mime['mime']) {
                 $relFilename = $idc . '-' . md5(uniqid((string) rand(), true)) . '.png';

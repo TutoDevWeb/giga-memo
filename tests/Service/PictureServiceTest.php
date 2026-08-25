@@ -34,7 +34,7 @@ class PictureServiceTest extends KernelTestCase
         $this->filesystem = new Filesystem();
 
         // Répertoire d'images dédié à ce test, distinct de public/assets/images/.
-        $this->imagesDir = sys_get_temp_dir().'/giga-memo-test-images-'.uniqid().'/';
+        $this->imagesDir = sys_get_temp_dir() . '/giga-memo-test-images-' . uniqid() . '/';
         $this->filesystem->mkdir($this->imagesDir);
 
         // Quota volontairement large : les tests dédiés au quota le redéfinissent
@@ -42,7 +42,7 @@ class PictureServiceTest extends KernelTestCase
         $this->pictureService = $this->createPictureServiceWithQuota(1000);
 
         $this->user = new Users();
-        $this->user->setEmail('picture-service-test-'.uniqid().'@example.com');
+        $this->user->setEmail('picture-service-test-' . uniqid() . '@example.com');
         $this->user->setPassword('not-used');
         $this->em->persist($this->user);
 
@@ -136,7 +136,7 @@ class PictureServiceTest extends KernelTestCase
         $this->assertCount(1, $images);
         $image = $images->first();
         $this->assertSame($this->user->getId(), $image->getUser()->getId());
-        $this->assertFileExists($this->imagesDir.$image->getName());
+        $this->assertFileExists($this->imagesDir . $image->getName());
     }
 
     public function testUploadSilentlyIgnoresValidNonPngImage(): void
@@ -173,7 +173,7 @@ class PictureServiceTest extends KernelTestCase
         $result = $this->pictureService->delete($image);
 
         $this->assertTrue($result);
-        $this->assertFileDoesNotExist($this->imagesDir.$image->getName());
+        $this->assertFileDoesNotExist($this->imagesDir . $image->getName());
     }
 
     public function testDeleteReturnsFalseWhenPhysicalFileIsMissing(): void

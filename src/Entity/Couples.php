@@ -47,7 +47,7 @@ class Couples
     /**
      * @var Collection<int, Images>
      */
-    #[ORM\OneToMany(targetEntity: Images::class, mappedBy: 'couple', orphanRemoval: true, cascade: ['persist'])] // J'ai ajouté à la maim le cascade persist
+    #[ORM\OneToMany(targetEntity: Images::class, mappedBy: 'couple', orphanRemoval: true, cascade: ['persist'])] // J'ai ajouté à la main le cascade persist
     private Collection $images;
 
     /**
