@@ -1,6 +1,8 @@
 notNull: 'Cette valeur ne doit pas être nulle.'
 notBlank: 'Ce champ doit être renseigné.'
 needUser: 'La ressource doit être liée à un utilisateur.'
+invalidEmail: 'Cette adresse email n''est pas valide.'
+emailAlreadyUsed: 'Cette adresse email est déjà utilisée.'
 
 maxLength: 'Le nom ne doit pas dépasser {{ limit }} caractères.'
 
