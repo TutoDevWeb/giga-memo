@@ -25,6 +25,8 @@ export default class extends Controller {
         const url = button.dataset.url;
         const token = button.dataset.token;
 
+        console.log(url);
+
         let response;
 
         try {

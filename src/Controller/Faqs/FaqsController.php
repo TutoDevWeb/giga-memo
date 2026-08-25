@@ -175,7 +175,7 @@ class FaqsController extends AbstractController
 
 
     /**
-     * Pareil  que run mais sur la liste des QRs à revoir
+     * Pareil que run mais sur la liste des QRs à revoir
      */
     #[Route('/faqs/review/{id_faq<\d+>}', name: 'app_faqs_review')]
     #[IsGranted(ResourceOwnerVoter::VIEW, subject: 'faq')]
@@ -222,9 +222,11 @@ class FaqsController extends AbstractController
         return $this->redirectToRoute('app_faqs_review', ['id_faq' => $faq->getId()]);
     }
 
-    /**
-     * Ce contrôleur est appelé lorsqu'un utilisateur appuie sur le bouton Restart
-     * Il met à 1 tous les booléens pendingForRun et pendingForReview de la Faqs passée en argument.
+    /** Depuis la page d'accueil des modes d'exécution
+     * Click sur le bouton "Reprendre l'exécution au début"
+     * On se remet en haut des deux listes. La liste run et la liste review
+     * Pour ça tout les pending_for_run sont mis à true
+     * Tout les pending_for_review qui sont flagged_for_review sont mis à true.
      */
     #[Route('/faqs/restart/{id_faq<\d+>}', name: 'app_faqs_restart')]
     #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]
@@ -237,6 +239,7 @@ class FaqsController extends AbstractController
 
         // On teste pour savoir si le token est valide.
         if ($this->isCsrfTokenValid('restart' . $faq->getId(), $token)) {
+
             // Faire le restart sur les run et les review.
             $repo->restartPendingForRun($faq);
             $repo->restartPendingForReview($faq);
@@ -255,9 +258,9 @@ class FaqsController extends AbstractController
         return new JsonResponse(['message' => 'KO']);
     }
 
-    /**
-     * Ce controlleur est appelé losqu'un utilisateur appuie sur le bouton 'Reset Review'
-     * Il met à 0 tous les booléens flaggedForReview des couples qui sont dans la liste des review cad bouton 'A Revoir'.
+    /** Depuis la page d'accueil des modes d'exécution
+     * Click sur le bouton "Vider la liste de Révision"
+     * Met à false les indicateurs de suivi pending_for_review et flagged_for_review.
      */
     #[Route('/faqs/reset-review/{id_faq<\d+>}', name: 'app_faqs_reset_review')]
     #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'faq')]
@@ -274,7 +277,6 @@ class FaqsController extends AbstractController
             // Faire le reset des review
             $repo->resetFlaggedForReview($faq);
 
-            // Mettre les todo en concordances.
             $repo->restartPendingForReview($faq);
 
             // Faire les comptes et retourner les valeurs des indicateurs pour maj affichage

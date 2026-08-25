@@ -192,8 +192,7 @@ class CouplesController extends AbstractController
     }
 
     /**
-     * Ce contrôleur sert à enregister un couple qr dans la sélection flaggedForReview
-     * Il est appelé lorsqu'un utilisateur appuie sur le bouton A Revoir en Run-normal.
+     * Click sur bouton 'Revoir' lorsque l'on déroule la liste en run. 
      */
     #[Route('/couples/set-one-review/{id_couple<\d+>}', name: 'app_couples_set_one_review')]
     #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'couple')]
@@ -230,8 +229,7 @@ class CouplesController extends AbstractController
     }
 
     /**
-     * Ce contrôleur sert à enlever un couple qr de la sélection flaggedForReview
-     * Il est appelé lorsqu'un utilisateur appuie sur le bouton Ne plus revoir en Run-Review.
+     * Click sur bouton 'Ne plus Revoir' lorsque l'on déroule la liste des review. 
      */
     #[Route('/couples/cancel-one-review/{id_couple<\d+>}', name: 'app_couples_cancel_one_review')]
     #[IsGranted(ResourceOwnerVoter::EDIT, subject: 'couple')]
