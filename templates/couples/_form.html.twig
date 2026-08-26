@@ -8,7 +8,7 @@
 {{ form_widget(form.num) }}
 
 {{ form_label(form.faq, 'Sélectionner la Faq', { 'label_attr': {'class': 'mt-4'} }) }}
-{{ form_widget(form.faq, {'attr': {'disabled': 'disabled'} }) }}
+{{ form_widget(form.faq) }}
 
 {# Champ rules #}
 {{ form_label(form.rules, 'Règles', { 'label_attr': {'class': 'mt-4'} }) }}

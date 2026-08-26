@@ -67,9 +67,6 @@ class CouplesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // Il faut le ré assigner car il est perdu car disabled
-            $couple->setFaq($faq);
-
             $couple->setPendingForRun(true);
             $couple->setPendingForReview(true);
             $couple->setFlaggedForReview(false);
@@ -122,7 +119,6 @@ class CouplesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $couple->setFaq($faq);
             $couple = $form->getData();
 
             $entityManager->persist($couple);

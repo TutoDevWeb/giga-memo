@@ -17,6 +17,7 @@ class RulesType extends AbstractType
             ->add('faq', EntityType::class, [
                 'class' => Faqs::class,
                 'choice_label' => 'name',
+                'disabled' => true,
             ])
             ->add('name')
             ->add('content')

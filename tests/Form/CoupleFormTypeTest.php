@@ -100,7 +100,11 @@ class CoupleFormTypeTest extends KernelTestCase
 
     private function submit(array $data, ?Faqs $faq = null): FormInterface
     {
+        // CouplesController assigne toujours la faq avant de créer le formulaire : on
+        // reproduit ce contexte (le champ "faq" étant désactivé, aucune valeur soumise
+        // ne peut de toute façon l'atteindre).
         $couple = new Couples();
+        $couple->setFaq($faq ?? $this->faq);
         $couple->setUser($this->user);
 
         $form = $this->formFactory->create(CoupleFormType::class, $couple, [

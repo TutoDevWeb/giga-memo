@@ -14,9 +14,10 @@ use Symfony\Component\Form\FormInterface;
 
 /**
  * Ces tests couvrent RulesType : mapping des champs "faq", "name" et
- * "content". Le champ "faq" est un EntityType requis (pas de query_builder,
- * pas de contrainte d'appartenance au niveau du formulaire : c'est le
- * contrôleur qui réassigne la faq après soumission).
+ * "content". Le champ "faq" est un EntityType désactivé ('disabled' => true) :
+ * sa valeur ne peut jamais venir des données soumises, seulement de l'entité
+ * telle qu'assignée avant la création du formulaire (c'est ce que fait
+ * RulesController en assignant la faq avant d'appeler createForm()).
  */
 class RulesTypeTest extends KernelTestCase
 {
@@ -73,12 +74,13 @@ class RulesTypeTest extends KernelTestCase
         parent::tearDown();
     }
 
-    private function submit(array $data): FormInterface
+    private function submit(array $data, ?Faqs $faq = null): FormInterface
     {
-        // RulesController assigne toujours l'utilisateur connecté avant de créer le
-        // formulaire (le champ n'existe pas dans RulesType) : on reproduit ce contexte
-        // pour que la validation de l'entité (HasUserTrait) ne fausse pas ces tests.
+        // RulesController assigne toujours la faq et l'utilisateur connecté avant de
+        // créer le formulaire : on reproduit ce contexte (le champ "faq" étant
+        // désactivé, aucune valeur soumise ne peut de toute façon l'atteindre).
         $rule = new Rules();
+        $rule->setFaq($faq ?? $this->faq);
         $rule->setUser($this->user);
 
         $form = $this->formFactory->create(RulesType::class, $rule, ['csrf_protection' => false]);
@@ -90,7 +92,6 @@ class RulesTypeTest extends KernelTestCase
     public function testValidDataIsAccepted(): void
     {
         $form = $this->submit([
-            'faq' => (string) $this->faq->getId(),
             'name' => 'Ma regle',
             'content' => 'Enonce de la regle',
         ]);
@@ -102,30 +103,25 @@ class RulesTypeTest extends KernelTestCase
         $this->assertSame('Enonce de la regle', $rule->getContent());
     }
 
-    public function testMissingFaqIsAcceptedByTheFormDespiteTheNotNullDbColumn(): void
+    public function testFaqFieldIsDisabledAndIgnoresSubmittedValue(): void
     {
-        // Rules::$faq n'a pas de contrainte Assert\NotNull/NotBlank (contrairement à
-        // Faqs::$category) : le formulaire seul ne rejette donc pas une faq absente,
-        // même si la colonne SQL est NOT NULL. En pratique, RulesController réassigne
-        // toujours la faq avant persistance et le champ est désactivé à l'affichage.
+        // Le champ "faq" est désactivé (RulesType::buildForm) : la faq utilisée est
+        // celle assignée à l'entité avant la création du formulaire, jamais celle
+        // soumise dans les données - même si elle correspond à une faq existante.
+        $otherFaq = new Faqs();
+        $otherFaq->setName('Autre Faq');
+        $otherFaq->setCategory($this->category);
+        $otherFaq->setUser($this->user);
+        $this->em->persist($otherFaq);
+        $this->em->flush();
+
         $form = $this->submit([
+            'faq' => (string) $otherFaq->getId(),
             'name' => 'Ma regle',
             'content' => 'Enonce de la regle',
         ]);
 
         $this->assertTrue($form->isValid());
-        $this->assertNull($form->getData()->getFaq());
-    }
-
-    public function testUnknownFaqIdIsRejected(): void
-    {
-        $form = $this->submit([
-            'faq' => '999999999',
-            'name' => 'Ma regle',
-            'content' => 'Enonce de la regle',
-        ]);
-
-        $this->assertFalse($form->isValid());
-        $this->assertFalse($form->get('faq')->isValid());
+        $this->assertSame($this->faq->getId(), $form->getData()->getFaq()->getId());
     }
 }

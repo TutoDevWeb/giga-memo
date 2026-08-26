@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Trait\HasUserTrait;
 use App\Repository\ImagesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ImagesRepository::class)]
 class Images
@@ -20,6 +21,7 @@ class Images
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'images')]
+    #[Assert\NotNull(message: 'notNull')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')] // Le onDelete: 'CASCADE' a été ajouté à la main
     private ?Couples $couple = null;
 

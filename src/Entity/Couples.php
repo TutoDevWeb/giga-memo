@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CouplesRepository::class)]
 class Couples
@@ -26,6 +27,7 @@ class Couples
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'couples')]
+    #[Assert\NotNull(message: 'notNull')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Faqs $faq = null;
 

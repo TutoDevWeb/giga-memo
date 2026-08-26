@@ -45,6 +45,7 @@ class CoupleFormType extends AbstractType
             ->add('faq', EntityType::class, [
                 'class' => Faqs::class,
                 'choice_label' => 'name',
+                'disabled' => true,
             ])
             ->add('images', FileType::class, [
                 'mapped' => false,

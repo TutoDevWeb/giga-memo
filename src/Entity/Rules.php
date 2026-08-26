@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RulesRepository::class)]
 class Rules
@@ -26,6 +27,7 @@ class Rules
     private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'rules')]
+    #[Assert\NotNull(message: 'notNull')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Faqs $faq = null;
 

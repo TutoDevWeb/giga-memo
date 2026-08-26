@@ -124,48 +124,82 @@ class EntitiesValidationTest extends KernelTestCase
         $this->assertSame('La ressource doit être liée à un utilisateur.', $errors[0]->getMessage());
     }
 
-    // --- Couples / Rules / Images : seule la contrainte "needUser" (HasUserTrait) s'applique ---
+    // --- Couples : contrainte "needUser" (HasUserTrait) et "faq" obligatoire ---
 
-    public function testCoupleIsValidWithUser(): void
+    public function testCoupleIsValidWithFaqAndUser(): void
     {
-        $couple = (new Couples())->setUser(new Users());
+        $couple = (new Couples())->setFaq(new Faqs())->setUser(new Users());
 
         $this->assertCount(0, $this->getErrors($couple));
     }
 
+    public function testCoupleIsInvalidWithoutFaq(): void
+    {
+        $couple = (new Couples())->setUser(new Users());
+
+        $errors = $this->getErrors($couple);
+
+        $this->assertCount(1, $errors);
+        $this->assertSame('Cette valeur ne doit pas être nulle.', $errors[0]->getMessage());
+    }
+
     public function testCoupleIsInvalidWithoutUser(): void
     {
-        $errors = $this->getErrors(new Couples());
+        $errors = $this->getErrors((new Couples())->setFaq(new Faqs()));
 
         $this->assertCount(1, $errors);
         $this->assertSame('La ressource doit être liée à un utilisateur.', $errors[0]->getMessage());
     }
 
-    public function testRuleIsValidWithUser(): void
+    // --- Rules : contrainte "needUser" (HasUserTrait) et "faq" obligatoire ---
+
+    public function testRuleIsValidWithFaqAndUser(): void
     {
-        $rule = (new Rules())->setUser(new Users());
+        $rule = (new Rules())->setFaq(new Faqs())->setUser(new Users());
 
         $this->assertCount(0, $this->getErrors($rule));
     }
 
+    public function testRuleIsInvalidWithoutFaq(): void
+    {
+        $rule = (new Rules())->setUser(new Users());
+
+        $errors = $this->getErrors($rule);
+
+        $this->assertCount(1, $errors);
+        $this->assertSame('Cette valeur ne doit pas être nulle.', $errors[0]->getMessage());
+    }
+
     public function testRuleIsInvalidWithoutUser(): void
     {
-        $errors = $this->getErrors(new Rules());
+        $errors = $this->getErrors((new Rules())->setFaq(new Faqs()));
 
         $this->assertCount(1, $errors);
         $this->assertSame('La ressource doit être liée à un utilisateur.', $errors[0]->getMessage());
     }
 
-    public function testImageIsValidWithUser(): void
+    // --- Images : contrainte "needUser" (HasUserTrait) et "couple" obligatoire ---
+
+    public function testImageIsValidWithCoupleAndUser(): void
     {
-        $image = (new Images())->setUser(new Users());
+        $image = (new Images())->setCouple(new Couples())->setUser(new Users());
 
         $this->assertCount(0, $this->getErrors($image));
     }
 
+    public function testImageIsInvalidWithoutCouple(): void
+    {
+        $image = (new Images())->setUser(new Users());
+
+        $errors = $this->getErrors($image);
+
+        $this->assertCount(1, $errors);
+        $this->assertSame('Cette valeur ne doit pas être nulle.', $errors[0]->getMessage());
+    }
+
     public function testImageIsInvalidWithoutUser(): void
     {
-        $errors = $this->getErrors(new Images());
+        $errors = $this->getErrors((new Images())->setCouple(new Couples()));
 
         $this->assertCount(1, $errors);
         $this->assertSame('La ressource doit être liée à un utilisateur.', $errors[0]->getMessage());
