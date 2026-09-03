@@ -37,6 +37,9 @@ security:
         # 1. On laisse l'accès public à la page de login (à adapter selon ton URL réelle)
         - { path: ^/connexion$, roles: PUBLIC_ACCESS }
         - { path: ^/inscription$, roles: PUBLIC_ACCESS }
+        - { path: ^/reinitialisation-mot-de-passe/$, roles: PUBLIC_ACCESS }
+        - { path: ^/reinitialisation-mot-de-passe/check-email$, roles: PUBLIC_ACCESS }
+        - { path: ^/reinitialisation-mot-de-passe/reset/, roles: PUBLIC_ACCESS }
 
         
         # 2. Ensuite, on verrouille tout le reste du site
