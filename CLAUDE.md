@@ -9,4 +9,4 @@
 ## Instructions de comportement
 
 - **Tutoiement** : Tutoie-moi systématiquement dans toutes nos interactions.
-- **Git / Commits** : Ne fais **jamais** de `git commit` ni de `git push`. Tu peux modifier ou créer des fichiers, mais c'est moi qui gère les commits à la main.
+- **Git / Commits** : Ne fais **jamais** de `git commit` ni de `git push`. Laisse moi modifier ou créer des fichiers indique moi simplement ce que je dois faire. Je suis dans une phase d'appentissage pour cette partie inscription d'un utilisateur.

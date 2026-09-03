@@ -73,6 +73,7 @@
 			{% elseif app.current_route == 'app_main_start_create_faq' %}
 				{{ Ariane.mainStartCreateFaq() }}
 			{% elseif app.current_route == 'app_login' %}
+			{% elseif app.current_route == 'app_register' %}
 
 
 			{% else %}
@@ -81,21 +82,32 @@
 
 		</div>
 
-		<div class="col-auto p-2">
-			<a href="{{ logout_path() }}">
-				<img src="{{ asset('media/logout.png') }}" width="32" height="32" alt="Se déconnecter">
-			</a>
-		</div>
+		{% if app.user and not app.user.isVerified %}
+			<div class="col-auto p-2">
+				<form method="post" action="{{ path('app_verify_email_resend') }}">
+					<input type="hidden" name="_token" value="{{ csrf_token('resend-verification-email') }}">
+					<button type="submit" class="btn btn-link">Renvoyer l'email de vérification</button>
+				</form>
+			</div>
+		{% endif %}
+
+		{% if app.user %}
+			<div class="col-auto p-2">
+				<a href="{{ logout_path() }}">
+					<img src="{{ asset('media/logout.png') }}" width="32" height="32" alt="Se déconnecter">
+				</a>
+			</div>
+		{% endif %}
 
 	</div>
 </nav>
 
 {# {{ dump(_context|keys) }}
-
-{% if faq is defined  %}
-
-	{{ dump(faq) }}
-
-	{{ dump(faq.id) }}
-
-{% endif %} #}
+	
+	{% if faq is defined  %}
+	
+		{{ dump(faq) }}
+	
+		{{ dump(faq.id) }}
+	
+	{% endif %} #}
