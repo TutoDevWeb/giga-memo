@@ -50,7 +50,7 @@ class RegistrationController extends AbstractController
                 (new TemplatedEmail())
                     ->from(new Address('contact@super-memo.fr', 'Equipe Super Memo'))
                     ->to((string) $user->getEmail())
-                    ->subject('Please Confirm your Email')
+                    ->subject('Merci de confirmer votre adresse email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
@@ -115,7 +115,7 @@ class RegistrationController extends AbstractController
             (new TemplatedEmail())
                 ->from(new Address('contact@super-memo.fr', 'Equipe Super Memo'))
                 ->to((string) $user->getEmail())
-                ->subject('Please Confirm your Email')
+                ->subject('Merci de confirmer votre adresse email')
                 ->htmlTemplate('registration/confirmation_email.html.twig')
         );
 
