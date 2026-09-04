@@ -102,6 +102,6 @@ class FaqListControllerTest extends WebTestCase
     {
         $this->client->request('GET', '/faq/list-by-category/'.$this->category->getId());
 
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseRedirects('/connexion');
     }
 }

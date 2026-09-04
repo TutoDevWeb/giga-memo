@@ -49,7 +49,7 @@ class SecurityControllerTest extends WebTestCase
 
     public function testLoginPageIsAccessibleAnonymously(): void
     {
-        $crawler = $this->client->request('GET', '/login');
+        $crawler = $this->client->request('GET', '/connexion');
 
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Merci de vous connecter', $crawler->filter('body')->text());
@@ -57,7 +57,7 @@ class SecurityControllerTest extends WebTestCase
 
     public function testLoginWithValidCredentialsAuthenticatesUser(): void
     {
-        $crawler = $this->client->request('GET', '/login');
+        $crawler = $this->client->request('GET', '/connexion');
 
         $form = $crawler->selectButton('Connexion')->form([
             '_username' => $this->user->getEmail(),
@@ -78,7 +78,7 @@ class SecurityControllerTest extends WebTestCase
 
     public function testLoginWithInvalidCredentialsShowsError(): void
     {
-        $crawler = $this->client->request('GET', '/login');
+        $crawler = $this->client->request('GET', '/connexion');
 
         $form = $crawler->selectButton('Connexion')->form([
             '_username' => $this->user->getEmail(),
@@ -87,7 +87,7 @@ class SecurityControllerTest extends WebTestCase
 
         $this->client->submit($form);
 
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseRedirects('/connexion');
 
         $crawler = $this->client->followRedirect();
         $this->assertStringContainsString('alert-danger', $crawler->filter('.alert-danger')->attr('class'));

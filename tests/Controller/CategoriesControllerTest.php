@@ -86,7 +86,7 @@ class CategoriesControllerTest extends WebTestCase
     {
         $this->client->request('GET', '/categories');
 
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseRedirects('/connexion');
     }
 
     public function testListOnlyShowsOwnCategories(): void
