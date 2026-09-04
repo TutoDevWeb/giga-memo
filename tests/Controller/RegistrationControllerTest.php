@@ -155,7 +155,7 @@ class RegistrationControllerTest extends WebTestCase
             (new \Symfony\Bridge\Twig\Mime\TemplatedEmail())
                 ->from('contact@super-memo.fr')
                 ->to((string) $user->getEmail())
-                ->subject('Please Confirm your Email')
+                ->subject('Merci de confirmer votre adresse email')
                 ->htmlTemplate('registration/confirmation_email.html.twig')
         );
 
