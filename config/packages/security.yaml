@@ -39,7 +39,7 @@ security:
         - { path: ^/inscription$, roles: PUBLIC_ACCESS }
         - { path: ^/reinitialisation-mot-de-passe/$, roles: PUBLIC_ACCESS }
         - { path: ^/reinitialisation-mot-de-passe/check-email$, roles: PUBLIC_ACCESS }
-        - { path: ^/reinitialisation-mot-de-passe/reset/, roles: PUBLIC_ACCESS }
+        - { path: ^/reinitialisation-mot-de-passe/reset, roles: PUBLIC_ACCESS }
 
         
         # 2. Ensuite, on verrouille tout le reste du site
