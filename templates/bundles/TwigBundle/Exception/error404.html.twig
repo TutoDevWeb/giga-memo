@@ -3,7 +3,9 @@
 {% block title %}Page non trouvée (404){% endblock %}
 
 {% block body %}
-    <h1>Oups ! Page introuvable</h1>
-    <p>La page que tu cherches n'existe pas ou a été déplacée.</p>
-    <a href="{{ path('app_main_index') }}">Retourner à l'accueil</a>
+    <div class="container">
+        <h1>Oups ! Page introuvable</h1>
+        <p>La page que tu cherches n'existe pas ou a été déplacée.</p>
+        <a href="{{ path('app_main_index') }}">Retourner à l'accueil</a>
+    </div>
 {% endblock %}

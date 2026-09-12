@@ -3,7 +3,9 @@
 {% block title %}Accès interdit (403){% endblock %}
 
 {% block body %}
-    <h1>Oups ! Tu ne devrais pas te trouver là !</h1>
+    <div class="container">
+        <h1>Oups ! Tu ne devrais pas te trouver là !</h1>
 
-    <a href="{{ path('app_main_index') }}">Retourner à l'accueil</a>
+        <a href="{{ path('app_main_index') }}">Retourner à l'accueil</a>
+    </div>
 {% endblock %}
