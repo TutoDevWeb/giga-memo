@@ -1,94 +1,202 @@
 # Audit du projet giga-memo
 
-Audit réalisé sur l'intégralité de `/src` (32 fichiers), `/templates` (44 fichiers), `/config`, `/assets`, `/tests` et les migrations.
+Date : 2026-09-18
+Stack : Symfony 7.4.18 (PHP 8.3), Doctrine ORM 3.3, AssetMapper, Stimulus, Turbo (installé, non utilisé), MySQL.
+
+Méthode : lecture exhaustive de `src/`, `templates/`, `config/`, `assets/`, exécution de `composer audit`,
+`vendor/bin/phpstan analyse` (niveau 5) et de la suite `phpunit` complète (189 tests) sur la base de test locale.
+
+---
 
 ## 1. Architecture & Structure
 
-**Points positifs**
-- Organisation par domaine métier (`Controller/Categories`, `Controller/Couples`, `Controller/Faqs`...) plutôt qu'un dossier `Controller` plat — bonne lisibilité.
-- Utilisation cohérente de `#[MapEntity]` pour éviter le pattern `find()` + `if (!$entity) throw 404` dans chaque contrôleur.
-- Le `ResourceOwnerVoter` (src/Security/Voter/ResourceOwnerVoter.php) est une bonne abstraction : un seul voter générique pour toutes les entités possédant `getUser()`, au lieu de dupliquer la logique d'autorisation.
-- Le trait `HasUserTrait` (src/Entity/Trait/HasUserTrait.php) évite la duplication du champ `user` sur 4 entités.
-- Séparation service/entité correcte pour l'upload d'images (`PictureService`) découplée du contrôleur.
+### Points forts
+- **Séparation par domaine** : les contrôleurs sont rangés par ressource (`Controller/Categories`, `Controller/Couples`,
+  `Controller/Faqs`, `Controller/Rules`, `Controller/Images`, `Controller/Main`) plutôt que dans un seul dossier plat.
+  Lisible et cohérent avec les bonnes pratiques Symfony.
+- **Voter générique** `ResourceOwnerVoter` (`RESOURCE_NEW/EDIT/VIEW/DELETE`) réutilisé sur toutes les entités
+  possédant un `getUser()`. Un seul point de vérité pour l'autorisation, appliqué de façon quasi systématique via
+  `#[IsGranted]`. C'est le meilleur choix d'architecture du projet.
+- **Trait `HasUserTrait`** factorise la relation `ManyToOne` vers `Users` sur 4 entités (Categories, Faqs, Couples,
+  Rules, Images) : bon usage de la composition pour éviter la duplication de mapping Doctrine.
+- **Repository "riches"** : `CouplesRepository` porte la logique métier de requêtage (restart, reset, compteurs) au
+  lieu de la laisser dans les contrôleurs ou de faire des boucles PHP sur des collections chargées entièrement.
+- **DTO `CouplesCounters`** (`final readonly class`) : typage propre du résultat d'une requête d'agrégation, plutôt
+  qu'un tableau associatif brut. Bonne pratique.
+- **Form Types avec `query_builder` scopé à l'utilisateur** (`FaqFormType`, `SelectFaqFormType`, `CoupleFormType`) :
+  empêche par construction qu'un utilisateur choisisse une catégorie/FAQ/règle appartenant à quelqu'un d'autre dans
+  un `<select>`, en plus du contrôle du Voter. Défense en profondeur bien pensée.
 
-**Points à corriger**
-- **Incohérence forte entre AssetMapper et JS "à l'ancienne"** : le projet utilise Stimulus/AssetMapper pour presque tout (modales de suppression, aperçu image, select dynamique), mais `public/assets/js/scripts.js` (206 lignes, sélecteurs `getElementById`, IIFE) gère à lui seul les boutons Restart / Reset Review / A Revoir / Ne plus revoir, chargé en `<script>` brut dans `templates/base.html.twig` (ligne 23) au lieu de passer par l'importmap. C'est un corps étranger dans une architecture par ailleurs moderne — devrait être un contrôleur Stimulus comme les autres.
-- **Fichier `public/assets/images/` utilisé comme dossier de stockage utilisateur** (config/services.yaml, ligne 8) alors que `public/assets/` est le répertoire de sortie compilé d'AssetMapper. Risque de collision/purge lors d'un `asset-map:compile` ou d'un déploiement qui régénère ce dossier — les images utilisateur devraient être hors de l'arborescence gérée par AssetMapper (ex. `var/uploads/` servi via un contrôleur, ou au minimum un sous-dossier `public/uploads/` clairement séparé).
-- `PictureService` a une double responsabilité (upload + suppression physique) mais reste correct en taille ; en revanche `$params` n'est pas typé (`private $params;` au lieu de `private ParameterBagInterface $params;`).
-- `AppFixtures` crée des `Faqs`/`Couples` **sans utilisateur** alors que `HasUserTrait` impose `nullable: false` — ces fixtures cassent en base (contrainte NOT NULL) et sont décorrélées du modèle actuel : dette à nettoyer.
-- Fichier de test `tests/Controller/DeleteCascadeCategoryTest.php` contient une classe nommée `DeleteCategoryTest` (incohérence nom fichier/classe) et se trouve dans `tests/Controller` alors qu'il ne teste aucun contrôleur HTTP (juste l'EntityManager) — plutôt un test d'intégration Doctrine, à ranger dans `tests/Entity` ou `tests/Integration`.
-- Structure `tests/entity/tests/Entity/...` (double niveau `tests/`) : artefact probable d'un copier-coller, à corriger.
+### Points à améliorer
+- **`MainController::index`** cumule trois responsabilités (redirections d'onboarding, affichage du formulaire de
+  sélection, traitement de la soumission avec redirection run/edit). Un extrait vers un service ou au moins une
+  méthode privée clarifierait le flux.
+- **Couplage vue/contrôleur fragile** : le paramètre de route `{from<run|review|list>}` de `app_couples_update` et le
+  champ caché non mappé `from` du `CoupleFormType` portent la même information par deux canaux différents. Une seule
+  source (le paramètre de route, déjà présent) suffirait.
+- **Mélange de style d'autorisation** : la plupart des contrôleurs utilisent l'attribut déclaratif `#[IsGranted]`,
+  mais `FaqsController::new()` et `MainStartController::createFaq()` font un `denyAccessUnlessGranted()` impératif
+  au milieu de la méthode. Fonctionnellement correct (le contrôle a lieu avant le `persist`), mais l'incohérence de
+  style augmente le risque d'oubli lors d'une future modification.
+- **Nommage** : mélange anglais (`findNextPendingForRun`, `restartPendingForRun`) et français (`num`, `reponse`,
+  `question`) selon les couches. Pas bloquant, mais à trancher pour la cohérence à long terme.
+- Pas de couche `Service` dédiée à la logique métier "run/review" des FAQ : elle est répartie entre
+  `CouplesRepository` (bulk update DQL, bien) et les contrôleurs `FaqsController`/`CouplesController` (orchestration
+  + JSON, un peu chargé). Acceptable à la taille actuelle du projet, à surveiller si de nouvelles règles métier
+  s'ajoutent.
+
+---
 
 ## 2. Performance & Optimisations
 
-**Problèmes N+1 identifiés**
-- `templates/couples/list-by-faq.html.twig` (lignes 30-52) itère `faq.couples`, puis pour chaque couple boucle sur `couple.images` et `couple.rules` — sans `JOIN FETCH` en amont, Doctrine émet 1 requête pour charger les couples + N requêtes pour les images + N requêtes pour les règles. Sur une FAQ à 50 couples, c'est ~100 requêtes SQL pour une seule page.
-- Aucun repository ne définit de méthode `findByFaqWithImagesAndRules()` utilisant `leftJoin()->addSelect()` — toutes les collections `OneToMany`/`ManyToMany` sont chargées en lazy loading pur.
-- ~~`CouplesRepository` fait 4 requêtes séparées (`countTodoRun`, `countTodoReview`, `countSelectRun`, `countSelectReview`) à chaque affichage de `run`/`review`/`restart`/`reset-review`~~ **Corrigé** : fusionnées en une seule méthode `CouplesRepository::countAll()` avec des agrégats conditionnels (`SUM(CASE WHEN ...)`), qui renvoie un DTO `App\Dto\CouplesCounters`, réutilisée dans les 8 endroits qui en avaient besoin (`FaqsController`, `MainController`, `CouplesController`).
-- `countAll()->selectRun` (ex-`countSelectRun()`, CouplesRepository.php) ne filtre toujours pas sur un flag `selectRun` malgré son nom — il compte tous les couples de la FAQ, ce qui reste trompeur (bug de nommage conservé volontairement pour l'instant, cf. section qualité, point 10).
+### Points forts (déjà en place)
+- **N+1 déjà corrigé et documenté** : `CouplesRepository::findByFaqWithImagesAndRules()` charge un couple, ses
+  images et ses règles en une seule requête (`leftJoin` + `addSelect`), avec un commentaire de code qui référence
+  explicitement ce fichier d'audit. Un test dédié (`Find by faq with images and rules loads collections in one
+  query`) verrouille la non-régression. Exemplaire.
+- **Compteurs en une requête** : `CouplesRepository::countAll()` renvoie les 4 compteurs (run/review restants et
+  totaux) via une seule requête d'agrégation SQL (`SUM(CASE WHEN ...)`), au lieu de 4 requêtes séparées. Bon réflexe
+  de performance.
+- **Cache Doctrine** (`query_cache_driver`, `result_cache_driver`) correctement activé uniquement en prod
+  (`when@prod` dans `doctrine.yaml`), avec des pools `cache.system`/`cache.app` dédiés.
+- **AssetMapper** utilisé sans fioriture : imports ESM propres dans `app.js`, pas de build Webpack superflu,
+  `assets/vendor/` bien exclu du dépôt (généré par `importmap:install`).
 
-**Cache**
-- `cache.yaml` est laissé en configuration par défaut (filesystem, pas de pool dédié) — acceptable pour la taille actuelle, mais aucun cache de requêtes/résultats n'est mis en place explicitement en dehors du `when@prod` de `doctrine.yaml` (pools `cache.app`/`cache.system` corrects mais uniquement pour proxy/metadata, pas de result cache appliqué aux requêtes répétitives comme `countAll`).
-- Pas d'utilisation de HTTP cache (`Cache-Control`, ESI) — non critique pour une appli authentifiée par utilisateur, donc acceptable ici.
+### Points à améliorer
+- **Turbo installé mais non exploité.** `symfony/ux-turbo` et `@hotwired/turbo` sont présents, `turbo-core` est actif
+  par défaut (`controllers.json`), mais aucun template n'utilise `turbo-frame`, `turbo-stream` ou `data-turbo`.
+  Concrètement : Turbo Drive intercepte silencieusement la navigation (liens et soumissions de formulaires) de toute
+  l'application sans que ce comportement ait été un choix explicite ni testé. C'est à la fois du poids mort côté
+  bundle JS et un risque de comportement de navigation inattendu.
+- Les mises à jour de compteurs (`counter_action_controller.js`) sont faites en `fetch` + JSON manuel, alors que
+  Turbo Streams serait l'outil naturel pour ça puisque la dépendance est déjà présente. Cohérence à retrouver dans
+  un sens ou dans l'autre (l'utiliser vraiment, ou le retirer).
+- **`console.log` de debug oubliés** en production dans plusieurs contrôleurs Stimulus
+  (`counter_action_controller.js`, `confirm_modal_controller.js`, `image_preview_controller.js`,
+  `answer_controller.js`) et dans `assets/app.js` ("welcome to AssetMapper 🎉"). Pas un problème de performance en
+  soi, mais du bruit à nettoyer avant mise en production.
+- Aucun cache HTTP (`Cache-Control`, attribut `#[Cache]`) ni cache applicatif (`framework.cache` pools) exploité
+  pour des données peu volatiles comme la liste des catégories d'un utilisateur. Non critique vu le volume de
+  données probable de l'application, mais à garder en tête si le nombre d'utilisateurs augmente.
+- Le N+1 restant sur `rules/list-by-faq.html.twig` (boucle `for rule in faq.rules`) n'est en réalité qu'une requête
+  supplémentaire (1+1, pas un vrai N+1 puisqu'il n'y a qu'une seule FAQ) : mentionné pour être exhaustif, mais ce
+  n'est pas un problème à corriger.
 
-**AssetMapper / Turbo / Stimulus**
-- `symfony/ux-turbo` est présent dans `composer.json` mais **désactivé** dans `assets/controllers.json` (`turbo-core.enabled: false`) et non utilisé nulle part dans les templates — dépendance installée mais inexploitée : soit l'activer pour bénéficier des navigations accélérées (pertinent vu le nombre de redirections après chaque action), soit la retirer.
-- Bootstrap CSS/JS et Bootstrap Icons sont chargés depuis un **CDN externe** (templates/base.html.twig, lignes 12 et 35-36) alors que le projet a AssetMapper en place — incohérent (perte de contrôle sur la disponibilité/versioning, appel réseau externe à chaque page, pas de Subresource Integrity homogène avec le reste). Ces libs devraient passer par l'importmap comme `@hotwired/stimulus`/`turbo`.
-- Le fichier legacy `scripts.js` n'étant pas dans `assets/`, il **échappe au fingerprinting/versioning** d'AssetMapper (pas de cache-busting en prod).
+---
 
 ## 3. Sécurité & Robustesse
 
-**Points positifs**
-- Firewall correctement configuré, tout le site derrière `ROLE_USER` sauf `/login` (config/packages/security.yaml, lignes 36-41).
-- Le voter d'ownership est appliqué systématiquement sur les routes sensibles (edit/delete/view) via `#[IsGranted]`.
-- CSRF activé sur le login et vérifié manuellement sur toutes les routes AJAX (delete, restart, reset-review, set/cancel-review).
-- Upload d'images : validation MIME côté serveur via `getimagesize()` (pas de confiance dans l'extension fournie par le client), nom de fichier régénéré aléatoirement (`md5(uniqid())`) — protège contre l'exécution de scripts déguisés et le path traversal.
-- `Users::__serialize()` hash le mot de passe en session (CRC32C) plutôt que de le stocker en clair — bonne pratique récente Symfony 7.3 correctement reprise.
+### Points forts
+- **Isolation multi-utilisateur robuste** : chaque ressource sensible (Catégorie, FAQ, Couple, Règle, Image) est
+  rattachée à un `Users` via `HasUserTrait` et vérifiée par `ResourceOwnerVoter` avant toute lecture/écriture. C'est
+  le point le plus solide du projet côté sécurité.
+- **CSRF traité de bout en bout** : formulaires Symfony classiques + jetons CSRF manuels sur les endpoints Ajax
+  (`JsonCsrfTokenTrait`), avec une gestion propre des erreurs (400 explicite si le corps JSON est absent ou mal
+  formé, plutôt qu'un `TypeError` fatal).
+- **`access_control` en liste blanche puis verrou global** : les routes publiques sont explicitement listées, puis
+  `{ path: ^/, roles: ROLE_USER }` verrouille tout le reste par défaut. C'est la bonne façon de faire (deny by
+  default).
+- **Inscription / vérification email / reset password** via les bundles SymfonyCasts, avec anti-énumération
+  explicite ("ne pas révéler si un compte existe") dans `ResetPasswordController::processSendingPasswordResetEmail`,
+  et `NotCompromisedPassword` (vérification Have I Been Pwned) sur le changement de mot de passe.
+- **Upload d'images maîtrisé** : restriction PNG à la fois côté formulaire (`File` constraint) et côté service
+  (vérification `getimagesize()` du contenu réel, pas seulement du `Content-Type` déclaré par le navigateur), noms
+  de fichiers générés aléatoirement (évite l'écrasement ou l'injection de chemin), et **quota d'images par
+  utilisateur** (`images_max_per_user`) qui protège contre l'épuisement disque.
+- `composer audit` : aucune vulnérabilité connue dans les dépendances actuelles.
 
-**Failles / fragilités potentielles**
-- ~~**Endpoints AJAX fragiles face à une requête malformée**~~ **Corrigé** : `CouplesController::set_one_review`/`cancel_one_review`, `FaqsController::restart`/`reset_review` et `DeleteImageController::deleteImage` faisaient `json_decode($request->getContent(), true)` puis `$data['_token']` sans vérifier que `$data` est un tableau, ce qui déclenchait un `TypeError` fatal sur un corps non-JSON/vide. Extrait dans un trait partagé `App\Controller\Trait\JsonCsrfTokenTrait::getCsrfTokenFromJson()` qui valide `$data` avant l'accès et lève une `BadRequestHttpException` (→ 400 propre) sinon, réutilisé dans les 5 endpoints concernés. Tests de non-régression ajoutés (`testSetOneReviewWithMalformedBodyReturnsBadRequest`, `testRestartWithMalformedBodyReturnsBadRequest`).
-- **Aucune limite de taille/nombre de fichiers sur l'upload** (CoupleFormType.php, lignes 47-51) : le champ `images` (FileType multiple) n'a aucune contrainte `Assert\File` (maxSize, mimeTypes). Un utilisateur authentifié peut uploader un nombre illimité de fichiers volumineux → épuisement disque. À corriger même si le risque est limité par l'authentification obligatoire.
-- **Échec silencieux à l'upload** : si un fichier n'est pas un PNG valide, `PictureService::upload()` l'ignore silencieusement sans retour d'erreur à l'utilisateur (PictureService.php, lignes 32-46) — pas une faille de sécurité mais une mauvaise expérience utilisateur qui peut masquer un problème.
-- Pas de `Assert\Email` explicite sur `Users::$email`, ni de contrainte de complexité sur le mot de passe visible dans le code fourni (le `SecurityController` ne montre pas de formulaire d'inscription — à vérifier si l'inscription existe ailleurs ou est faite en fixtures/admin uniquement).
-- Le typage strict PHP (`declare(strict_types=1)`) n'est présent dans **aucun fichier** du projet — avec `phpstan` en level 5 configuré, c'est cohérent avec la config actuelle mais laisse passer des conversions de type implicites (ex. comparaisons `==` au lieu de `===` dans `MainController::index` : `findNbCategory(...) == 0`).
-- `MainController::index()` compare `findNbCategory($this->getUser()) == 0` — `$this->getUser()` peut être `null` en théorie (bien qu'improbable vu le firewall) ; `findNbCategory()` attend un `Users` non-nullable, ce qui est un léger décalage de contrat (PHPStan level 5 devrait déjà le signaler).
+### Points à corriger
+- **Typage faible confirmé par l'outillage** : `vendor/bin/phpstan analyse` (niveau 5, pourtant bas) relève
+  **9 erreurs réelles**, toutes de la même nature : `$this->getUser()` renvoie `UserInterface|null`, mais est transmis
+  tel quel à des méthodes qui attendent `?Users` — `Faqs::setUser()`, `Categories::setUser()`, `Rules::setUser()`,
+  `CategoriesRepository::findNbCategory()`, `FaqsRepository::findNbFaq()` — dans `FaqsController`, `MainController`,
+  `MainStartController` et `RulesController`. Ça fonctionne aujourd'hui uniquement parce qu'il n'existe qu'un seul
+  provider (`Users`), mais c'est un vrai trou de typage strict. Le correctif existe déjà dans le code
+  (`CouplesController` utilise `/** @var Users $user */ $user = $this->getUser();`) : il suffit de généraliser ce
+  pattern aux 4 contrôleurs concernés.
+- **Bug potentiel détecté par l'analyse statique** : `LoginVerificationReminderListener::__invoke()` appelle
+  `$event->getRequest()->getSession()->getFlashBag()`, mais `getSession()` est typé `SessionInterface`, qui n'expose
+  plus `getFlashBag()` dans les versions récentes de Symfony (la méthode vit sur `FlashBagAwareSessionInterface`).
+  Aucun test ne couvre ce listener : à vérifier manuellement (connexion avec un compte non vérifié) pour confirmer
+  si ça lève une erreur en conditions réelles, et corriger le typage sinon.
+- **Pas de limitation de tentatives (rate limiting)** sur `/connexion`, `/inscription`, ni sur la demande de
+  réinitialisation de mot de passe. Symfony fournit un `login_throttling` prêt à l'emploi non activé dans
+  `security.yaml` : l'application est exposée au brute force de mots de passe et au spam d'envoi d'emails.
+- **`declare(strict_types=1)` quasi absent** : présent dans 1 seul fichier sur 42 (`PictureService.php`). Sans lui,
+  PHP effectue des conversions de type implicites (int → string, etc.) qui masquent des bugs à l'exécution plutôt
+  que de les révéler immédiatement.
+- **Cohérence disque/BDD sur les fichiers** : la suppression physique de l'image a lieu dans
+  `ImageDeleteListener::preRemove()`, donc *avant* le commit SQL du `flush()`. Si le flush échoue ensuite pour une
+  autre raison, le fichier est déjà supprimé du disque alors que la ligne BDD reste (rollback). Risque symétrique
+  dans `PictureService::upload()` (fichier déplacé sur disque avant flush). Cas rares, mais à connaître.
+- Aucune protection anti-bot (honeypot/captcha) sur l'inscription ou la demande de reset password, qui restent des
+  cibles classiques de spam automatisé.
+
+---
 
 ## 4. Qualité du code & Maintenabilité
 
-**Points positifs**
-- Nommage des routes cohérent (`app_<domaine>_<action>`), verbes HTTP explicites sur les routes REST-like.
-- Commentaires en français conformes à la convention du projet, souvent utiles pour expliquer le "pourquoi" (ex. commentaires sur le cascade persist dans `Couples`, sur le comportement du `next-review`).
-- Tests unitaires présents pour le voter (3 cas bien choisis : owner, non-owner, sujet non supporté) et un test d'intégration solide sur la cascade de suppression.
-- `phpstan` (level 5) et `php-cs-fixer` sont configurés — bonne base d'outillage statique.
+### Points forts
+- **Suite de tests réellement complète** : 189 tests / 517 assertions couvrant Entités, Repository, Form Types,
+  Voter, Service, Contrôleurs et EventListener. Exécutée avec succès (188/189). C'est nettement au-dessus de la
+  moyenne pour un projet de cette taille, et un vrai filet de sécurité pour les évolutions futures.
+- **Commentaires abondants et pédagogiques en français**, cohérents avec l'objectif d'apprentissage du projet :
+  chaque contrôleur Stimulus explique son rôle, chaque méthode de repository un peu subtile est justifiée.
+- **PSR-12 globalement respecté** : imports groupés, visibilités explicites, indentation cohérente.
+- Aucune vulnérabilité de dépendance, dépendances à jour à quelques patchs mineurs près (Symfony 7.4.17→7.4.19,
+  Doctrine ORM 3.6→3.7, etc.), rien de critique.
 
-**Points à améliorer**
-- **Couverture de tests très faible** : seulement 3 fichiers de test pour 32 classes PHP (~9%). Aucun test sur les contrôleurs métier principaux (`FaqsController`, `CouplesController` avec leur logique run/review), ni sur `PictureService`, ni sur les repositories `CouplesRepository` (logique de comptage/reset qui mériterait des tests vu sa complexité).
-- **Nommage trompeur** : `CouplesRepository::countSelectRun()` ne filtre pas réellement sur un flag `selectRun` (qui n'existe même pas sur l'entité) — nom hérité d'un renommage incomplet, source de confusion pour la maintenance.
-- ~~Duplication notable du bloc "récupérer les 4 compteurs" répété 7 fois à l'identique dans `FaqsController` et `CouplesController`~~ **Corrigé** via `CouplesRepository::countAll()` (cf. section performance).
-- Incohérence de nommage entre `getCreateAt()` (Faqs) et `getCreatedAt()` (Couples) pour le même concept — faute de frappe qui casse la cohérence de l'API.
-- Emojis et commentaires "journal de bord" laissés dans le code de prod (`// 🔒 On récupère l'utilisateur...`, `// J'ai ajouté à la main le cascade persist`, `// Le onDelete: 'CASCADE' a été ajouté à la main`) — traces de développement utiles en cours de dev mais à nettoyer avant une base "propre" (ou au moins reformuler sans référence au geste de modification, cf. bonnes pratiques de commentaires).
-- `console.log` de debug laissés dans `scripts.js` et `image_preview_controller.js` (visibles en prod dans la console navigateur).
-- Fonction vide `delete_image()` dans `scripts.js` (dead code, aucun appelant).
-- `.php-cs-fixer.cache` et `.phpunit.result.cache` semblent committés dans le dépôt — à vérifier qu'ils sont bien dans `.gitignore`, sinon source de bruit dans les diffs.
+### Points à améliorer
+- **1 test en échec** : `RegistrationControllerTest::testRegisterPageIsAccessible` cherche le texte "Formulaire
+  d'inscription" dans la page, texte qui n'existe plus dans `templates/registration/register.html.twig` (dérive
+  entre le template et le test après une évolution de l'UI). À corriger pour ne pas laisser une suite rouge
+  s'installer.
+- **Duplication du bloc JSON des compteurs** : la même structure
+  `['nbRemainingToRun' => ..., 'nbRemainingToReview' => ..., 'nbTotalToRun' => ..., 'nbTotalToReview' => ...]` est
+  recopiée à l'identique dans 4 méthodes (`FaqsController::restart`, `FaqsController::reset_review`,
+  `CouplesController::set_one_review`, `CouplesController::cancel_one_review`). Une méthode commune
+  `countersToJson(CouplesCounters $counters): JsonResponse` (par ex. dans un trait partagé) supprimerait la
+  duplication.
+- **Casse des méthodes de contrôleur incohérente** : `list_by_faq`, `set_one_review`, `cancel_one_review`,
+  `reset_review` sont en snake_case alors que PSR-12/Symfony attendent du camelCase (`listByFaq`, `setOneReview`...).
+- **Bloc mort dans `base.html.twig`** : `{% block stylesheets %}{% endblock %}` n'est jamais utilisé, le CSS étant
+  chargé via l'import ESM dans `app.js`. À retirer pour éviter toute confusion future.
+- **Niveau PHPStan bas (5/10)** au regard de la discipline de code déjà en place : le passer à 8 ferait ressortir
+  immédiatement les 9 erreurs déjà identifiées, et probablement d'autres améliorations de typage.
+- Quelques comparaisons Yoda (`'review' == $from`) : style valide mais peu idiomatique en PHP moderne, à uniformiser
+  si un style guide/CS Fixer strict est mis en place.
 
-## 5. Plan d'action priorisé
+---
+
+## 5. Recommandations prioritaires
 
 ### Priorité Élevée
-1. **Sécuriser le stockage des images uploadées** : déplacer `images_directory` hors de `public/assets/` (répertoire piloté par AssetMapper) vers un dossier dédié non compilé, pour éviter toute perte de données lors d'un déploiement/`asset-map:compile`.
-2. **Ajouter des contraintes de validation sur l'upload** (`Assert\File` : taille max, types MIME autorisés) sur le champ `images` de `CoupleFormType` pour éviter l'épuisement disque.
-3. ~~**Sécuriser le parsing JSON des endpoints AJAX** (`set_one_review`, `cancel_one_review`, `restart`, `reset_review`, `deleteImage`)~~ **Fait** : centralisé dans `JsonCsrfTokenTrait::getCsrfTokenFromJson()`, 400 propre via `BadRequestHttpException` si `$data` n'est pas un tableau contenant `_token`.
-4. **Corriger les fixtures cassées** (`AppFixtures` sans `Users` associé) pour qu'elles soient exécutables avec le schéma actuel.
+1. **Corriger les 9 erreurs PHPStan** de typage `$this->getUser()` → `Users` dans `FaqsController`,
+   `MainController`, `MainStartController`, `RulesController`, en généralisant le pattern
+   `/** @var Users $user */ $user = $this->getUser();` déjà utilisé dans `CouplesController`.
+2. **Vérifier et corriger `LoginVerificationReminderListener`** (`getSession()->getFlashBag()`) : tester une
+   connexion avec un compte non vérifié pour confirmer si l'erreur se produit réellement, puis corriger le typage
+   ou la façon d'accéder au flash bag.
+3. **Activer le rate limiting sur le login** (`login_throttling` dans `security.yaml`, firewall `main`) pour se
+   prémunir du brute force sur `/connexion`.
+4. **Corriger le test cassé** `RegistrationControllerTest` (aligner le texte attendu avec le template actuel).
 
 ### Priorité Moyenne
-5. ~~**Résoudre les N+1 Doctrine**~~ **Fait** : `findByFaqWithImagesAndRules()` (leftJoin+addSelect) pour couples+images+rules, et `countAll()` (agrégats conditionnels) pour fusionner les 4 requêtes de comptage en une seule méthode réutilisée dans les 8 endroits dupliqués.
-6. **Unifier la couche JavaScript** : migrer `public/assets/js/scripts.js` vers un contrôleur Stimulus dans `assets/controllers/`, cohérent avec le reste du projet (bénéfice : testabilité, fingerprinting AssetMapper, suppression du script hors-importmap).
-7. **Rapatrier Bootstrap dans l'importmap** au lieu du CDN, pour cohérence avec l'architecture AssetMapper choisie.
-8. **Étoffer la couverture de tests** sur `FaqsController`/`CouplesController` (logique run/review, qui est le cœur métier de l'appli) et `PictureService`.
-9. Décider du sort de `symfony/ux-turbo` (activer réellement ou retirer la dépendance).
+5. **Trancher le sort de Turbo** : soit l'exploiter réellement (Turbo Streams pour les compteurs run/review, ce qui
+   simplifierait `counter_action_controller.js`), soit le retirer proprement
+   (`composer remove symfony/ux-turbo`, retrait de `@hotwired/turbo` de l'importmap) pour ne pas garder une
+   dépendance qui modifie silencieusement le comportement de navigation sans que ce soit voulu.
+6. **Généraliser `declare(strict_types=1)`** à l'ensemble de `src/` (peut être automatisé via php-cs-fixer).
+7. **Factoriser le bloc dupliqué** de conversion `CouplesCounters` → `JsonResponse`.
+8. **Nettoyer les `console.log` de debug** dans les contrôleurs Stimulus et `app.js`.
+9. **Monter `phpstan.dist.neon` au niveau 8** par paliers, pour capitaliser sur la bonne discipline déjà en place.
+10. **Ajouter une protection anti-bot légère** (honeypot) sur l'inscription et la demande de reset password.
 
 ### Priorité Faible
-10. Renommer `countSelectRun()` → nom conforme à son comportement réel, harmoniser `getCreateAt()`/`getCreatedAt()`.
-11. Nettoyer les `console.log` de debug et la fonction morte `delete_image()`.
-12. Ajouter `declare(strict_types=1)` progressivement (au moins sur les nouveaux fichiers), reformuler les commentaires "journal de bord" en commentaires techniques neutres.
-13. Réorganiser `tests/entity/tests/Entity/...` et renommer `DeleteCascadeCategoryTest.php`/`DeleteCategoryTest` pour cohérence fichier/classe, déplacer ce test hors de `tests/Controller`.
-14. Vérifier que `.php-cs-fixer.cache` et `.phpunit.result.cache` sont bien ignorés par Git.
+11. Harmoniser la casse des méthodes de contrôleur en camelCase strict.
+12. Retirer le bloc `stylesheets` mort de `base.html.twig`.
+13. Mettre à jour les dépendances mineures (`composer update` sur les patchs Symfony 7.4.x et Doctrine ORM).
+14. Revoir l'ordre suppression-fichier / commit-BDD pour éviter les incohérences disque/BDD en cas d'échec de
+    flush, ou prévoir une tâche de nettoyage des fichiers orphelins.
+15. Trancher la convention de nommage anglais/français dans le code (méthodes de repository vs propriétés d'entité)
+    pour plus de cohérence à long terme.
