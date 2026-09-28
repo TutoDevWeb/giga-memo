@@ -14,11 +14,11 @@
 	{% endfor %}
 
 
-	<textarea class='form-control form-control-auto mt-4' spellcheck='false'>{{ couple.question }}</textarea>
+	<textarea class='form-control form-control-auto mt-4' spellcheck='false' readonly>{{ couple.question }}</textarea>
 
 	<textarea class='form-control form-control-auto mt-4' spellcheck='false'></textarea>
 
-	<textarea data-answer-target='input' class='form-control form-control-auto hidden mt-4' spellcheck='false'>{{ couple.reponse }}</textarea>
+	<textarea data-answer-target='input' class='form-control form-control-auto hidden mt-4' spellcheck='false' readonly>{{ couple.reponse }}</textarea>
 
 
 </div>

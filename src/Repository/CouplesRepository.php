@@ -45,6 +45,7 @@ class CouplesRepository extends ServiceEntityRepository
             ->setParameter('pendingForRun', true)
             ->andWhere('c.faq = :faq')
             ->setParameter('faq', $faq)
+            ->orderBy('c.num', 'ASC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
