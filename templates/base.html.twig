@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang='fr'>
 
 	<head>
 		<meta charset="UTF-8">
@@ -24,25 +24,25 @@
 		{% include "_partials/_flashes.html.twig" %}
 
 		<main class="flex-grow-1"> {% block body %}{% endblock %}
-			</main>
+		</main>
 
-			<footer class="footer py-3">
-				<div class="container">
-					<div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
-						<small>
-							<i class="bi bi-journal-code me-2"></i>
-							Memo - Application Symfony •
-							{{ "now"|date("Y") }}
-						</small>
+		<footer class="footer py-3">
+			<div class="container">
+				<div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
+					<small>
+						<i class="bi bi-journal-code me-2"></i>
+						Memo - Application Symfony •
+						{{ "now"|date("Y") }}
+					</small>
 
-						<small>
-							<a href="{{ asset('docs/documentation.pdf') }}" class="text-decoration-none" target='_blank'>
-								<i class="bi bi-book me-1"></i>
-								Documentation
-							</a>
-						</small>
-					</div>
+					<small>
+						<a href="{{ asset('docs/documentation.pdf') }}" class="text-decoration-none" target='_blank'>
+							<i class="bi bi-book me-1"></i>
+							Documentation
+						</a>
+					</small>
 				</div>
-			</footer>
-		</body>
-	</html>
+			</div>
+		</footer>
+	</body>
+</html>
