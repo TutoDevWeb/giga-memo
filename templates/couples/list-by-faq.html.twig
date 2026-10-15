@@ -29,7 +29,7 @@
 					<tbody>
 						{% for couple in couples %}
 							<tr>
-								<td class='id-record'>(*&nbsp;{{couple.id}})</td>
+								<td class='id-record'>(*&nbsp;{{ couple.id }})</td>
 								<td>{{ couple.num }}</td>
 								<td>{{ couple.question }}</td>
 								<td>
@@ -39,7 +39,7 @@
 									{% endif %}
 
 									{% for image in couple.images %}
-										<a href="#" class="preview-link" data-image-preview-url="{{ asset(image.name,'images_directory') }}" data-action="mouseenter->image-preview#show mouseleave->image-preview#hide">
+										<a href="#" class="preview-link" data-image-preview-url="{{ asset(image.name, 'images_directory') }}" data-action="mouseenter->image-preview#show mouseleave->image-preview#hide">
 											{{ image.id }}
 										</a>
 									{% endfor %}
@@ -51,7 +51,7 @@
 									{% endfor %}
 								</td>
 								<td>
-									<a href="{{ path('app_couples_update', { 'from' : 'list','id_faq' : faq.id, 'id_couple': couple.id }) }}" class="btn btn-primary">Modifier la QR</a>
+									<a href="{{ path('app_couples_update', { 'from': 'list', 'id_faq': faq.id, 'id_couple': couple.id }) }}" class="btn btn-primary">Modifier la QR</a>
 								</td>
 								<td>
 									{% include "couples/_delete_form.html.twig" %}
@@ -70,7 +70,7 @@
 
 {% block actions %}
 
-	<a class="btn btn-primary mt-4" href="{{ path('app_couples_new', { 'id_faq': faq.id }) }}">
+	<a id='endpage' class="btn btn-primary mt-4" href="{{ path('app_couples_new', { 'id_faq': faq.id }) }}">
 		<i class="bi bi-plus-circle me-2"></i>
 		Créer une nouvelle QR
 	</a>
