@@ -48,7 +48,8 @@ class SelectFaqFormType extends AbstractType
                 ]
             )
             ->add('run', SubmitType::class)
-            ->add('edit', SubmitType::class);
+            ->add('edit', SubmitType::class)
+            ->add('calendar', SubmitType::class);
 
         // Validation lors de la soumission (PRE_SUBMIT)
         $builder->addEventListener(

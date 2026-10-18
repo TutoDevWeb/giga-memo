@@ -52,19 +52,22 @@ class MainController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $faq_id = $form->getData()['faq']->getId();
 
-            // InstanceOf car sinon j'ai une erreur intelephense au ->isCliked() et il y en a partout !!
+            /** @var SubmitButton $runButton */
             $runButton = $form->get('run');
-            if ($runButton instanceof SubmitButton) {
-                if ($runButton->isClicked()) {
-                    return $this->redirectToRoute('app_main_run', ['id_faq' => $faq_id]);
-                }
+            if ($runButton->isClicked()) {
+                return $this->redirectToRoute('app_main_run', ['id_faq' => $faq_id]);
             }
 
+            /** @var SubmitButton $editButton */
             $editButton = $form->get('edit');
-            if ($editButton instanceof SubmitButton) {
-                if ($editButton->isClicked()) {
-                    return $this->redirectToRoute('app_main_edit', ['id_faq' => $faq_id]);
-                }
+            if ($editButton->isClicked()) {
+                return $this->redirectToRoute('app_main_edit', ['id_faq' => $faq_id]);
+            }
+
+            /** @var SubmitButton $calendarButton */
+            $calendarButton = $form->get('calendar');
+            if ($calendarButton->isClicked()) {
+                return $this->redirectToRoute('app_calendar', ['id_faq' => $faq_id]);
             }
         }
 
