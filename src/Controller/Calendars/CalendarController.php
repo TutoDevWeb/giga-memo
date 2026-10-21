@@ -37,11 +37,11 @@ final class CalendarController extends AbstractController
 
 
         return $this->render('calendar/index.html.twig', [
-            'faq' => $faq,
-            'dateStart' => $dateStart,
-            'dateDays' => $dateDays,
+            'faq'           => $faq,
+            'dateStart'     => $dateStart,
+            'dateDays'      => $dateDays,
             'executionDays' => $executionDays,
-            'numDays' => $numDays
+            'numDays'       => $numDays
         ]);
     }
 

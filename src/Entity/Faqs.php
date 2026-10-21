@@ -50,6 +50,9 @@ class Faqs
     #[ORM\ManyToOne(inversedBy: 'faqs')]
     private ?Categories $category = null;
 
+    #[ORM\OneToOne(mappedBy: 'faq', cascade: ['remove'], orphanRemoval: true)]
+    private ?Planning $planning = null;
+
     public function __construct()
     {
         $this->couples = new ArrayCollection();
@@ -166,6 +169,28 @@ class Faqs
     public function setCategory(?Categories $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getPlanning(): ?Planning
+    {
+        return $this->planning;
+    }
+
+    public function setPlanning(?Planning $planning): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($planning === null && $this->planning !== null) {
+            $this->planning->setFaq(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($planning !== null && $planning->getFaq() !== $this) {
+            $planning->setFaq($this);
+        }
+
+        $this->planning = $planning;
 
         return $this;
     }

@@ -3,9 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Planning;
-use App\Model\Frequency;
-use App\Model\TimeFrame;
+use App\Service\PlanningModel\Frequency;
+use App\Service\PlanningModel\TimeFrame;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,11 +17,20 @@ class PlanningType extends AbstractType
     {
         $builder
             ->add('timeFrame', null, [
-                'class' => TimeFrame::class
+                'class' => TimeFrame::class,
+                'placeholder' => false,
+                'data' => TimeFrame::ACQUISITION,
             ])
             ->add('frequency', null, [
-                'class' => Frequency::class
+                'class' => Frequency::class,
+                'multiple' => false,
+                'expanded' => true,
+                'placeholder' => false,
+                'data' => Frequency::NORMAL,
             ])
+            ->add('build', SubmitType::class)
+            ->add('save', SubmitType::class)
+            ->add('delete', SubmitType::class)
         ;
     }
 

@@ -1,37 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Planning index{% endblock %}
+{% block title %}Gérer le planning{% endblock %}
 
 {% block body %}
-    <h1>Planning index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>TimeFrame</th>
-                <th>Frequency</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for planning in plannings %}
-            <tr>
-                <td>{{ planning.id }}</td>
-                <td>{{ planning.timeFrame }}</td>
-                <td>{{ planning.frequency }}</td>
-                <td>
-                    <a href="{{ path('app_planning_show', {'id': planning.id}) }}">show</a>
-                    <a href="{{ path('app_planning_edit', {'id': planning.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+        <h1>Gérer le Planning</h1>
 
-    <a href="{{ path('app_planning_new') }}">Create new</a>
+        <h2>{{ comment }}</h2>
+
+        {{ dump() }}
+
+ 
+        {{ form_start(form) }}        
+
+        <div class="row">
+            <div class="col">
+                {{ form_row(form.timeFrame) }}
+            </div>
+            <div class="col">
+                {{ form_row(form.frequency) }}
+            </div>
+        </div>
+
+        {{ form_row(form.build, {'label': 'Générer le Planning'}) }}
+
+        {{ include('planning/_tableau_planning.html.twig') }}
+
+        {{ form_row(form.save, {'label': 'Enregistrer le Planning'}) }}
+
+        {{ form_row(form.delete, {'label': 'Supprimer le Planning'}) }}
+
+        {{ form_end(form) }}
+
+    </div>
 {% endblock %}
+
+
