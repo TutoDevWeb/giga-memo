@@ -64,10 +64,10 @@ class MainController extends AbstractController
                 return $this->redirectToRoute('app_main_edit', ['id_faq' => $faq_id]);
             }
 
-            /** @var SubmitButton $calendarButton */
-            $calendarButton = $form->get('calendar');
-            if ($calendarButton->isClicked()) {
-                return $this->redirectToRoute('app_calendar', ['id_faq' => $faq_id]);
+            /** @var SubmitButton $planningButton */
+            $planningButton = $form->get('planning');
+            if ($planningButton->isClicked()) {
+                return $this->redirectToRoute('app_planning_list', ['id_faq' => $faq_id]);
             }
         }
 

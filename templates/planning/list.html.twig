@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des planning de révision{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>Liste des plannings de révision de toutes les Faqs de l'utilisateur</h1>
+
+        {% if planning is null %}
+            <p>Création d'un planning pour cette faq</p>
+            <a href="{{ path('app_planning_new', { id_faq: faq.id }) }}">Créer un planning</a>
+        
+        {% endif %}
+        
+        {% if planning is not null %}
+            <p>Modification d'un planning pour cette faq</p>
+            <a href="{{ path('app_planning_edit', { id_faq: faq.id, id_planning: planning.id }) }}">Modifier un planning</a>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

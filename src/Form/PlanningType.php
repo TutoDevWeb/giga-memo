@@ -15,23 +15,21 @@ class PlanningType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('timeFrame', null, [
-                'class' => TimeFrame::class,
-                'placeholder' => false,
-                'data' => TimeFrame::ACQUISITION,
-            ])
-            ->add('frequency', null, [
-                'class' => Frequency::class,
-                'multiple' => false,
-                'expanded' => true,
-                'placeholder' => false,
-                'data' => Frequency::NORMAL,
-            ])
-            ->add('build', SubmitType::class)
-            ->add('save', SubmitType::class)
-            ->add('delete', SubmitType::class)
-        ;
+        $builder->add('timeFrame', null, [
+            'class' => TimeFrame::class,
+            'placeholder' => false,
+            'data' => TimeFrame::ACQUISITION,
+        ]);
+        $builder->add('frequency', null, [
+            'class' => Frequency::class,
+            'multiple' => false,
+            'expanded' => true,
+            'placeholder' => false,
+            'data' => Frequency::NORMAL,
+        ]);
+        $builder->add('build', SubmitType::class);
+        $builder->add('save', SubmitType::class);
+        $builder->add('delete', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

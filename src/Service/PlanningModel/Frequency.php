@@ -4,7 +4,7 @@ namespace App\Service\PlanningModel;
 
 enum Frequency: int
 {
-    case SLOW   = 7;
-    case NORMAL = 8;
-    case QUICK  = 9;
+    case SLOW   = 21;
+    case NORMAL = 14;
+    case QUICK  = 7;
 }
