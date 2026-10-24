@@ -15,7 +15,8 @@
         
         {% if planning is not null %}
             <p>Modification d'un planning pour cette faq</p>
-            <a href="{{ path('app_planning_edit', { id_faq: faq.id, id_planning: planning.id }) }}">Modifier un planning</a>
+            {{ include('planning/_tableau_planning.html.twig') }}
+            <a href="{{ path('app_planning_edit', { id_faq: faq.id }) }}">Modifier un planning</a>
         {% endif %}
 
     </div>

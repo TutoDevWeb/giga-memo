@@ -4,7 +4,6 @@ namespace App\Controller\Planning;
 
 use App\Entity\Faqs;
 use App\Entity\Planning;
-use App\Form\FaqFormType;
 use App\Form\PlanningType;
 use App\Repository\PlanningRepository;
 use App\Security\Voter\ResourceOwnerVoter;
@@ -24,32 +23,109 @@ final class PlanningController extends AbstractController
     #[Route('/planning/list/{id_faq<\d+>}', name: 'app_planning_list', methods: ['GET'])]
     public function list(
         #[MapEntity(id: 'id_faq')] Faqs $faq,
+        PlanningService $planningService,
     ): Response {
 
-        // Est ce qu'il existe un planning
+        // On cherche le planning
         $planning = $faq->getPlanning();
+
+        // Si il existe un planning
+        if ($planning) {
+
+            // Il faut restaurer le planning
+            $revisionDays = $planningService->get(
+                $planning->getDateStart(),
+                $planning->getTimeFrame(),
+                $planning->getFrequency()
+            );
+        } else {
+
+            // C'est créer
+
+        }
+
 
         return $this->render('planning/list.html.twig', [
             'planning' => $planning,
-            'faq' => $faq
+            'faq' => $faq,
+            'revisionDays' => $revisionDays ?? null
         ]);
     }
 
-    #[Route('/planning/new/{id_faq<\d+>}', name: 'app_planning_new', methods: ['GET'])]
+    #[Route('/planning/new/{id_faq<\d+>}', name: 'app_planning_new', methods: ['GET', 'POST'])]
     public function new(
         #[MapEntity(id: 'id_faq')] Faqs $faq,
+        EntityManagerInterface $entityManager,
+        Request $request,
     ): Response {
 
-        return $this->render('planning/new.html.twig', []);
+        // Si il n'y a pas de planning on le fait.
+        if ($faq->getPlanning() === null) {
+
+            $planning = new Planning;
+            $planning->setUser($this->getUser());
+            $planning->setFaq($faq);
+            $planning->setDateStart(new \DateTimeImmutable('today'));
+            $planning->setStatus(Status::ON);
+
+            $form = $this->createForm(PlanningType::class, $planning);
+            $form->handleRequest($request);
+
+
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $entityManager->persist($planning);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Le planning a été créé');
+
+                return $this->redirectToRoute('app_planning_list', ['id_faq' => $faq->getId()]);
+            }
+
+            return $this->render('planning/new.html.twig', [
+                'form' => $form,
+            ]);
+        } else return $this->redirectToRoute('app_planning_edit', ['id_faq' => $faq->getId()]);
     }
 
-    #[Route('/planning/edit/{id_faq<\d+>}/{id_planning<\d+>}', name: 'app_planning_edit', methods: ['GET'])]
+    #[Route('/planning/edit/{id_faq<\d+>}', name: 'app_planning_edit', methods: ['GET', 'POST'])]
     public function edit(
+        PlanningService $planningService,
         #[MapEntity(id: 'id_faq')] Faqs $faq,
-        #[MapEntity(id: 'id_planning')] Planning $planning,
+        Request $request,
+        EntityManagerInterface $entityManager,
     ): Response {
 
-        return $this->render('planning/edit.html.twig', []);
+        $planning = $faq->getPlanning();
+
+        $form = $this->createForm(PlanningType::class, $planning);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $dateStart = new \DateTimeImmutable('today');
+
+            $revisionDays = $planningService->get(
+                $dateStart,
+                $planning->getTimeFrame(),
+                $planning->getFrequency()
+            );
+
+            $planning->setDateStart($dateStart);
+
+            $entityManager->persist($planning);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le planning a été modifié');
+
+            return $this->redirectToRoute('app_planning_list', ['id_faq' => $faq->getId()]);
+        }
+
+        return $this->render('planning/edit.html.twig', [
+            'form' => $form,
+            'planning' => $planning,
+            'revisionDays' => $revisionDays ?? null,
+        ]);
     }
 
 

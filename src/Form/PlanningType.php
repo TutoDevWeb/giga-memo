@@ -18,18 +18,14 @@ class PlanningType extends AbstractType
         $builder->add('timeFrame', null, [
             'class' => TimeFrame::class,
             'placeholder' => false,
-            'data' => TimeFrame::ACQUISITION,
         ]);
         $builder->add('frequency', null, [
             'class' => Frequency::class,
             'multiple' => false,
             'expanded' => true,
             'placeholder' => false,
-            'data' => Frequency::NORMAL,
         ]);
-        $builder->add('build', SubmitType::class);
         $builder->add('save', SubmitType::class);
-        $builder->add('delete', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
