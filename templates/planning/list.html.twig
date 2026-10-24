@@ -5,19 +5,26 @@
 {% block body %}
 
     <div class="container">
-        <h1>Liste des plannings de révision de toutes les Faqs de l'utilisateur</h1>
+        <h1 class="h3">Liste des plannings de révision de toutes les Faqs de l'utilisateur</h1>
 
         {% if planning is null %}
-            <p>Création d'un planning pour cette faq</p>
-            <a href="{{ path('app_planning_new', { id_faq: faq.id }) }}">Créer un planning</a>
-        
+            <h1 class="h3">Création d'un planning pour cette faq</h1>
+            <div class="p-4">
+                <a href="{{ path('app_planning_new', { id_faq: faq.id }) }}" class="btn btn-primary">Créer un planning</a>
+            </div>
         {% endif %}
         
         {% if planning is not null %}
-            <p>Modification d'un planning pour cette faq</p>
+            <h1 class="h3">Planning actuel pour cette Faq</h1>
             {{ include('planning/_tableau_planning.html.twig') }}
-            <a href="{{ path('app_planning_edit', { id_faq: faq.id }) }}">Modifier un planning</a>
+            <div class="p-4">
+                <span class="p-4"><a href="{{ path('app_planning_edit', { id_faq: faq.id }) }}" class="btn btn-primary">Modifier un planning</a></span>
+
+                </span class="p-4">{{ include('planning/_delete_form.html.twig') }}</span>
+            </div>
+
         {% endif %}
+
 
     </div>
 

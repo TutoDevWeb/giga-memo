@@ -72,9 +72,17 @@
 				{{ Ariane.mainStartCreateCategorie() }}
 			{% elseif app.current_route == 'app_main_start_create_faq' %}
 				{{ Ariane.mainStartCreateFaq() }}
-			{% elseif app.current_route == 'app_calendar' %}
+			{% elseif app.current_route == 'app_planning_list' %}
 				{{ Ariane.mainIndex(true, faq|default(null)) }}
-				{{ Ariane.mainCalendar(true, faq|default(null)) }}
+				{{ Ariane.mainPlanning(false, faq|default(null)) }}
+			{% elseif app.current_route == 'app_planning_new' %}
+				{{ Ariane.mainIndex(true, faq|default(null)) }}
+				{{ Ariane.mainPlanning(true, faq|default(null)) }}
+				{{ Ariane.newPlanning(false, faq|default(null)) }}
+			{% elseif app.current_route == 'app_planning_edit' %}
+				{{ Ariane.mainIndex(true, faq|default(null)) }}
+				{{ Ariane.mainPlanning(true, faq|default(null)) }}
+				{{ Ariane.editPlanning(false, faq|default(null)) }}
 			{% elseif app.current_route == 'app_login' %}
 			{% elseif app.current_route == 'app_register' %}
 			{% elseif app.current_route == 'app_forgot_password_request' %}

@@ -18,20 +18,23 @@ class PlanningType extends AbstractType
         $builder->add('timeFrame', null, [
             'class' => TimeFrame::class,
             'placeholder' => false,
-        ]);
-        $builder->add('frequency', null, [
-            'class' => Frequency::class,
-            'multiple' => false,
-            'expanded' => true,
-            'placeholder' => false,
-        ]);
-        $builder->add('save', SubmitType::class);
+        ])
+            ->add('frequency', null, [
+                'class' => Frequency::class,
+                'multiple' => false,
+                'expanded' => true,
+                'placeholder' => false,
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => $options['save_label']
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Planning::class,
+            'save_label' => 'Enregistrer', // Valeur par défaut
         ]);
     }
 }

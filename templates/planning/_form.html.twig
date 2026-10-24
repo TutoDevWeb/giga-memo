@@ -1,18 +1,25 @@
-{{ dump() }}
-
- 
 {{ form_start(form) }}        
 
 <div class="row">
     <div class="col">
-        {{ form_row(form.timeFrame) }}
+        {{ form_row(form.timeFrame, {
+            label : 'Phase de révision',
+            row_attr : { class:'p-4'}
+        }) }}
     </div>
     <div class="col">
-        {{ form_row(form.frequency) }}
+        {{ form_row(form.frequency, {
+            label : 'Cadence de révision'
+        }) }}
     </div>
 </div>
 
-
+{# Le libéllé est customizé dans le controleur #}
+{{ form_row(form.save, {
+    row_attr : {
+        class:'p-4'
+    }
+}) }}
 
 {{ form_end(form) }}
 

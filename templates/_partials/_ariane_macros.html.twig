@@ -131,9 +131,26 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 {% endmacro %}
 
 {# ########################## #}
-{# Macro liées à la gestion des calendrier #}
-{% macro mainCalendar(link, faq) %}
+{# Macro liées à la gestion des Planning #}
+{% macro mainPlanning(link, faq) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
-	Gérer les calendriers
+	{% if link == true and faq is not null %}
+		<a class="ariane" href="{{ path('app_planning_list', {id_faq: faq.id}) }}">Gérer les Plannings</a>
+	{% else %}
+		Gérer les Plannings
+	{% endif %}
 {% endmacro %}
 
+{# ########################## #}
+{# Macro liées à la création des Planning #}
+{% macro newPlanning(link, faq) %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
+	Créer un Planning
+{% endmacro %}
+
+{# ########################## #}
+{# Macro liées à la modification des Planning #}
+{% macro editPlanning(link, faq) %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
+	Modifier un Planning
+{% endmacro %}
