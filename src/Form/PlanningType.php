@@ -18,12 +18,14 @@ class PlanningType extends AbstractType
         $builder->add('timeFrame', null, [
             'class' => TimeFrame::class,
             'placeholder' => false,
+            'choice_label' => fn(TimeFrame $choice) => $choice->value,
         ])
             ->add('frequency', null, [
                 'class' => Frequency::class,
                 'multiple' => false,
                 'expanded' => true,
                 'placeholder' => false,
+                'choice_label' => fn(Frequency $choice) => sprintf('Cycle de %d jours', $choice->value),
             ])
             ->add('save', SubmitType::class, [
                 'label' => $options['save_label']

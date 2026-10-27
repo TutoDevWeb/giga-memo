@@ -2,9 +2,12 @@
 
 namespace App\Service;
 
+use App\Service\PlanningModel\Config;
 use App\Service\PlanningModel\Frequency;
 use App\Service\PlanningModel\RevisionDay;
 use App\Service\PlanningModel\TimeFrame;
+use App\Service\PlanningModel\Phase;
+use App\Service\PlanningModel\Rate;
 
 class PlanningService
 {
@@ -128,5 +131,23 @@ class PlanningService
         }
 
         return false;
+    }
+
+    public function getCycle(Phase $phase, Rate $rate): int
+    {
+        return match ($phase) {
+
+            Phase::ACQUISITION => match ($rate) {
+                Rate::QUICK  => Config::ACQUISITION_QUICK,
+                Rate::NORMAL => Config::ACQUISITION_NORMAL,
+                Rate::SLOW   => Config::ACQUISITION_SLOW,
+            },
+
+            Phase::MAINTENANCE => match ($rate) {
+                Rate::QUICK  =>  Config::MAINTENANCE_QUICK,
+                Rate::NORMAL =>  Config::MAINTENANCE_NORMAL,
+                Rate::SLOW   =>  Config::MAINTENANCE_SLOW,
+            }
+        };
     }
 }

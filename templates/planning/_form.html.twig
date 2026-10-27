@@ -1,15 +1,29 @@
+
+
 {{ form_start(form) }}        
 
-<div class="row">
+<div {{ stimulus_controller('planning', { config: planningConfig, messages: planningInfoMessages }) }} class="row">
+
     <div class="col">
         {{ form_row(form.timeFrame, {
             label : 'Phase de révision',
-            row_attr : { class:'p-4'}
+            row_attr : { class:'p-4'},
+            attr: {
+                'data-action': 'change->planning#change',
+                'data-planning-target' : 'timeframe'
+            }
         }) }}
     </div>
     <div class="col">
         {{ form_row(form.frequency, {
-            label : 'Cadence de révision'
+            label : 'Cadence de révision',
+            attr: {
+                'data-action': 'change->planning#change',
+                'data-planning-target' : 'frequency'
+            },
+            row_attr: {
+                class: 'p-4'
+            }
         }) }}
     </div>
 </div>

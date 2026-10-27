@@ -9,6 +9,9 @@ use App\Security\Voter\ResourceOwnerVoter;
 use App\Service\PlanningModel\Frequency;
 use App\Service\PlanningModel\Status;
 use App\Service\PlanningModel\TimeFrame;
+use App\Service\PlanningModel\PeriodFrame;
+use App\Service\PlanningModel\Phase;
+use App\Service\PlanningModel\Rate;
 use App\Service\PlanningService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -125,11 +128,27 @@ final class PlanningController extends AbstractController
             return $this->redirectToRoute('app_planning_list', ['id_faq' => $faq->getId()]);
         }
 
+
+        $planningConfig = [];
+        foreach (PeriodFrame::cases() as $periodFrame) {
+            $planningConfig[$periodFrame->value] = $periodFrame->getFrequencies();
+        }
+
+        $planningInfoMessages = [];
+        foreach (PeriodFrame::cases() as $periodFrame) {
+            $planningInfoMessages[$periodFrame->value] = $periodFrame->getInfoMessages();
+        }
+
+        dump($planningService->getCycle(Phase::ACQUISITION, Rate::NORMAL));
+
+
         return $this->render('planning/edit.html.twig', [
             'form' => $form,
             'faq' => $faq,
             'planning' => $planning,
             'revisionDays' => $revisionDays ?? null,
+            'planningConfig' => $planningConfig,
+            'planningInfoMessages' => $planningInfoMessages,
         ]);
     }
 
