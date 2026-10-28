@@ -2,12 +2,10 @@
 
 namespace App\Service;
 
-use App\Service\PlanningModel\Config;
 use App\Service\PlanningModel\Frequency;
 use App\Service\PlanningModel\RevisionDay;
 use App\Service\PlanningModel\TimeFrame;
-use App\Service\PlanningModel\Phase;
-use App\Service\PlanningModel\Rate;
+use App\Service\PlanningModel\Config;
 
 class PlanningService
 {
@@ -46,7 +44,7 @@ class PlanningService
         if ($timeFrame === TimeFrame::MAINTENANCE) {
 
             if ($frequency === Frequency::QUICK) {
-                $period = 15;
+                $period = Config::MAINTENANCE_QUICK;
                 $j = 1;
                 for ($i = 0; $i < 24; $i++) {
                     $revisionDay = new RevisionDay;
@@ -59,7 +57,7 @@ class PlanningService
             }
 
             if ($frequency === Frequency::NORMAL) {
-                $period = 30;
+                $period = Config::MAINTENANCE_NORMAL;
                 $j = 1;
                 for ($i = 0; $i < 12; $i++) {
                     $revisionDay = new RevisionDay;
@@ -72,7 +70,7 @@ class PlanningService
             }
 
             if ($frequency === Frequency::SLOW) {
-                $period = 60;
+                $period = Config::ACQUISITION_SLOW;
                 $j = 1;
                 for ($i = 0; $i < 6; $i++) {
                     $revisionDay = new RevisionDay;
@@ -106,14 +104,13 @@ class PlanningService
             return true;
         }
 
-        $base = $frequency->value;
-
-        // $quotient = intdiv($nbDays, 7);
-        // $reste = $nbDays % 7;
+        $base = Config::ACQUISITION_NORMAL;
+        if ($frequency === Frequency::SLOW)   $base = Config::ACQUISITION_SLOW;
+        if ($frequency === Frequency::NORMAL) $base = Config::ACQUISITION_NORMAL;
+        if ($frequency === Frequency::QUICK)  $base = Config::ACQUISITION_QUICK;
 
         $quotient = intdiv($nbDays, $base);
         $reste = $nbDays % $base;
-
 
         // Cycle 2 et 3
         if ($quotient >= 1 && $quotient <= 2) {
@@ -132,22 +129,16 @@ class PlanningService
 
         return false;
     }
-
-    public function getCycle(Phase $phase, Rate $rate): int
+    public function getConfig(): array
     {
-        return match ($phase) {
 
-            Phase::ACQUISITION => match ($rate) {
-                Rate::QUICK  => Config::ACQUISITION_QUICK,
-                Rate::NORMAL => Config::ACQUISITION_NORMAL,
-                Rate::SLOW   => Config::ACQUISITION_SLOW,
-            },
-
-            Phase::MAINTENANCE => match ($rate) {
-                Rate::QUICK  =>  Config::MAINTENANCE_QUICK,
-                Rate::NORMAL =>  Config::MAINTENANCE_NORMAL,
-                Rate::SLOW   =>  Config::MAINTENANCE_SLOW,
-            }
-        };
+        return [
+            'ACQUISITION_SLOW'    => Config::ACQUISITION_SLOW,
+            'ACQUISITION_NORMAL'  => Config::ACQUISITION_NORMAL,
+            'ACQUISITION_QUICK'   => Config::ACQUISITION_QUICK,
+            'MAINTENANCE_SLOW'    => Config::MAINTENANCE_SLOW,
+            'MAINTENANCE_NORMAL'  => Config::MAINTENANCE_NORMAL,
+            'MAINTENANCE_QUICK'   => Config::MAINTENANCE_QUICK,
+        ];
     }
 }

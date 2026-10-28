@@ -2,7 +2,8 @@
 
 {{ form_start(form) }}        
 
-<div {{ stimulus_controller('planning', { config: planningConfig, messages: planningInfoMessages }) }} class="row">
+<div {{ stimulus_controller('planning', { config: planningConfig }) }} class="row">
+
 
     <div class="col">
         {{ form_row(form.timeFrame, {
@@ -26,7 +27,11 @@
             }
         }) }}
     </div>
+
+    <p class="h5 p-5" data-planning-target="infomessage"></p>
+
 </div>
+
 
 {# Le libéllé est customizé dans le controleur #}
 {{ form_row(form.save, {

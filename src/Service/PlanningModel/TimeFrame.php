@@ -4,6 +4,6 @@ namespace App\Service\PlanningModel;
 
 enum TimeFrame: string
 {
-    case ACQUISITION = 'Acquisition des connaissances';
-    case MAINTENANCE = 'Maintien des connaissances';
+    case ACQUISITION = 'ACQUISITION';
+    case MAINTENANCE = 'MAINTENANCE';
 }

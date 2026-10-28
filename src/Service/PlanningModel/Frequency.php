@@ -2,9 +2,9 @@
 
 namespace App\Service\PlanningModel;
 
-enum Frequency: int
+enum Frequency: string
 {
-    case SLOW   = 21;
-    case NORMAL = 14;
-    case QUICK  = 7;
+    case SLOW   = 'SLOW';
+    case NORMAL = 'NORMAL';
+    case QUICK  = 'QUICK';
 }

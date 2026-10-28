@@ -2,36 +2,54 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
 
-    static targets = ['timeframe', 'frequency'];
-    static values = { config: Object, messages: Object };
+    static targets = ['timeframe', 'frequency', 'infomessage'];
+    static values = { config: Object };
 
     connect() {
-        console.log('Chargement');
-
-        // console.log('Select => ', this.timeframeTarget.value);
-
-        // // Récupérer et afficher la valeur du radio actuellement coché
-        // console.log('frequency');
-        // console.log(this.frequencyTarget);
-
-        // // On cherche le radio coché à l'intérieur du conteneur ciblé par frequencyTarget
-        // const checkedRadio = this.frequencyTarget.querySelector('input[type="radio"]:checked');
-        // console.log('Radio coché au chargement => ', checkedRadio ? checkedRadio.value : 'aucun');
-
         console.log('Récupération de la config');
-        console.log(this.configValue);
-        console.log(this.configValue['Acquisition des connaissances']);
-        console.log(this.configValue['Acquisition des connaissances'][7]);
+        console.log(this.configValue.ACQUISITION_NORMAL);
 
-        console.log(this.messagesValue);
-
-
+        console.log('Chargement');
+        this.getSelectRadio();
     }
 
-    change(event) {
-        const selectedValue = event.target.value;
+    change() {
+        console.log('Changement');
+        this.getSelectRadio();
+    }
 
-        console.log('planning change => ', selectedValue);
+    getSelectRadio() {
+
+        // On récupère la valeur du select
+        const selectValue = this.timeframeTarget.value;
+
+        // On cherche l'élément radio coché à l'intérieur du conteneur ciblé par frequencyTarget
+        const checkedRadio = this.frequencyTarget.querySelector('input[type="radio"]:checked');
+
+        // On récupère la valeur de l'élément radio.
+        const radioValue = checkedRadio.value;
+
+        console.log('Select => ', selectValue);
+        console.log('Radio  => ', radioValue);
+
+        let cycle;
+        if (selectValue === 'ACQUISITION') {
+            if (radioValue === 'QUICK') cycle = this.configValue.ACQUISITION_QUICK;
+            if (radioValue === 'NORMAL') cycle = this.configValue.ACQUISITION_NORMAL;
+            if (radioValue === 'SLOW') cycle = this.configValue.ACQUISITION_SLOW;
+            // Affectation du message
+            this.infomessageTarget.textContent = 'Un nombre de révision dégressif tous les ' + cycle + ' Jours';
+
+        }
+        if (selectValue === 'MAINTENANCE') {
+            if (radioValue === 'QUICK') cycle = this.configValue.MAINTENANCE_QUICK;
+            if (radioValue === 'NORMAL') cycle = this.configValue.MAINTENANCE_NORMAL;
+            if (radioValue === 'SLOW') cycle = this.configValue.MAINTENANCE_SLOW;
+            // Affectation du message
+            this.infomessageTarget.textContent = 'Une révision tous les ' + cycle + ' Jours';
+        }
+
+
     }
 
 }
