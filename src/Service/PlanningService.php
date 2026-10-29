@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Service\PlanningModel\Frequency;
 use App\Service\PlanningModel\RevisionDay;
 use App\Service\PlanningModel\TimeFrame;
-use App\Service\PlanningModel\Config;
+use App\Service\Config;
 
 class PlanningService
 {

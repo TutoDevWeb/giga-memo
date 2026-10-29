@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\PlanningModel;
+namespace App\Service;
 
 class Config
 {

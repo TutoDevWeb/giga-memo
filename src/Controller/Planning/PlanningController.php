@@ -6,9 +6,8 @@ use App\Entity\Faqs;
 use App\Entity\Planning;
 use App\Form\PlanningType;
 use App\Security\Voter\ResourceOwnerVoter;
-use App\Service\PlanningModel\Config;
-use App\Service\PlanningModel\Frequency;
 use App\Service\PlanningModel\Status;
+use App\Service\PlanningModel\Frequency;
 use App\Service\PlanningModel\TimeFrame;
 use App\Service\PlanningService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -54,6 +53,7 @@ final class PlanningController extends AbstractController
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         EntityManagerInterface $entityManager,
         Request $request,
+        PlanningService $planningService,
     ): Response {
 
         // Si il n'y a pas de planning on le fait.
@@ -85,7 +85,8 @@ final class PlanningController extends AbstractController
 
             return $this->render('planning/new.html.twig', [
                 'form' => $form,
-                'faq' => $faq
+                'faq' => $faq,
+                'planningConfig' => $planningService->getConfig()
             ]);
         } else return $this->redirectToRoute('app_planning_edit', ['id_faq' => $faq->getId()]);
     }
