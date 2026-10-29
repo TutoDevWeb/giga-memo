@@ -129,16 +129,4 @@ class PlanningService
 
         return false;
     }
-    public function getConfig(): array
-    {
-
-        return [
-            'ACQUISITION_SLOW'    => Config::ACQUISITION_SLOW,
-            'ACQUISITION_NORMAL'  => Config::ACQUISITION_NORMAL,
-            'ACQUISITION_QUICK'   => Config::ACQUISITION_QUICK,
-            'MAINTENANCE_SLOW'    => Config::MAINTENANCE_SLOW,
-            'MAINTENANCE_NORMAL'  => Config::MAINTENANCE_NORMAL,
-            'MAINTENANCE_QUICK'   => Config::MAINTENANCE_QUICK,
-        ];
-    }
 }

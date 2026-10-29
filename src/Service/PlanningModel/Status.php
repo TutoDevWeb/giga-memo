@@ -4,7 +4,7 @@ namespace App\Service\PlanningModel;
 
 enum Status: string
 {
-    case OFF = 'off';
-    case ON  = 'on';
-    case COMPLETED = 'completed';
+    case OFF = 'OFF';
+    case ON  = 'ON';
+    case COMPLETED = 'COMPLETED';
 }

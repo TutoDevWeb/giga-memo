@@ -6,6 +6,7 @@ use App\Entity\Faqs;
 use App\Entity\Planning;
 use App\Form\PlanningType;
 use App\Security\Voter\ResourceOwnerVoter;
+use App\Service\Config;
 use App\Service\PlanningModel\Status;
 use App\Service\PlanningModel\Frequency;
 use App\Service\PlanningModel\TimeFrame;
@@ -54,6 +55,7 @@ final class PlanningController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request,
         PlanningService $planningService,
+        Config $config,
     ): Response {
 
         // Si il n'y a pas de planning on le fait.
@@ -86,7 +88,7 @@ final class PlanningController extends AbstractController
             return $this->render('planning/new.html.twig', [
                 'form' => $form,
                 'faq' => $faq,
-                'planningConfig' => $planningService->getConfig()
+                'planningConfig' => $config->getConfig()
             ]);
         } else return $this->redirectToRoute('app_planning_edit', ['id_faq' => $faq->getId()]);
     }
@@ -98,6 +100,7 @@ final class PlanningController extends AbstractController
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         Request $request,
         EntityManagerInterface $entityManager,
+        Config $config,
     ): Response {
 
         $planning = $faq->getPlanning();
@@ -132,7 +135,7 @@ final class PlanningController extends AbstractController
             'faq' => $faq,
             'planning' => $planning,
             'revisionDays' => $revisionDays ?? null,
-            'planningConfig' => $planningService->getConfig()
+            'planningConfig' => $config->getConfig()
         ]);
     }
 
