@@ -49,6 +49,20 @@ export default class extends Controller {
             this.infomessageTarget.textContent = 'Une révision tous les ' + cycle + ' Jours';
         }
 
+        if (selectValue === 'MAINTENANCE') {
+            if (radioValue === 'QUICK') {
+                cycle = this.configValue.MAINTENANCE_QUICK;
+                this.infomessageTarget.textContent = '24 révisions au rythme d\'une révision tous les ' + cycle + ' Jours';
+            }
+            if (radioValue === 'NORMAL') {
+                cycle = this.configValue.MAINTENANCE_NORMAL;
+                this.infomessageTarget.textContent = '12 révisions au rythme d\'une révision tous les ' + cycle + ' Jours';
+            }
+            if (radioValue === 'SLOW') {
+                cycle = this.configValue.MAINTENANCE_SLOW;
+                this.infomessageTarget.textContent = '6 révisions au rythme d\'une révision tous les ' + cycle + ' Jours';
+            }
+        }
 
     }
 

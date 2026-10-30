@@ -35,7 +35,7 @@ final class PlanningController extends AbstractController
         if ($planning) {
 
             // Il faut restaurer le planning
-            $revisionDays = $planningService->get(
+            $revisionDays = $planningService->getCalendrier(
                 $planning->getDateStart(),
                 $planning->getTimeFrame(),
                 $planning->getFrequency()
@@ -43,8 +43,8 @@ final class PlanningController extends AbstractController
         }
 
         return $this->render('planning/list.html.twig', [
-            'planning' => $planning,
-            'faq' => $faq,
+            'planning'     => $planning,
+            'faq'          => $faq,
             'revisionDays' => $revisionDays ?? null
         ]);
     }
@@ -54,7 +54,6 @@ final class PlanningController extends AbstractController
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         EntityManagerInterface $entityManager,
         Request $request,
-        PlanningService $planningService,
         Config $config,
     ): Response {
 
@@ -73,7 +72,6 @@ final class PlanningController extends AbstractController
                 'save_label' => 'Créer un planning'
             ]);
             $form->handleRequest($request);
-
 
             if ($form->isSubmitted() && $form->isValid()) {
 
@@ -114,7 +112,7 @@ final class PlanningController extends AbstractController
 
             $dateStart = new \DateTimeImmutable('today');
 
-            $revisionDays = $planningService->get(
+            $revisionDays = $planningService->getCalendrier(
                 $dateStart,
                 $planning->getTimeFrame(),
                 $planning->getFrequency()

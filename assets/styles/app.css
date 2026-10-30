@@ -40,3 +40,8 @@ body {
     font-style: italic;
     font-size: 0.7em;
 }
+
+
+tr.back-over>td {
+    background-color: rgb(49, 48, 48) !important;
+}

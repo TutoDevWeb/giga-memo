@@ -86,6 +86,85 @@ class PlanningService
         return $revisionDays;
     }
 
+
+    public function getCalendrier(
+        \DateTimeImmutable $dateStart,
+        TimeFrame $timeFrame = TimeFrame::ACQUISITION,
+        Frequency $frequency = Frequency::NORMAL
+    ): array {
+
+        $revisionDays = [];
+
+        if ($timeFrame === TimeFrame::ACQUISITION) {
+            $j = 1;
+            for ($i = 0; $i < 180; $i++) {
+                $revisionDay = new RevisionDay;
+                $revisionDay->dateDay = $dateStart->modify("+{$i} day");
+                $executionDay = $this->isExecutionDay(
+                    $dateStart,
+                    $revisionDay->dateDay,
+                    $timeFrame,
+                    $frequency
+                );
+                if ($executionDay === true) {
+                    $revisionDay->numDay = $j++;
+                    $revisionDay->offsetDay = $i;
+                    $revisionDays[] = $revisionDay;
+                }
+            }
+        }
+
+        // On part sur un an de révision
+        // Cadence rapide 15 jours
+        // Cadence normale 1 mois
+        // Cadence lente 2 mois
+        if ($timeFrame === TimeFrame::MAINTENANCE) {
+
+            if ($frequency === Frequency::QUICK) {
+                $period = Config::MAINTENANCE_QUICK;
+                $j = 1;
+                for ($i = 0; $i < 24; $i++) {
+                    $revisionDay = new RevisionDay;
+                    $offset = $i * $period;
+                    $revisionDay->dateDay = $dateStart->modify("+{$offset} day");
+                    $revisionDay->numDay = $j++;
+                    $revisionDay->offsetDay = $i * $period;
+                    $revisionDays[] = $revisionDay;
+                }
+            }
+
+            if ($frequency === Frequency::NORMAL) {
+                $period = Config::MAINTENANCE_NORMAL;
+                $j = 1;
+                for ($i = 0; $i < 12; $i++) {
+                    $revisionDay = new RevisionDay;
+                    $offset = $i * $period;
+                    $revisionDay->dateDay = $dateStart->modify("+{$offset} day");
+                    $revisionDay->numDay = $j++;
+                    $revisionDay->offsetDay = $i * $period;
+                    $revisionDays[] = $revisionDay;
+                }
+            }
+
+            if ($frequency === Frequency::SLOW) {
+                $period = Config::ACQUISITION_SLOW;
+                $j = 1;
+                for ($i = 0; $i < 6; $i++) {
+                    $revisionDay = new RevisionDay;
+                    $offset = $i * $period;
+                    $revisionDay->dateDay = $dateStart->modify("+{$offset} day");
+                    $revisionDay->numDay = $j++;
+                    $revisionDay->offsetDay = $offset;
+                    $revisionDays[] = $revisionDay;
+                }
+            }
+        }
+
+        return $revisionDays;
+    }
+
+
+
     public function isExecutionDay(
         \DateTimeImmutable $dateStart,
         \DateTimeImmutable $dateDay,
@@ -128,5 +207,10 @@ class PlanningService
         }
 
         return false;
+    }
+
+    public function send(): string
+    {
+        return 'Send::Envoie des messages';
     }
 }
