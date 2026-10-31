@@ -22,10 +22,11 @@ class FaqsRepository extends ServiceEntityRepository
      */
     public function findNbFaq(Users $actuelUser): int
     {
-        return count($this->createQueryBuilder('f')
+        return (int) $this->createQueryBuilder('f')
+            ->select('COUNT(f.id)')
             ->andWhere('f.user = :oneUser')
             ->setParameter('oneUser', $actuelUser)
             ->getQuery()
-            ->getResult());
+            ->getSingleScalarResult();
     }
 }

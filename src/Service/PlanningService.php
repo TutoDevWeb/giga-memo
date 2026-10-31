@@ -5,87 +5,10 @@ namespace App\Service;
 use App\Service\PlanningModel\Frequency;
 use App\Service\PlanningModel\RevisionDay;
 use App\Service\PlanningModel\TimeFrame;
-use App\Service\Config;
+
 
 class PlanningService
 {
-
-    public function get(
-        \DateTimeImmutable $dateStart,
-        TimeFrame $timeFrame = TimeFrame::ACQUISITION,
-        Frequency $frequency = Frequency::NORMAL
-    ): array {
-
-        $revisionDays = [];
-
-        if ($timeFrame === TimeFrame::ACQUISITION) {
-            $j = 1;
-            for ($i = 0; $i < 180; $i++) {
-                $revisionDay = new RevisionDay;
-                $revisionDay->dateDay = new \DateTimeImmutable("today + $i days");
-                $executionDay = $this->isExecutionDay(
-                    $dateStart,
-                    $revisionDay->dateDay,
-                    $timeFrame,
-                    $frequency
-                );
-                if ($executionDay === true) {
-                    $revisionDay->numDay = $j++;
-                    $revisionDay->offsetDay = $i;
-                    $revisionDays[] = $revisionDay;
-                }
-            }
-        }
-
-        // On part sur un an de révision
-        // Cadence rapide 15 jours
-        // Cadence normale 1 mois
-        // Cadence lente 2 mois
-        if ($timeFrame === TimeFrame::MAINTENANCE) {
-
-            if ($frequency === Frequency::QUICK) {
-                $period = Config::MAINTENANCE_QUICK;
-                $j = 1;
-                for ($i = 0; $i < 24; $i++) {
-                    $revisionDay = new RevisionDay;
-                    $offset = $i * $period;
-                    $revisionDay->dateDay = new \DateTimeImmutable("today + $offset days");
-                    $revisionDay->numDay = $j++;
-                    $revisionDay->offsetDay = $i * $period;
-                    $revisionDays[] = $revisionDay;
-                }
-            }
-
-            if ($frequency === Frequency::NORMAL) {
-                $period = Config::MAINTENANCE_NORMAL;
-                $j = 1;
-                for ($i = 0; $i < 12; $i++) {
-                    $revisionDay = new RevisionDay;
-                    $offset = $i * $period;
-                    $revisionDay->dateDay = new \DateTimeImmutable("today + $offset days");
-                    $revisionDay->numDay = $j++;
-                    $revisionDay->offsetDay = $i * $period;
-                    $revisionDays[] = $revisionDay;
-                }
-            }
-
-            if ($frequency === Frequency::SLOW) {
-                $period = Config::ACQUISITION_SLOW;
-                $j = 1;
-                for ($i = 0; $i < 6; $i++) {
-                    $revisionDay = new RevisionDay;
-                    $offset = $i * $period;
-                    $revisionDay->dateDay = new \DateTimeImmutable("today + $offset days");
-                    $revisionDay->numDay = $j++;
-                    $revisionDay->offsetDay = $offset;
-                    $revisionDays[] = $revisionDay;
-                }
-            }
-        }
-
-        return $revisionDays;
-    }
-
 
     public function getCalendrier(
         \DateTimeImmutable $dateStart,
@@ -100,13 +23,8 @@ class PlanningService
             for ($i = 0; $i < 180; $i++) {
                 $revisionDay = new RevisionDay;
                 $revisionDay->dateDay = $dateStart->modify("+{$i} day");
-                $executionDay = $this->isExecutionDay(
-                    $dateStart,
-                    $revisionDay->dateDay,
-                    $timeFrame,
-                    $frequency
-                );
-                if ($executionDay === true) {
+
+                if ($this->isExecutionDay($dateStart, $revisionDay->dateDay, $frequency)) {
                     $revisionDay->numDay = $j++;
                     $revisionDay->offsetDay = $i;
                     $revisionDays[] = $revisionDay;
@@ -114,49 +32,19 @@ class PlanningService
             }
         }
 
-        // On part sur un an de révision
-        // Cadence rapide 15 jours
-        // Cadence normale 1 mois
-        // Cadence lente 2 mois
         if ($timeFrame === TimeFrame::MAINTENANCE) {
 
-            if ($frequency === Frequency::QUICK) {
-                $period = Config::MAINTENANCE_QUICK;
-                $j = 1;
-                for ($i = 0; $i < 24; $i++) {
-                    $revisionDay = new RevisionDay;
-                    $offset = $i * $period;
-                    $revisionDay->dateDay = $dateStart->modify("+{$offset} day");
-                    $revisionDay->numDay = $j++;
-                    $revisionDay->offsetDay = $i * $period;
-                    $revisionDays[] = $revisionDay;
-                }
-            }
+            $cycleDuration = $frequency->getMaintenanceCycleDuration();
+            $cycleCount = $frequency->getMaintenanceCycleCount();
 
-            if ($frequency === Frequency::NORMAL) {
-                $period = Config::MAINTENANCE_NORMAL;
-                $j = 1;
-                for ($i = 0; $i < 12; $i++) {
-                    $revisionDay = new RevisionDay;
-                    $offset = $i * $period;
-                    $revisionDay->dateDay = $dateStart->modify("+{$offset} day");
-                    $revisionDay->numDay = $j++;
-                    $revisionDay->offsetDay = $i * $period;
-                    $revisionDays[] = $revisionDay;
-                }
-            }
-
-            if ($frequency === Frequency::SLOW) {
-                $period = Config::ACQUISITION_SLOW;
-                $j = 1;
-                for ($i = 0; $i < 6; $i++) {
-                    $revisionDay = new RevisionDay;
-                    $offset = $i * $period;
-                    $revisionDay->dateDay = $dateStart->modify("+{$offset} day");
-                    $revisionDay->numDay = $j++;
-                    $revisionDay->offsetDay = $offset;
-                    $revisionDays[] = $revisionDay;
-                }
+            $j = 1;
+            for ($i = 0; $i < $cycleCount; $i++) {
+                $revisionDay = new RevisionDay;
+                $offset = $i * $cycleDuration;
+                $revisionDay->dateDay = (clone $dateStart)->modify("+{$offset} day");
+                $revisionDay->numDay = $j++;
+                $revisionDay->offsetDay = $offset;
+                $revisionDays[] = $revisionDay;
             }
         }
 
@@ -168,7 +56,6 @@ class PlanningService
     public function isExecutionDay(
         \DateTimeImmutable $dateStart,
         \DateTimeImmutable $dateDay,
-        TimeFrame $timeFrame,
         Frequency $frequency
     ): bool {
 
@@ -183,10 +70,7 @@ class PlanningService
             return true;
         }
 
-        $base = Config::ACQUISITION_NORMAL;
-        if ($frequency === Frequency::SLOW)   $base = Config::ACQUISITION_SLOW;
-        if ($frequency === Frequency::NORMAL) $base = Config::ACQUISITION_NORMAL;
-        if ($frequency === Frequency::QUICK)  $base = Config::ACQUISITION_QUICK;
+        $base = $frequency->getAcquisitionCycleDuration();
 
         $quotient = intdiv($nbDays, $base);
         $reste = $nbDays % $base;
