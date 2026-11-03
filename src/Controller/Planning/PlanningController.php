@@ -35,7 +35,7 @@ final class PlanningController extends AbstractController
         if ($planning) {
 
             // Il faut restaurer le planning
-            $revisionDays = $planningService->getCalendrier(
+            $revisionDays = $planningService->get(
                 $planning->getDateStart(),
                 $planning->getTimeFrame(),
                 $planning->getFrequency()
@@ -112,7 +112,7 @@ final class PlanningController extends AbstractController
 
             $dateStart = new \DateTimeImmutable('today');
 
-            $revisionDays = $planningService->getCalendrier(
+            $revisionDays = $planningService->get(
                 $dateStart,
                 $planning->getTimeFrame(),
                 $planning->getFrequency()

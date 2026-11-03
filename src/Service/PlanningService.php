@@ -10,7 +10,7 @@ use App\Service\PlanningModel\TimeFrame;
 class PlanningService
 {
 
-    public function getCalendrier(
+    public function get(
         \DateTimeImmutable $dateStart,
         TimeFrame $timeFrame = TimeFrame::ACQUISITION,
         Frequency $frequency = Frequency::NORMAL
@@ -24,7 +24,7 @@ class PlanningService
                 $revisionDay = new RevisionDay;
                 $revisionDay->dateDay = $dateStart->modify("+{$i} day");
 
-                if ($this->isExecutionDay($dateStart, $revisionDay->dateDay, $frequency)) {
+                if ($this->isExecutionDay($dateStart, $revisionDay->dateDay, $frequency, $revisionDay)) {
                     $revisionDay->numDay = $j++;
                     $revisionDay->offsetDay = $i;
                     $revisionDays[] = $revisionDay;
@@ -42,8 +42,9 @@ class PlanningService
                 $revisionDay = new RevisionDay;
                 $offset = $i * $cycleDuration;
                 $revisionDay->dateDay = (clone $dateStart)->modify("+{$offset} day");
-                $revisionDay->numDay = $j++;
+                $revisionDay->numDay = $j;
                 $revisionDay->offsetDay = $offset;
+                $revisionDay->cycleNum = $j++;
                 $revisionDays[] = $revisionDay;
             }
         }
@@ -51,12 +52,11 @@ class PlanningService
         return $revisionDays;
     }
 
-
-
     public function isExecutionDay(
         \DateTimeImmutable $dateStart,
         \DateTimeImmutable $dateDay,
-        Frequency $frequency
+        Frequency $frequency,
+        RevisionDay $revisionDay,
     ): bool {
 
         if ($dateStart > $dateDay) return false;
@@ -67,6 +67,7 @@ class PlanningService
 
         // Cycle 1
         if ($nbDays >= 1 && $nbDays <= 5) {
+            $revisionDay->cycleNum = 1;
             return true;
         }
 
@@ -77,16 +78,21 @@ class PlanningService
 
         // Cycle 2 et 3
         if ($quotient >= 1 && $quotient <= 2) {
+
+            $revisionDay->cycleNum = $quotient + 1;
             return $reste >= 1 && $reste <= 3;
         }
 
         // Cycle 4 à 7 inclues
         if ($quotient >= 3 && $quotient <= 6) {
+
+            $revisionDay->cycleNum = $quotient + 1;
             return $reste === 1 || $reste === 2;
         }
 
         // Cycle 8 à 12 inclues
         if ($quotient >= 7 && $quotient <= 11) {
+            $revisionDay->cycleNum = $quotient + 1;
             return $reste === 1;
         }
 

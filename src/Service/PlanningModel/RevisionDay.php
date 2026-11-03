@@ -10,6 +10,8 @@ class RevisionDay
 
     public int $offsetDay;
 
+    public int $cycleNum;
+
 
     public function setDateDay(\DateTimeImmutable $dateDay)
     {
