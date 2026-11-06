@@ -5,6 +5,7 @@ namespace App\Controller\Planning;
 use App\Entity\Faqs;
 use App\Entity\Planning;
 use App\Form\PlanningType;
+use App\Repository\FaqsRepository;
 use App\Security\Voter\ResourceOwnerVoter;
 use App\Service\Config;
 use App\Service\PlanningModel\Status;
@@ -25,8 +26,10 @@ final class PlanningController extends AbstractController
     #[Route('/planning/list/{id_faq<\d+>}', name: 'app_planning_list', methods: ['GET'])]
     public function list(
         #[MapEntity(id: 'id_faq')] Faqs $faq,
-        PlanningService $planningService,
+        PlanningService $planningService
     ): Response {
+
+        $faqsNextRevisionDays = $planningService->getAllNextRevisionDay($this->getUser());
 
         // On cherche le planning
         $planning = $faq->getPlanning();
@@ -45,7 +48,8 @@ final class PlanningController extends AbstractController
         return $this->render('planning/list.html.twig', [
             'planning'     => $planning,
             'faq'          => $faq,
-            'revisionDays' => $revisionDays ?? null
+            'revisionDays' => $revisionDays ?? null,
+            'faqsNextRevisionDays' => $faqsNextRevisionDays ?? null
         ]);
     }
 

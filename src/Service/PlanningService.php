@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Planning;
+use App\Entity\Users;
+use App\Repository\FaqsRepository;
 use App\Service\PlanningModel\Frequency;
 use App\Service\PlanningModel\RevisionDay;
 use App\Service\PlanningModel\TimeFrame;
@@ -9,6 +12,11 @@ use App\Service\PlanningModel\TimeFrame;
 
 class PlanningService
 {
+
+    public function __construct(
+        private FaqsRepository $faqsRepository
+    ) {}
+
 
     public function get(
         \DateTimeImmutable $dateStart,
@@ -102,5 +110,38 @@ class PlanningService
     public function send(): string
     {
         return 'Send::Envoie des messages';
+    }
+
+    public function getNextDate(Planning $planning): \DateTimeImmutable
+    {
+
+        $nextDate = new \DateTimeImmutable('today');
+
+        $revisionDays = $this->get(
+            $planning->getDateStart(),
+            $planning->getTimeFrame(),
+            $planning->getFrequency()
+        );
+
+        foreach ($revisionDays as $revisionDay) {
+            if ($revisionDay->dateDay >= $nextDate) return $revisionDay->dateDay;
+        }
+
+        return $nextDate;
+    }
+
+    public function getAllNextRevisionDay(Users $user): array
+    {
+
+        // Récupérer toutes les faqs de l'utilisateur qui ont un planning actif
+        $faqs = $this->faqsRepository->getFaqsWithPlanning($user);
+
+        $tabs = [];
+        foreach ($faqs as $key => $faq) {
+            $tabs[$key]['faq'] = $faq->getName();
+            $tabs[$key]['nextDate'] = $this->getNextDate($faq->getPlanning());
+        }
+
+        return $tabs;
     }
 }
