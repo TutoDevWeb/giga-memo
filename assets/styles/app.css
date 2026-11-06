@@ -40,3 +40,16 @@ body {
     font-style: italic;
     font-size: 0.7em;
 }
+
+/* Les styles du tableau qui affiche le planning */
+tr.back-over>td {
+    background-color: rgb(49, 48, 48) !important;
+}
+
+tr>td.back-even {
+    background-color: rgb(65, 63, 66) !important;
+}
+
+tr>td.back-odd {
+    background-color: rgb(52, 52, 53) !important;
+}

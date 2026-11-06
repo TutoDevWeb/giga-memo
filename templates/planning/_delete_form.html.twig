@@ -1,0 +1,4 @@
+<button type="button" class="btn btn-delete-trigger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-action="{{ path('app_planning_delete', { id_faq: faq.id }) }}" data-token="{{ csrf_token('delete' ~ planning.id) }}">
+    Supprimer
+</button>
+{% include "_partials/_delete_modal.html.twig" %}

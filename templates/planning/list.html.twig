@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des plannings de révision{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+
+        {{ include('planning/_tableau_next_date.html.twig') }}
+
+        {% if planning is null %}
+            <h1 class="h3 text-center p-4">Création d'un planning pour cette Faq => {{ faq.name }}</h1>
+            <div class="p-4">
+                <a href="{{ path('app_planning_new', { id_faq: faq.id }) }}" class="btn btn-primary">Créer un planning</a>
+            </div>
+        {% endif %}
+        
+        {% if planning is not null %}
+
+            {{ include('planning/_tableau_planning.html.twig') }}
+            <div class="p-4">
+                <span class="p-4"><a href="{{ path('app_planning_edit', { id_faq: faq.id }) }}" class="btn btn-primary">Modifier un planning</a></span>
+
+                </span class="p-4">{{ include('planning/_delete_form.html.twig') }}</span>
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+
+
+{% endblock %}

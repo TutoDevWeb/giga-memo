@@ -3,16 +3,16 @@
 Je suis obligé de passer la variable faq car elle n'est pas vue dans la macro.
 Le problème c'est qu'il arrive que cette variable ne soit pas définie alors que le script est inclu.
 Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(null)) #}
-	{% macro mainIndex(link,faq) %}
+{% macro mainIndex(link, faq) %}
 
 	Vous êtes ici ::&nbsp;&nbsp;
 
-		{% if link == true %}
+	{% if link == true %}
 
-			{% if faq is not null and faq.id is defined %}
-				<a class="ariane" href="{{path('app_main_index',{id_faq: faq.id})}}"> Tableau de bord principal</a>
+		{% if faq is not null and faq.id is defined %}
+			<a class="ariane" href="{{ path('app_main_index', {id_faq: faq.id}) }}"> Tableau de bord principal</a>
 		{% else %}
-			<a class="ariane" href="{{path('app_main_index')}}">Tableau de bord principal</a>
+			<a class="ariane" href="{{ path('app_main_index') }}">Tableau de bord principal</a>
 		{% endif %}
 
 	{% else %}
@@ -38,7 +38,7 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 {% macro categoriesList(link) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
 	{% if link == true %}
-		<a class="ariane" href="{{path('app_categories_list')}}">Gérer des catégories</a>
+		<a class="ariane" href="{{ path('app_categories_list') }}">Gérer des catégories</a>
 	{% else %}
 		Gérer des catégories
 	{% endif %}
@@ -56,10 +56,10 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 {# ########################## #}
 {# Macro liées aux FAQs #}
 
-{% macro mainEdit(link,faq = null) %}
+{% macro mainEdit(link, faq = null) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
-	{% if link == true and faq is not null  %}
-		<a class="ariane" href="{{path('app_main_edit',{id_faq: faq.id})}}">Editer FAQ</a>
+	{% if link == true and faq is not null %}
+		<a class="ariane" href="{{ path('app_main_edit', {id_faq: faq.id}) }}">Editer FAQ</a>
 	{% else %}
 		Editer FAQ
 	{% endif %}
@@ -75,10 +75,10 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 
 {# ########################## #}
 {# Macro liées aux Couples #}
-{% macro couplesListByFaq(link,faq) %}
+{% macro couplesListByFaq(link, faq) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
-	{% if link == true and faq is not null  %}
-		<a class="ariane" href="{{path('app_couples_list_by_faq',{id_faq: faq.id})}}">Liste des QRs</a>
+	{% if link == true and faq is not null %}
+		<a class="ariane" href="{{ path('app_couples_list_by_faq', {id_faq: faq.id}) }}">Liste des QRs</a>
 	{% else %}
 		Liste des QRs
 	{% endif %}
@@ -94,10 +94,10 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 
 {# ########################## #}
 {# Macro liées aux Règles #}
-{% macro rulesListByFaq(link,faq) %}
+{% macro rulesListByFaq(link, faq) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
-	{% if link == true and faq is not null  %}
-		<a class="ariane" href="{{path('app_rules_list_by_faq',{id_faq: faq.id})}}">Liste des règles</a>
+	{% if link == true and faq is not null %}
+		<a class="ariane" href="{{ path('app_rules_list_by_faq', {id_faq: faq.id}) }}">Liste des règles</a>
 	{% else %}
 		Liste des règles
 	{% endif %}
@@ -112,11 +112,11 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 {% endmacro %}
 
 {# ########################## #}
-{# Macro liées à l'excécution #}
-{% macro mainRun(link,faq) %}
+{# Macro liées à l'exécution #}
+{% macro mainRun(link, faq) %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
-	{% if link == true and faq is not null  %}
-		<a class="ariane" href="{{path('app_main_run',{id_faq: faq.id})}}">Exécuter la FAQ</a>
+	{% if link == true and faq is not null %}
+		<a class="ariane" href="{{ path('app_main_run', {id_faq: faq.id}) }}">Exécuter la FAQ</a>
 	{% else %}
 		Exécuter la FAQ
 	{% endif %}
@@ -128,4 +128,27 @@ Dans ces conditions il faut faire un appel du type mainIndex(false,faq|default(n
 
 {% macro faqsReview() %}
 	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;Révision
+{% endmacro %}
+
+{# ########################## #}
+{# Macro liées à la gestion des Planning #}
+{% macro mainPlanning(link, faq) %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
+	{% if link == true and faq is not null %}
+		<a class="ariane" href="{{ path('app_planning_list', {id_faq: faq.id}) }}">Gérer les Plannings</a>
+	{% else %}
+		Gérer les Plannings
+	{% endif %}
+{% endmacro %}
+
+{# Macro liées à la création des Planning #}
+{% macro newPlanning(link, faq) %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
+	Créer un Planning
+{% endmacro %}
+
+{# Macro liées à la modification des Planning #}
+{% macro editPlanning(link, faq) %}
+	&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
+	Modifier un Planning
 {% endmacro %}

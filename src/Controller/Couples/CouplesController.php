@@ -109,7 +109,10 @@ class CouplesController extends AbstractController
         #[MapEntity(id: 'id_faq')] Faqs $faq,
         #[MapEntity(id: 'id_couple')] Couples $couple,
         PictureService $pictureService,
+        CouplesRepository $couplesRepository
     ): Response {
+
+        $idToUpdate = $couple->getId();
 
         $form = $this->createForm(CoupleFormType::class, $couple, [
             'from' => $from,
@@ -119,9 +122,78 @@ class CouplesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $couple = $form->getData();
 
-            $entityManager->persist($couple);
+            // La cuisine ci-dessous c'est pour réordonner les positions des couples dans la liste
+            $newNum = $form->getData()->getNum();
+
+            $couples = $couplesRepository->findBy(
+                ['faq' => $faq],
+                ['num' => 'ASC']
+            );
+
+            $num = 1;
+            $oldNum = 0;
+            // D'abord j'arrange pour que les num soient consécutifs
+            // C'est pas forcément le cas pour des raisons historiques.
+            // J'ai mis un num et au départ je ne l'ai pas géré
+            // Donc il existe des listes où c'est pas bon.
+            foreach ($couples as $c) {
+                // Je détermine la position réelle de celui que je modifie
+                if ($c->getId() === $idToUpdate) {
+                    $oldNum = $num;
+                }
+                $c->setNum($num);
+                $num++;
+            }
+
+            // Si une renumérotation est nécessaire
+            if ($oldNum !== $newNum) {
+
+                // Si la position demandé est plus petite que l'actuelle
+                if ($newNum < $oldNum) {
+
+                    // Parcourir de $newNum+1 et décaler de +1
+                    $num = 1;
+                    foreach ($couples as $c) {
+
+                        if ($c->getId() ===  $idToUpdate) {
+                            $c->setNum($newNum);
+                            continue;
+                        }
+                        if ($num >= $newNum) {
+                            dump('Set num+1');
+                            $c->setNum($num + 1);
+                        }
+                        $num++;
+                    }
+                }
+
+
+                // Si la position demandée est plus grande que l'actuelle
+                if ($newNum > $oldNum) {
+
+                    $num = 1;
+                    foreach ($couples as $c) {
+
+                        if ($c->getId() ===  $idToUpdate) {
+                            $c->setNum($newNum);
+                            continue;
+                        }
+                        // Renuméroter tout jusqu'à < $newNum
+                        if ($num < $newNum) {
+                            $c->setNum($num);
+                        }
+                        $num++;
+                    }
+                }
+
+                foreach ($couples as $c) {
+                    $entityManager->persist($c);
+                }
+            } else {
+                $entityManager->persist($couple);
+            }
+
             $entityManager->flush();
 
             // On récupère les images

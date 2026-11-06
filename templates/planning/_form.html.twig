@@ -1,0 +1,44 @@
+
+
+{{ form_start(form) }}        
+
+<div {{ stimulus_controller('planning', { config: planningConfig }) }} class="row">
+
+
+    <div class="col">
+        {{ form_row(form.timeFrame, {
+            label : 'Phase de révision',
+            row_attr : { class:'p-4'},
+            attr: {
+                'data-action': 'change->planning#change',
+                'data-planning-target' : 'timeframe'
+            }
+        }) }}
+    </div>
+    <div class="col">
+        {{ form_row(form.frequency, {
+            label : 'Cadence de révision',
+            attr: {
+                'data-action': 'change->planning#change',
+                'data-planning-target' : 'frequency'
+            },
+            row_attr: {
+                class: 'p-4'
+            }
+        }) }}
+    </div>
+
+    <p class="h5 p-5" data-planning-target="infomessage"></p>
+
+</div>
+
+
+{# Le libéllé est customizé dans le controleur #}
+{{ form_row(form.save, {
+    row_attr : {
+        class:'p-4'
+    }
+}) }}
+
+{{ form_end(form) }}
+

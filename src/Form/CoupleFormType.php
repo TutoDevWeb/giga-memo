@@ -25,7 +25,11 @@ class CoupleFormType extends AbstractType
         $faq = $options['faq'];
 
         $builder
-            ->add('num')
+            ->add('num', null, [
+                'attr' => [
+                    'min' => 1,
+                ],
+            ])
             ->add('rules', EntityType::class, [
                 'class' => Rules::class,
                 'choice_label' => 'name',
